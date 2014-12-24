@@ -1,0 +1,41 @@
+body 
+{
+	color: #000;
+	font-family:Monospace;
+	font-size:13px;
+	font-weight: bold;
+	background-color: Black;
+	margin: 0px;
+} 
+
+#header
+{
+    background-color: #f0f0f0;
+}
+
+#settings
+{
+    width:150px;
+}
+
+#settings tr
+{
+    border-top: 1px solid #AAAAAA;
+}
+
+#canvas3d
+{
+    margin-top:10px;
+    border:1px solid White;
+}
+
+#sidebar
+{
+    float:left;
+    color:White;
+}
+
+#sidebar select
+{
+    width: 100px;
+}

@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WebFemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="ColorMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Data" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ModelContour">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ModelId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NumValues" Type="int" />
+          <Property Name="MinValue" Type="float" />
+          <Property Name="MaxValue" Type="float" />
+          <Property Name="ValueBuffer" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="ModelGeometry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NumVertices" Type="int" />
+          <Property Name="NumIndices" Type="int" />
+          <Property Name="VertexBuffer" Type="nvarchar(max)" />
+          <Property Name="IndexBuffer" Type="nvarchar(max)" />
+          <Property Name="MinX" Type="float" />
+          <Property Name="MinY" Type="float" />
+          <Property Name="MinZ" Type="float" />
+          <Property Name="MaxX" Type="float" />
+          <Property Name="MaxY" Type="float" />
+          <Property Name="MaxZ" Type="float" />
+        </EntityType>
+        <Association Name="FK_ModelContour_ModelGeometry">
+          <End Role="ModelGeometry" Type="Self.ModelGeometry" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ModelContour" Type="Self.ModelContour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModelGeometry">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ModelContour">
+              <PropertyRef Name="ModelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WebFemModelStoreContainer">
+          <EntitySet Name="ColorMap" EntityType="Self.ColorMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ModelContour" EntityType="Self.ModelContour" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ModelGeometry" EntityType="Self.ModelGeometry" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ModelContour_ModelGeometry" Association="Self.FK_ModelContour_ModelGeometry">
+            <End Role="ModelGeometry" EntitySet="ModelGeometry" />
+            <End Role="ModelContour" EntitySet="ModelContour" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WebFemModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityType Name="ColorMap">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ModelContour">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModelId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NumValues" Type="Int32" />
+          <Property Name="MinValue" Type="Double" />
+          <Property Name="MaxValue" Type="Double" />
+          <Property Name="ValueBuffer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ModelGeometry" Relationship="Self.FK_ModelContour_ModelGeometry" FromRole="ModelContour" ToRole="ModelGeometry" />
+        </EntityType>
+        <EntityType Name="ModelGeometry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NumVertices" Type="Int32" />
+          <Property Name="NumIndices" Type="Int32" />
+          <Property Name="VertexBuffer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IndexBuffer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MinX" Type="Double" />
+          <Property Name="MinY" Type="Double" />
+          <Property Name="MinZ" Type="Double" />
+          <Property Name="MaxX" Type="Double" />
+          <Property Name="MaxY" Type="Double" />
+          <Property Name="MaxZ" Type="Double" />
+          <NavigationProperty Name="ModelContours" Relationship="Self.FK_ModelContour_ModelGeometry" FromRole="ModelGeometry" ToRole="ModelContour" />
+        </EntityType>
+        <Association Name="FK_ModelContour_ModelGeometry">
+          <End Role="ModelGeometry" Type="Self.ModelGeometry" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ModelContour" Type="Self.ModelContour" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModelGeometry">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ModelContour">
+              <PropertyRef Name="ModelId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="web_femEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ColorMaps" EntityType="Self.ColorMap" />
+          <EntitySet Name="ModelContours" EntityType="Self.ModelContour" />
+          <EntitySet Name="ModelGeometries" EntityType="Self.ModelGeometry" />
+          <AssociationSet Name="FK_ModelContour_ModelGeometry" Association="Self.FK_ModelContour_ModelGeometry">
+            <End Role="ModelGeometry" EntitySet="ModelGeometries" />
+            <End Role="ModelContour" EntitySet="ModelContours" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WebFemModelStoreContainer" CdmEntityContainer="web_femEntities">
+          <EntitySetMapping Name="ColorMaps">
+            <EntityTypeMapping TypeName="WebFemModel.ColorMap">
+              <MappingFragment StoreEntitySet="ColorMap">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModelContours">
+            <EntityTypeMapping TypeName="WebFemModel.ModelContour">
+              <MappingFragment StoreEntitySet="ModelContour">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ModelId" ColumnName="ModelId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NumValues" ColumnName="NumValues" />
+                <ScalarProperty Name="MinValue" ColumnName="MinValue" />
+                <ScalarProperty Name="MaxValue" ColumnName="MaxValue" />
+                <ScalarProperty Name="ValueBuffer" ColumnName="ValueBuffer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModelGeometries">
+            <EntityTypeMapping TypeName="WebFemModel.ModelGeometry">
+              <MappingFragment StoreEntitySet="ModelGeometry">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="NumVertices" ColumnName="NumVertices" />
+                <ScalarProperty Name="NumIndices" ColumnName="NumIndices" />
+                <ScalarProperty Name="VertexBuffer" ColumnName="VertexBuffer" />
+                <ScalarProperty Name="IndexBuffer" ColumnName="IndexBuffer" />
+                <ScalarProperty Name="MinX" ColumnName="MinX" />
+                <ScalarProperty Name="MinY" ColumnName="MinY" />
+                <ScalarProperty Name="MinZ" ColumnName="MinZ" />
+                <ScalarProperty Name="MaxX" ColumnName="MaxX" />
+                <ScalarProperty Name="MaxY" ColumnName="MaxY" />
+                <ScalarProperty Name="MaxZ" ColumnName="MaxZ" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
