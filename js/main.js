@@ -14,65 +14,89 @@
     limitations under the License.
 */
 
+//$(window).load(function () {
+//    // executes when complete page is fully loaded, including all frames, objects and images
+//    alert("window is loaded");
+//});
 
+//Globals are upper case
 var modelView = null,
     legend = null,
-    cmu = null,
     models = [],
     colorMaps = [],
     loadPass = 0,
-    gl = null;
+    GL = null;
 
-function initApp() {
-    var canvas3d = document.getElementById('canvas3d');
+$(function () {
+    var canvas3d = $('#canvas3d')[0];
     try {
-        gl = canvas3d.getContext("webgl") || canvas3d.getContext("experimental-webgl");
+        GL = canvas3d.getContext("webgl") || canvas3d.getContext("experimental-webgl");
     } catch (e) {
     }
-    if (!gl) {
-        alert("Unfortunately, your browser does not support WebGL.");
+    if (!GL) {
+        alert("Unfortunately, your browser does not support Webgl.");
         return;
     }
 
     //inits canvases
-    cmu = new ColorMapUtility();
-    legend = new Legend(document.getElementById('canvas2d'));
-    modelView = new ModelViewWebGL(canvas3d, cmu);
+    legend = new Legend($('#canvas2d')[0]);
+    modelView = new ModelViewWebGL(canvas3d);
+    modelView.resize(window.innerWidth, window.innerHeight);
     modelView.start();
 
     //fills init data
-    callAjax("Default.aspx/GetPageInitData", null, function (msg) {
-        var data = JSON.parse(msg.d);
-        $.each(data.models, function (i, v) {
-            models[v.id] = {
-                name: v.name,
-                contours: []
+    SERVICES.getInitData(function (data) {
+        //Models = data.Models;
+        $.each(data.models, function (i, model) {
+            models[model.id] = {
+                name: model.name,
+                numVertices: model.numVertices,
+                numIndices: model.numIndices,
+                minX: model.minX,
+                minY: model.minY,
+                minZ: model.minZ,
+                maxX: model.maxX,
+                maxY: model.maxY,
+                maxZ: model.maxZ,
+                vertexData: [],
+                indexData: [],
+                contours: [],
+                loaded: false
             }
-            $.each(v.contours, function (j, c) {
-                models[v.id].contours[c.id] = {
-                    name: c.name
+            $.each(model.contours, function (i, contour) {
+                models[model.id].contours[contour.id] = {
+                    name: contour.name,
+                    minValue: contour.minValue,
+                    maxValue: contour.maxValue,
+                    numValues: contour.minValues,
+                    valueData: [],
+                    loaded: false
                 }
             });
         });
         fillCombo("#cbModels", models);
 
-        $.each(data.colorMaps, function (i, v) {
-            v.data = cmu.parseSplittableColorMap(v.data);
-            colorMaps[v.id] = v;
+        $.each(data.colorMaps, function (i, colorMap) {
+            colorMap.data = CMU.parseSplittableColorMap(colorMap.data);
+            colorMaps[colorMap.id] = colorMap;
         });
         fillCombo("#cbColorMaps", colorMaps);
     });
 
     //events
     $(window).resize(function () {
-        modelView.resize(window.innerWidth - 200, window.innerHeight - 50);
+        modelView.resize(document.body.clientWidth, document.body.clientHeight);
     });
-    $('#loading').hide();
+    
     $('#cbModels').change(cbModels_change);
     $('#cbColorMaps').change(cbColorMaps_change);
     $('#btnLoad').click(btnLoad_click);
     $('#btnReset').click(function () {
         modelView.resetTransformations();
+    });
+    $('#toggleSidebar').click(function () {
+        $('ul').toggle();
+        $('#toggleSidebar').toggleClass("arrow-up arrow-down");
     });
     //disable context menu
     modelView.canvas.addEventListener('contextmenu', function (event) { event.preventDefault(); }, false);
@@ -89,7 +113,9 @@ function initApp() {
 
     //keyboard events
     document.addEventListener("keydown", keyDown, false);
-}
+    
+});
+
 
 function mouseDown(event) {
     event.preventDefault();
@@ -179,29 +205,21 @@ function cbModels_change() {
 function cbColorMaps_change() {
     var mapId = $('#cbColorMaps').find('option:selected').val();
 
-    cmu.reset(modelView.minPropValue, modelView.maxPropValue, colorMaps[mapId].data);
-    legend.reset(cmu, 0, 0);
+    CMU.reset(modelView.minPropValue, modelView.maxPropValue, colorMaps[mapId].data);
+    legend.reset(0, 0);
 }
 
 function btnLoad_click() {
-    $('#statusLabel').text('Loading...');
-    $('#loading').show();
-
     var modelId = $('#cbModels').find('option:selected').val();
     var propertyId = $('#cbProperties').find('option:selected').val();
 
     modelView.clearScene(['mesh', 'cube', 'wireframe']);
     loadModel(modelId, propertyId, function () {
-        //on model loaded
-        $('#statusLabel').text('Model loaded');
-        $('#loading').hide();
-        legend.reset(cmu, modelView.minValue, modelView.maxValue);
+        legend.reset(modelView.minValue, modelView.maxValue);
     }, function (err) {
         //on error
         alert(err);
-        $('#statusLabel').text(err);
-        $('#loading').hide();
-        legend.reset([[0, "#000000"], 0, 0]);
+        legend.reset(0, 0);
     });
 }
 
@@ -217,32 +235,44 @@ function fillCombo(id, data) {
     select.change();
 }
 
-function loadModel(modelId, contourId, onDone, onError) {
-    if (!models[modelId].modelData) {
+function loadModel(geometryId, contourId, onDone, onError) {
+    if (!models[geometryId].loaded) {
         if (loadPass >= 1) {
             onError.call("Error loading model");
             return;
         }
-        callAjax("GetBigData.ashx?modelId=" + modelId, null, function (msg) {
+        SERVICES.getGeometryData(geometryId, function (data) {
             loadPass++;
-            models[modelId].modelData = msg;
-            loadModel(modelId, contourId, onDone, onError);
+            models[geometryId].vertexData = data.vertexData;
+            models[geometryId].indexData = data.indexData;
+            models[geometryId].loaded = true;
+            loadModel(geometryId, contourId, onDone, onError);
         });
     } else {
-        if (!models[modelId]["contours"][contourId].contourData) {
+        if (!models[geometryId].contours[contourId].loaded) {
             if (loadPass >= 2) {
                 onError.call("Error loading model properties");
                 return;
             }
-            callAjax("GetBigData.ashx?contourId=" + contourId, null, function (msg) {
+            SERVICES.getContourData(geometryId, contourId, function (data) {
                 loadPass++;
-                models[modelId]["contours"][contourId].contourData = msg;
-                loadModel(modelId, contourId, onDone, onError);
+                models[geometryId].contours[contourId].valueData = data;
+                models[geometryId].contours[contourId].loaded = true;
+                loadModel(geometryId, contourId, onDone, onError);
             });
         } else {
             loadPass = 0;
-            modelView.displayModel(modelId, contourId);
+            modelView.displayModel(geometryId, contourId);
             onDone.call();
         }
     }
+}
+
+/*
+ * binds an function to a scope in which it will be running, useful on events
+ */
+function bind(scope, fn) {
+    return function () {
+        fn.apply(scope, arguments);
+    };
 }

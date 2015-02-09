@@ -32,7 +32,7 @@ Legend.prototype = {
     context2d: null,
     constructor: Legend,
 
-    reset: function (cmu,min,max) {
+    reset: function (min,max) {
         this.context2d.fillStyle = "Black";
         this.context2d.fillRect(0, 0, 150, 500);
         //table colors
@@ -41,11 +41,11 @@ Legend.prototype = {
             width = 50,
             height = 450;
 
-        var colorMap = cmu.getColorMapSh();
+        var colorMap = CMU.getColorMapSh();
         var cmLength = colorMap.length;
         var scale = max - min;
         //gradient
-        var gradient = this.context2d.createLinearGradient(0, startY + height, 0, startY); //odozdo na gore, inace u suprotnom napisati "0, startY, 0, startY + height"
+        var gradient = this.context2d.createLinearGradient(0, startY + height, 0, startY);
         var colorStopPercentage = 1 / (cmLength - 1).toFixed(2);
         for (var i = 0; i < cmLength; i++) {
             gradient.addColorStop(i * colorStopPercentage, colorMap[i]["color"]);
@@ -66,16 +66,12 @@ Legend.prototype = {
         var tickHeight = (height + 1) / (cmLength - 1).toFixed(2);
         for (var i = 0; i < cmLength; i++) {
             var xpos = startX + width;
-            var ypos = Math.round(startY + tickHeight * (cmLength - 1 - i)) - 0.5; //odozdo na gore, inace u suprotnom napisati samo "i" umesto "(cmu.cmLength-1-i)"
+            var ypos = Math.round(startY + tickHeight * (cmLength - 1 - i)) - 0.5;
             this.context2d.moveTo(xpos - 5.5, ypos);
             this.context2d.lineTo(xpos + 5.5, ypos);
             var scaledVal = min + scale * colorMap[i].value;
             this.context2d.fillText(scaledVal.toFixed(4), xpos + 10, ypos + 4);
         }
         this.context2d.stroke();
-    },
-
-    draw: function (cmu) {
-        
     }
 }

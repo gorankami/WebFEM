@@ -14,12 +14,8 @@
     limitations under the License.
 */
 
-ModelViewWebGL = function (canvas, cmu) {
-    this.cmu = cmu;
-
+ModelViewWebGL = function (canvas) {
     this.canvas = canvas;
-    this.canvas.width = window.innerWidth - 200;
-    this.canvas.height = window.innerHeight - 50;
 
     this.camera = new Camera(45, this.canvas.width / this.canvas.height, 1, 100.0,
         vec3.create([0, 0, -10]));
@@ -32,7 +28,6 @@ ModelViewWebGL = function (canvas, cmu) {
 
 ModelViewWebGL.prototype = {
     canvas: null,
-    cmu: null,
     controls: null,
     shaderProgramColors: null,
     shaderProgramUniform: null,
@@ -53,7 +48,7 @@ ModelViewWebGL.prototype = {
     },
 
     generateIndexWFData: function(modelId){
-        var indexData = models[modelId].modelData.indexData;
+        var indexData = models[modelId].indexData;
         var indexWFData = [];
         for (var i = 0; i < indexData.length; i += 6) {
             indexWFData.push(
@@ -67,44 +62,44 @@ ModelViewWebGL.prototype = {
                 indexData[i + 5]
             );
         }
-        models[modelId].modelData.indexWFData = indexWFData;
+        models[modelId].indexWFData = indexWFData;
     },
 
     displayModel: function (modelId, contourId) {
         this.modelLoaded = false;
-        var modelData = models[modelId].modelData;
-        var contourData = models[modelId].contours[contourId].contourData;
+        var modelData = models[modelId];
+        var contourData = models[modelId].contours[contourId];
 
-        var minimum = vec3.create([modelData.minimum.x, modelData.minimum.y, modelData.minimum.z]);
-        var maximum = vec3.create([modelData.maximum.x, modelData.maximum.y, modelData.maximum.z]);
+        var minimum = vec3.create([modelData.minX, modelData.minY, modelData.minZ]);
+        var maximum = vec3.create([modelData.maxX, modelData.maxY, modelData.maxZ]);
         this.center = vec3.subtract(maximum,minimum);
         this.minValue = contourData.minValue;
         this.maxValue = contourData.maxValue;
-        this.cmu.reset(contourData.minValue, contourData.maxValue);
+        CMU.reset(contourData.minValue, contourData.maxValue);
 
         if (!modelData.indexWFData) {
             this.generateIndexWFData(modelId);
         }
 
         //colors
-        gl.useProgram(this.shaderProgramColors);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramColors.buffers.vertex);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelData.vertexData), gl.DYNAMIC_DRAW);
+        GL.useProgram(this.shaderProgramColors);
+        GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramColors.buffers.vertex);
+        GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(modelData.vertexData), GL.DYNAMIC_DRAW);
 
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.shaderProgramColors.buffers.index);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelData.indexData), gl.DYNAMIC_DRAW);
+        GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.shaderProgramColors.buffers.index);
+        GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelData.indexData), GL.DYNAMIC_DRAW);
         this.shaderProgramColors.buffers.index.arrayLength = modelData.indexData.length;
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramColors.buffers.color);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.convertValuesToColors(contourData.valueData)), gl.DYNAMIC_DRAW);
+        GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramColors.buffers.color);
+        GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(this.convertValuesToColors(contourData.valueData)), GL.DYNAMIC_DRAW);
 
         //uniform
-        gl.useProgram(this.shaderProgramUniform);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramUniform.buffers.vertex);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(modelData.vertexData), gl.DYNAMIC_DRAW);
-
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.shaderProgramUniform.buffers.index);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelData.indexWFData), gl.DYNAMIC_DRAW);
+        GL.useProgram(this.shaderProgramUniform);
+        GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramUniform.buffers.vertex);
+        GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(modelData.vertexData), GL.DYNAMIC_DRAW);
+        
+        GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.shaderProgramUniform.buffers.index);
+        GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(modelData.indexWFData), GL.DYNAMIC_DRAW);
         this.shaderProgramUniform.buffers.index.arrayLength = modelData.indexWFData.length;
 
         this.modelLoaded = true;
@@ -113,7 +108,7 @@ ModelViewWebGL.prototype = {
     convertValuesToColors: function (values) {
         var colors = [];
         for (var i = 0; i < values.length; i++) {
-            var color = this.cmu.getColorFromArray(values[i]);
+            var color = CMU.getColorFromArray(values[i]);
             colors[3 * i] = color.r;
             colors[3 * i + 1] = color.g;
             colors[3 * i + 2] = color.b;
@@ -122,9 +117,9 @@ ModelViewWebGL.prototype = {
     },
 
     clearScene: function (modelLoaded) {
-        gl.clearColor(0, 0, 0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.enable(gl.DEPTH_TEST);
+        GL.clearColor(0, 0, 0, 1.0);
+        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        GL.enable(GL.DEPTH_TEST);
     
         if (modelLoaded === true){
             this.modelLoaded = true;
@@ -143,7 +138,7 @@ ModelViewWebGL.prototype = {
     render: function () {
         this.clearScene(this.modelLoaded);
         if (this.modelLoaded) {
-            gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+            GL.viewport(0, 0, this.canvas.width, this.canvas.height);
             
             //apply transformations
             var transformationMatrix = mat4.create();
@@ -152,44 +147,44 @@ ModelViewWebGL.prototype = {
             mat4.rotate(transformationMatrix, this.controls.rotation[1], [0.0, 1.0, 0.0]);
 
             //COLORS
-            gl.useProgram(this.shaderProgramColors);
+            GL.useProgram(this.shaderProgramColors);
             //Set matrix uniforms
-            gl.uniformMatrix4fv(this.shaderProgramColors.uniforms.pMatrix, false, this.camera.pMatrix);
-            gl.uniformMatrix4fv(this.shaderProgramColors.uniforms.mvMatrix, false, transformationMatrix);
+            GL.uniformMatrix4fv(this.shaderProgramColors.uniforms.pMatrix, false, this.camera.pMatrix);
+            GL.uniformMatrix4fv(this.shaderProgramColors.uniforms.mvMatrix, false, transformationMatrix);
 
             //Draw
-            gl.enableVertexAttribArray(this.shaderProgramColors.attributes.position);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramColors.buffers.vertex);
-            gl.vertexAttribPointer(this.shaderProgramColors.attributes.position, 3, gl.FLOAT, false, 0, 0);
-
-
-            gl.enableVertexAttribArray(this.shaderProgramColors.attributes.color);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramColors.buffers.color);
-            gl.vertexAttribPointer(this.shaderProgramColors.attributes.color, 3, gl.FLOAT, false, 0, 0);
-
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.shaderProgramColors.buffers.index);
-
-            gl.polygonOffset(2.0, 2.0);
-            gl.enable(gl.POLYGON_OFFSET_FILL);
-            gl.drawElements(gl.TRIANGLES, this.shaderProgramColors.buffers.index.arrayLength, gl.UNSIGNED_SHORT, 0);
-            gl.disable(gl.POLYGON_OFFSET_FILL);
-            gl.flush();
+            GL.enableVertexAttribArray(this.shaderProgramColors.attributes.position);
+            GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramColors.buffers.vertex);
+            GL.vertexAttribPointer(this.shaderProgramColors.attributes.position, 3, GL.FLOAT, false, 0, 0);
+            
+            
+            GL.enableVertexAttribArray(this.shaderProgramColors.attributes.color);
+            GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramColors.buffers.color);
+            GL.vertexAttribPointer(this.shaderProgramColors.attributes.color, 3, GL.FLOAT, false, 0, 0);
+            
+            GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.shaderProgramColors.buffers.index);
+            
+            GL.polygonOffset(2.0, 2.0);
+            GL.enable(GL.POLYGON_OFFSET_FILL);
+            GL.drawElements(GL.TRIANGLES, this.shaderProgramColors.buffers.index.arrayLength, GL.UNSIGNED_SHORT, 0);
+            GL.disable(GL.POLYGON_OFFSET_FILL);
+            GL.flush();
 
             //WIREFRAME
-            gl.useProgram(this.shaderProgramUniform);
+            GL.useProgram(this.shaderProgramUniform);
             //Set matrix uniforms
-            gl.uniformMatrix4fv(this.shaderProgramUniform.uniforms.pMatrix, false, this.camera.pMatrix);
-            gl.uniformMatrix4fv(this.shaderProgramUniform.uniforms.mvMatrix, false, transformationMatrix);
+            GL.uniformMatrix4fv(this.shaderProgramUniform.uniforms.pMatrix, false, this.camera.pMatrix);
+            GL.uniformMatrix4fv(this.shaderProgramUniform.uniforms.mvMatrix, false, transformationMatrix);
 
             //Draw
-            gl.enableVertexAttribArray(this.shaderProgramUniform.attributes.position);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.shaderProgramUniform.buffers.vertex);
-            gl.vertexAttribPointer(this.shaderProgramUniform.attributes.position, 3, gl.FLOAT, false, 0, 0);
-
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.shaderProgramUniform.buffers.index);
-
-            gl.drawElements(gl.LINES, this.shaderProgramUniform.buffers.index.arrayLength, gl.UNSIGNED_SHORT, 0);
-            gl.flush();
+            GL.enableVertexAttribArray(this.shaderProgramUniform.attributes.position);
+            GL.bindBuffer(GL.ARRAY_BUFFER, this.shaderProgramUniform.buffers.vertex);
+            GL.vertexAttribPointer(this.shaderProgramUniform.attributes.position, 3, GL.FLOAT, false, 0, 0);
+            
+            GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.shaderProgramUniform.buffers.index);
+            
+            GL.drawElements(GL.LINES, this.shaderProgramUniform.buffers.index.arrayLength, GL.UNSIGNED_SHORT, 0);
+            GL.flush();
         }
     },
 

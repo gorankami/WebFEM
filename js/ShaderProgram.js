@@ -28,47 +28,47 @@
 ShaderProgram = function ShaderProgram(type) {
     var vertexShader = null;
     var fragmentShader = null;
-    var program = gl.createProgram();
+    var program = GL.createProgram();
 
     switch (type) {
         case "Colors":
-            vertexShader = this.createShader(this.getVertexShaderColorsSource(), gl.VERTEX_SHADER);
-            fragmentShader = this.createShader(this.getFragmentShaderColorsSource(), gl.FRAGMENT_SHADER);
+            vertexShader = this.createShader(this.getVertexShaderColorsSource(), GL.VERTEX_SHADER);
+            fragmentShader = this.createShader(this.getFragmentShaderColorsSource(), GL.FRAGMENT_SHADER);
             break;
         case "FEMWireframe":
-            vertexShader = this.createShader(this.getVertexShaderUniformSource(), gl.VERTEX_SHADER);
-            fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), gl.FRAGMENT_SHADER);
+            vertexShader = this.createShader(this.getVertexShaderUniformSource(), GL.VERTEX_SHADER);
+            fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
             break;
         default:
             return null;
     }
 
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    GL.attachShader(program, vertexShader);
+    GL.attachShader(program, fragmentShader);
+    GL.linkProgram(program);
+    if (!GL.getProgramParameter(program, GL.LINK_STATUS)) {
         alert("Unable to initialize the shader program.");
     }
-    gl.useProgram(program);
+    GL.useProgram(program);
 
     program.attributes = {
-        position: gl.getAttribLocation(program, "aVertexPosition")
+        position: GL.getAttribLocation(program, "aVertexPosition")
     };
     if (type == "Colors"){
-        program.attributes.color = gl.getAttribLocation(program, "aVertexColor");
+        program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
     }
     
     program.uniforms = {
-        mvMatrix: gl.getUniformLocation(program, "uMVMatrix"),
-        pMatrix: gl.getUniformLocation(program, "uPMatrix")
+        mvMatrix: GL.getUniformLocation(program, "uMVMatrix"),
+        pMatrix: GL.getUniformLocation(program, "uPMatrix")
     };
 
     program.buffers = {
-        vertex: gl.createBuffer(),
-        index: gl.createBuffer()
+        vertex: GL.createBuffer(),
+        index: GL.createBuffer()
     };
     if (type == "Colors") {
-        program.buffers.color = gl.createBuffer();
+        program.buffers.color = GL.createBuffer();
     }
 
     return program;
@@ -86,12 +86,12 @@ ShaderProgram.prototype = {
      */
     createShader: function (src, type) {
         //compile the vertex shader
-        var shader = gl.createShader(type);
-        gl.shaderSource(shader, src);
-        gl.compileShader(shader);
+        var shader = GL.createShader(type);
+        GL.shaderSource(shader, src);
+        GL.compileShader(shader);
 
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+        if (!GL.getShaderParameter(shader, GL.COMPILE_STATUS)) {
+            alert("Error compiling shader: " + GL.getShaderInfoLog(shader));
         }
         return shader;
     },
