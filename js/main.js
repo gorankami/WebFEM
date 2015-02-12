@@ -20,7 +20,7 @@
 //});
 
 //Globals are upper case
-var modelView = null,
+var renderer = null,
     legend = null,
     models = [],
     colorMaps = [],
@@ -40,9 +40,9 @@ $(function () {
 
     //inits canvases
     legend = new Legend($('#canvas2d')[0]);
-    modelView = new ModelViewWebGL(canvas3d);
-    modelView.resize(window.innerWidth, window.innerHeight);
-    modelView.start();
+    renderer = new Renderer(canvas3d);
+    renderer.resize(window.innerWidth, window.innerHeight);
+    renderer.start();
 
     //fills init data
     SERVICES.getInitData(function (data) {
@@ -62,7 +62,7 @@ $(function () {
                 indexData: [],
                 contours: [],
                 loaded: false
-            }
+            };
             $.each(model.contours, function (i, contour) {
                 models[model.id].contours[contour.id] = {
                     name: contour.name,
@@ -71,7 +71,7 @@ $(function () {
                     numValues: contour.minValues,
                     valueData: [],
                     loaded: false
-                }
+                };
             });
         });
         fillCombo("#cbModels", models);
@@ -85,31 +85,31 @@ $(function () {
 
     //events
     $(window).resize(function () {
-        modelView.resize(document.body.clientWidth, document.body.clientHeight);
+        renderer.resize(document.body.clientWidth, document.body.clientHeight);
     });
     
     $('#cbModels').change(cbModels_change);
     $('#cbColorMaps').change(cbColorMaps_change);
     $('#btnLoad').click(btnLoad_click);
     $('#btnReset').click(function () {
-        modelView.resetTransformations();
+        renderer.resetTransformations();
     });
     $('#toggleSidebar').click(function () {
         $('ul').toggle();
         $('#toggleSidebar').toggleClass("arrow-up arrow-down");
     });
     //disable context menu
-    modelView.canvas.addEventListener('contextmenu', function (event) { event.preventDefault(); }, false);
+    renderer.canvas.addEventListener('contextmenu', function (event) { event.preventDefault(); }, false);
 
     //mouse events
-    modelView.canvas.addEventListener('mousedown', mouseDown, false);
-    modelView.canvas.addEventListener('mousewheel', mouseWheel, false);
-    modelView.canvas.addEventListener('DOMMouseScroll', mouseWheel, false); // firefox
+    renderer.canvas.addEventListener('mousedown', mouseDown, false);
+    renderer.canvas.addEventListener('mousewheel', mouseWheel, false);
+    renderer.canvas.addEventListener('DOMMouseScroll', mouseWheel, false); // firefox
 
     //touch events
-    //modelView.canvas.addEventListener('touchstart', touchStart, false);
-    //modelView.canvas.addEventListener('touchmove', touchMove, false);
-    //modelView.canvas.addEventListener('touchend', touchEnd, false);
+    //renderer.canvas.addEventListener('touchstart', touchStart, false);
+    //renderer.canvas.addEventListener('touchmove', touchMove, false);
+    //renderer.canvas.addEventListener('touchend', touchEnd, false);
 
     //keyboard events
     document.addEventListener("keydown", keyDown, false);
@@ -119,39 +119,39 @@ $(function () {
 
 function mouseDown(event) {
     event.preventDefault();
-    var rect = modelView.canvas.getBoundingClientRect();
+    var rect = renderer.canvas.getBoundingClientRect();
     var coords = [event.clientX - rect.left, event.clientY - rect.top];
 
     if (event.button === 0) {
-        modelView.controls.startRotate(coords);
+        renderer.controls.startRotate(coords);
     }
     else if (event.button === 2) {
-        modelView.controls.startPan(coords);
+        renderer.controls.startPan(coords);
     }
 
     //add events to detect while mouse down
-    modelView.canvas.addEventListener('mousemove', mouseMove, false);
-    modelView.canvas.addEventListener('mouseup', mouseOut, false);
-    modelView.canvas.addEventListener('mouseout', mouseOut, false);
+    renderer.canvas.addEventListener('mousemove', mouseMove, false);
+    renderer.canvas.addEventListener('mouseup', mouseOut, false);
+    renderer.canvas.addEventListener('mouseout', mouseOut, false);
 }
 
 function mouseMove(event) {
     event.preventDefault();
-    var rect = modelView.canvas.getBoundingClientRect();
+    var rect = renderer.canvas.getBoundingClientRect();
     var coords = [event.clientX - rect.left, event.clientY - rect.top];
 
     if (event.button === 0) {
-        modelView.controls.doRotate(coords);
+        renderer.controls.doRotate(coords);
     }
     else if (event.button === 2) {
-        modelView.controls.doPan(coords);
+        renderer.controls.doPan(coords);
     }
 }
 
 function mouseOut() {
-    modelView.canvas.removeEventListener('mousemove', mouseMove, false);
-    modelView.canvas.removeEventListener('mouseup', mouseOut, false);
-    modelView.canvas.removeEventListener('mouseout', mouseOut, false);
+    renderer.canvas.removeEventListener('mousemove', mouseMove, false);
+    renderer.canvas.removeEventListener('mouseup', mouseOut, false);
+    renderer.canvas.removeEventListener('mouseout', mouseOut, false);
 }
 
 function mouseWheel(event) {
@@ -159,31 +159,31 @@ function mouseWheel(event) {
     event.stopPropagation();
 
     if (event.wheelDelta !== undefined) { // WebKit / Opera / Explorer 9
-        modelView.controls.doZoom(event.wheelDelta);
+        renderer.controls.doZoom(event.wheelDelta);
     } else if (event.detail !== undefined) { // Firefox
-        modelView.controls.doZoom(-event.detail);
+        renderer.controls.doZoom(-event.detail);
     }
 }
 
 function keyDown(e) {
-    if (!modelView.modelLoaded) return;
+    if (!renderer.modelLoaded) return;
     
     switch (e.which) {
         case 65: // left
-            modelView.controls.startPan([0.0, 0.0]);
-            modelView.controls.doPan([-5, 0]);
+            renderer.controls.startPan([0.0, 0.0]);
+            renderer.controls.doPan([-5, 0]);
             break;
         case 68: // right
-            modelView.controls.startPan([0.0, 0.0]);
-            modelView.controls.doPan([5, 0]);
+            renderer.controls.startPan([0.0, 0.0]);
+            renderer.controls.doPan([5, 0]);
             break;
         case 87: // up
-            modelView.controls.startPan([0.0, 0.0]);
-            modelView.controls.doPan([0, -5]);
+            renderer.controls.startPan([0.0, 0.0]);
+            renderer.controls.doPan([0, -5]);
             break;
         case 83: // down
-            modelView.controls.startPan([0.0, 0.0]);
-            modelView.controls.doPan([0, 5]);
+            renderer.controls.startPan([0.0, 0.0]);
+            renderer.controls.doPan([0, 5]);
             break;
         default: return; // exit this handler for other keys
     }
@@ -205,7 +205,7 @@ function cbModels_change() {
 function cbColorMaps_change() {
     var mapId = $('#cbColorMaps').find('option:selected').val();
 
-    CMU.reset(modelView.minPropValue, modelView.maxPropValue, colorMaps[mapId].data);
+    CMU.reset(renderer.minPropValue, renderer.maxPropValue, colorMaps[mapId].data);
     legend.reset(0, 0);
 }
 
@@ -213,9 +213,9 @@ function btnLoad_click() {
     var modelId = $('#cbModels').find('option:selected').val();
     var propertyId = $('#cbProperties').find('option:selected').val();
 
-    modelView.clearScene(['mesh', 'cube', 'wireframe']);
+    renderer.clearScene(['mesh', 'cube', 'wireframe']);
     loadModel(modelId, propertyId, function () {
-        legend.reset(modelView.minValue, modelView.maxValue);
+        legend.reset(renderer.minValue, renderer.maxValue);
     }, function (err) {
         //on error
         alert(err);
@@ -262,7 +262,7 @@ function loadModel(geometryId, contourId, onDone, onError) {
             });
         } else {
             loadPass = 0;
-            modelView.displayModel(geometryId, contourId);
+            renderer.displayModel(geometryId, contourId);
             onDone.call();
         }
     }

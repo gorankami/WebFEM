@@ -14,7 +14,7 @@
     limitations under the License.
 */
 
-ModelViewWebGL = function (canvas) {
+Renderer = function (canvas) {
     this.canvas = canvas;
 
     this.camera = new Camera(45, this.canvas.width / this.canvas.height, 1, 100.0,
@@ -26,7 +26,7 @@ ModelViewWebGL = function (canvas) {
     this.controls = new GControls(canvas, this.camera);
 }
 
-ModelViewWebGL.prototype = {
+Renderer.prototype = {
     canvas: null,
     controls: null,
     shaderProgramColors: null,
@@ -35,7 +35,7 @@ ModelViewWebGL.prototype = {
     mesh: null,
     modelLoaded: false,
 
-    constructor: ModelViewWebGL,
+    constructor: Renderer,
     
     start: function () {
         this.animate();
