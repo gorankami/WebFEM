@@ -1,0 +1,78 @@
+﻿<!--
+    Copyright 2014 Goran Antic
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web FEM</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+  <script src="js/lib/jquery-1.11.1.min.js"></script>
+  <script src="js/lib/gl-matrix.js"></script>
+  <script src="js/lib/Color.js"></script>
+</head>
+<body>
+
+<!-- absolute content with color map -->
+<div id="sidebar" class="sidebar-absolute">
+  <div>
+    <img src="img/logo.png"/>
+    <div class="arrow-up" onclick="" id="toggleSidebar">
+    </div>
+  </div>
+  <ul>
+    <li>
+      <b>Model:</b> <br/>
+      <select id="cbModels"></select>
+    </li>
+    <li>
+      <b>Contour values:</b><br/>
+      <select id="cbProperties"></select>
+    </li>
+    <li>
+      <button class="btn right" id="btnLoad">Load</button>
+      <button class="btn right" id="btnReset">Reset</button>
+      <div class="clear"></div>
+    </li>
+
+    <li>
+      <b>Color map:</b> <br/>
+      <select id="cbColorMaps"></select><br/>
+    </li>
+    <li>
+      <canvas id="canvas2d" width="150" height="500"></canvas>
+    </li>
+  </ul>
+
+</div>
+
+<!-- model view -->
+<canvas id="canvas3d"></canvas>
+
+<script src="js/Services.js"></script>
+<script src="js/Camera.js"></script>
+<script src="js/ColorMapUtility.js"></script>
+<script src="js/GControls.js"></script>
+<script src="js/Legend.js"></script>
+<script src="js/Renderer.js"></script>
+<script src="js/ShaderProgram.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>
+
