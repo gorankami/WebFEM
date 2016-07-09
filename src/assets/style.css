@@ -1,0 +1,92 @@
+body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    font-family: 'Open Sans', sans-serif;
+    color: White;
+    background-color: black;
+}
+
+select {
+    width: 150px;
+}
+
+input[type="number"] {
+    width: 60px;
+}
+
+ul {
+    margin: 0;
+    list-style-type: none;
+}
+
+li {
+    padding: 10px;
+    float: left;
+}
+
+.absolute {
+    position: absolute;
+}
+
+#sidebar {
+    padding: 0;
+}
+
+.tool-panel {
+    border: 0px;
+    background-color: rgba(10, 10, 10, 0.5);
+    padding: 10px;
+}
+
+.btn {
+    margin: 3px;
+    width: 60px;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+#cvsFEM {
+    position: absolute;
+    z-index: -100;
+
+}
+
+#cvsOrientation {
+    border: 1px solid white;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    height: 200px;
+    width: 200px;
+}
+
+.curtain {
+    position: fixed;
+    z-index: 99;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(120, 120, 120, 0.5);
+}
+
+.curtain p {
+    font-weight: bold;
+    font-size: 24px;
+    margin: 0 auto;
+    padding-top: 200px;
+    text-align: center;
+}

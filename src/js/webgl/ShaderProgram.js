@@ -1,4 +1,4 @@
-﻿/**
+/**
  Copyright 2014 Goran Antic
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,17 +26,21 @@
  * @type {object} - returns a GL shader program object
  */
 ShaderProgram = function ShaderProgram(type) {
-  var vertexShader   = null;
+  var vertexShader = null;
   var fragmentShader = null;
-  var program        = GL.createProgram();
+  var program = GL.createProgram();
 
   switch (type) {
     case "Colors":
-      vertexShader   = this.createShader(this.getVertexShaderColorsSource(), GL.VERTEX_SHADER);
+      vertexShader = this.createShader(this.getVertexShaderColorsSource(), GL.VERTEX_SHADER);
       fragmentShader = this.createShader(this.getFragmentShaderColorsSource(), GL.FRAGMENT_SHADER);
       break;
     case "FEMWireframe":
-      vertexShader   = this.createShader(this.getVertexShaderUniformSource(), GL.VERTEX_SHADER);
+      vertexShader = this.createShader(this.getVertexShaderUniformSource(), GL.VERTEX_SHADER);
+      fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
+      break;
+    case "Transparent":
+      vertexShader = this.createShader(this.getVertexShaderTransparentSource(), GL.VERTEX_SHADER);
       fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
       break;
     default:
@@ -54,29 +58,60 @@ ShaderProgram = function ShaderProgram(type) {
   program.attributes = {
     position: GL.getAttribLocation(program, "aVertexPosition")
   };
-  if (type == "Colors") {
-    program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
-  }
 
   program.uniforms = {
     mvMatrix: GL.getUniformLocation(program, "uMVMatrix"),
-    pMatrix : GL.getUniformLocation(program, "uPMatrix")
+    pMatrix: GL.getUniformLocation(program, "uPMatrix")
   };
+
+  if (type == "Colors"){
+    program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
+    program.uniforms.clipPlaneBase = GL.getUniformLocation(program, "uClipPlaneBase");
+    program.uniforms.clipPlaneNormal = GL.getUniformLocation(program, "uClipPlaneNormal");
+  }
 
   program.buffers = {
     vertex: GL.createBuffer(),
-    index : GL.createBuffer()
+    index: GL.createBuffer()
   };
-  if (type == "Colors") {
+  if (type == "Colors" || type == "Transparent") {
     program.buffers.color = GL.createBuffer();
   }
 
   return program;
 }
 
+ShaderProgram.createShader = function (srcVertex, srcFragment) {
+  //compile the vertex shader
+  var vertexShader = GL.createShader(GL.VERTEX_SHADER);
+  GL.shaderSource(vertexShader, srcVertex);
+  GL.compileShader(vertexShader);
+  if (!GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS)) {
+    alert("Error compiling shader: " + GL.getShaderInfoLog(vertexShader));
+  }
+
+  var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
+  GL.shaderSource(fragmentShader, srcFragment);
+  GL.compileShader(fragmentShader);
+  if (!GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS)) {
+    alert("Error compiling shader: " + GL.getShaderInfoLog(fragmentShader));
+  }
+
+  var program = GL.createProgram();
+  GL.attachShader(program, vertexShader);
+  GL.attachShader(program, fragmentShader);
+  GL.linkProgram(program);
+  if (!GL.getProgramParameter(program, GL.LINK_STATUS)) {
+    alert("Unable to initialize the shader program.");
+    return;
+  }
+  return program;
+};
+
+
 ShaderProgram.prototype = {
   constructor: ShaderProgram,
-  program    : null,
+  program: null,
 
   /**
    * Creates a shader from source
@@ -107,8 +142,16 @@ ShaderProgram.prototype = {
       "attribute vec3 aVertexColor;",
       "uniform mat4 uMVMatrix;",
       "uniform mat4 uPMatrix;",
+      "uniform vec3 uClipPlaneBase;",
+      "uniform vec3 uClipPlaneNormal;",
       "varying highp vec4 vColor;",
+      "varying highp vec3 vCPBase;",
+      "varying highp vec3 vCPNormal;",
+      "varying highp vec3 vPos;",
       "void main(void) {",
+      "  vCPBase = uClipPlaneBase;",
+      "  vCPNormal = uClipPlaneNormal;",
+      "  vPos = aVertexPosition;",
       "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
       "  vColor = vec4(aVertexColor, 1.0);",
       "}"
@@ -122,8 +165,15 @@ ShaderProgram.prototype = {
   getFragmentShaderColorsSource: function () {
     return [
       "varying highp vec4 vColor;",
+      "varying highp vec3 vCPBase;",
+      "varying highp vec3 vCPNormal;",
+      "varying highp vec3 vPos;",
       "void main(void) {",
-      "   gl_FragColor = vColor;",
+      "   if(vPos[0] > vCPBase[0]) {",
+      "       gl_FragColor = vColor;",
+      "   } else {",
+      "       discard;",
+      "   }",
       "}"
     ].join("\n");
   },
@@ -133,7 +183,7 @@ ShaderProgram.prototype = {
    * Retreives a source for vertex shader for wireframed vertices material
    * @type {String} - source code
    */
-  getVertexShaderUniformSource  : function () {
+  getVertexShaderUniformSource: function () {
     return [
       "attribute vec3 aVertexPosition;",
       "uniform mat4 uMVMatrix;",

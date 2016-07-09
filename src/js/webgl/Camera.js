@@ -1,4 +1,4 @@
-﻿/**
+/**
  Copyright 2014 Goran Antic
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,27 +31,20 @@
 Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
   this.verFoV = verFoV;
   this.horFoV = verFoV * aspect;
-
-  this.aspect    = aspect;
-  this.nearPlane = nearPlane;
-  this.farPlane  = farPlane;
-
-  mat4.perspective(verFoV, aspect, nearPlane, farPlane, this.pMatrix);
+  this.aspect = aspect;
   mat4.identity(this.mvMatrix);
-  mat4.translate(this.mvMatrix, position);
-
-  this.position = position;
+  this.recalibrate(nearPlane, farPlane, position, [0,0,0]);
 }
 
 Camera.prototype = {
   verFoV: 0,
   horFoV: 0,
 
-  aspect   : 0,
+  aspect: 0,
   nearPlane: 0.0,
-  farPlane : 0.0,
+  farPlane: 0.0,
 
-  pMatrix : mat4.create(),
+  pMatrix: mat4.create(),
   mvMatrix: mat4.create(),
 
   position: null,
@@ -70,6 +63,23 @@ Camera.prototype = {
   },
 
   /**
+   * Moves the camera to a new position and sets up near and far plane distances
+   * @param {Number} position - 3 member array that represents x, y and z
+   * @param {Number} nearPlane - distance of nearPlane from camera
+   * @param {Number} farPlane - distance of farPlane from camera
+   */
+  recalibrate: function(nearPlane, farPlane, position, pivot){
+    this.position = position;
+    this.pivot = pivot;
+    this.nearPlane = nearPlane;
+    this.farPlane = farPlane;
+
+    mat4.perspective(this.verFoV, this.aspect, nearPlane, farPlane, this.pMatrix);
+
+    //mat4.translate(this.mvMatrix, position);
+  },
+
+  /**
    * Should unproject a click from a screen (near plane) to paralel plane defined with objects z position.
    * @param {Number} xPercentage - percentage of horizontal field of view (half of it) which is clicked
    * @param {Number} yPercentage - percentage of vertical field of view (half of it) which is clicked
@@ -78,9 +88,9 @@ Camera.prototype = {
    */
   getClickVectorHorizontal: function (xPercentage, yPercentage, objectZ) {
     //get angles by percentage of field of view angles. Half is because we need a triangle with z as side
-    var hor   = (xPercentage * this.horFoV / 2),
-        ver   = (yPercentage * this.verFoV / 2);
-    //Math.sin uses radians, so we need to convert degrees
+    var hor = (xPercentage * this.horFoV / 2),
+        ver = (yPercentage * this.verFoV / 2);
+    //Math.sin uses radians, so we need to convert from degrees
     hor *= (Math.PI / 180);
     ver *= (Math.PI / 180);
     //get coordinates on near plane

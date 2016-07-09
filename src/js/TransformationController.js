@@ -1,4 +1,4 @@
-﻿/**
+/**
  Copyright 2014 Goran Antic
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  * @author Goran Antic
  * Needs Camera.js to be loaded
  *
- * GControls are based on OrbitControls.js (http://threejs.org/examples/#misc_controls_orbit) created by following authors (thanks):
+ * TransformationController is based on OrbitControls.js (http://threejs.org/examples/#misc_controls_orbit) created by following authors (thanks):
  * @author qiao / https://github.com/qiao
  * @author mrdoob / http://mrdoob.com
  * @author alteredq / http://alteredqualia.com/
@@ -29,41 +29,36 @@
  * although camera is still needed to unproject clicks on the object plane
  */
 
-/**
- * Contructor for GControl on an object
- * @param {DOMElement} canvas - canvas where the scene is displayed
- * @param {Camera} camera - camera into which the scene is projected
- */
-GControls = function (canvas, camera) {
+TransformationController = function (canvas, camera) {
   this.canvas = canvas;
   this.camera = camera;
   this.reset();
 }
 
-GControls.prototype = {
+TransformationController.prototype = {
   //transformations on object
   rotation: null,
   position: null,
 
   //initial vectors for mouse position, rotation and pan value
   mouseS: null,
-  rotS  : null,
-  panS  : null,
+  rotS: null,
+  panS: null,
 
   //current vectors for mouse position, rotation, pan value and zoom
   mouse: null,
-  rot  : null,
-  pan  : null,
-  zoom : 0,
+  rot: null,
+  pan: null,
+  zoom: 0,
 
   //settings that change sensitivity of rotation and zoom
   rotationSensitivity: 0.01,
-  zoomSpeed          : 1.0,
+  zoomSpeed: 1.0,
 
   //rotation effect of momentum. 1 = no momentum, <1 added momentum.
   rotationMomentum: 1,
 
-  constructor: GControls,
+  constructor: TransformationController,
 
   /**
    * Updates transformations. Should be called at every animation frame BEFORE canvas rendering
@@ -82,10 +77,10 @@ GControls.prototype = {
    * @param {Number[2]} coords
    */
   startPan: function (coords) {
-    var hor   = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
-    var ver   = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
+    var hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
+    var ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
     this.panS = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
-    this.pan  = [this.panS[0], this.panS[1]];
+    this.pan = [this.panS[0], this.panS[1]];
 
     this.panS[0] -= this.position[0];
     this.panS[1] -= this.position[1];
@@ -96,8 +91,8 @@ GControls.prototype = {
    * @param {Number[2]} coords
    */
   doPan: function (coords) {
-    var hor  = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
-    var ver  = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
+    var hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
+    var ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
     this.pan = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
   },
 
@@ -106,7 +101,7 @@ GControls.prototype = {
    * @param {Number[2]} coords
    */
   startRotate: function (coords) {
-    this.mouseS  = coords;
+    this.mouseS = coords;
     this.rotS[0] = this.rot[0];
     this.rotS[1] = this.rot[1];
   },
@@ -118,17 +113,29 @@ GControls.prototype = {
   doRotate: function (coords) {
     this.mouse = coords;
 
-    this.rot[0] = this.rot[0] + this.mouse[0] - this.mouseS[0]
-    this.rot[0] *= this.rotationSensitivity;
-    this.rot[0] += this.rotS[0];
-
-    this.rot[1] = this.rot[1] + this.mouse[1] - this.mouseS[1]
+    this.rot[1] = this.rot[1] + this.mouse[1] - this.mouseS[1];
     this.rot[1] *= this.rotationSensitivity;
     this.rot[1] += this.rotS[1];
+    this.rot[1] = this.normalizeAngle(this.rot[1]);
 
+    //if (this.rot[1] >= Math.PI / 2 || this.rot[1] <= -Math.PI / 2) {
+    //    this.rot[0] = this.rot[0] - this.mouse[0] + this.mouseS[0];
+    //} else {
+    this.rot[0] = this.rot[0] + this.mouse[0] - this.mouseS[0];
+    //}
+    this.rot[0] *= this.rotationSensitivity;
+    this.rot[0] += this.rotS[0];
+    this.rot[0] = this.normalizeAngle(this.rot[0]);
     //limits rotation on x axis (flip) by frame of 180 degrees, so the max would display top side and min would display bottom of the object
-    if (this.rot[1] >= Math.PI / 2) this.rot[1] = Math.PI / 2;
-    if (this.rot[1] <= -Math.PI / 2) this.rot[1] = -Math.PI / 2;
+    //if (this.rot[1] >= Math.PI / 2) this.rot[1] = Math.PI / 2;
+    //if (this.rot[1] <= -Math.PI / 2) this.rot[1] = -Math.PI / 2;
+  },
+
+  //normalize angle within -Pi and +Pi
+  normalizeAngle: function(angle){
+    if (angle >= Math.PI*2) return angle - Math.PI*2;
+    if (angle <= -Math.PI*2) return angle + Math.PI*2;
+    return angle;
   },
 
   /**
@@ -150,13 +157,13 @@ GControls.prototype = {
     this.rotation = [0, 0, 0];
     this.position = [0, 0, 0];
     this.startPos = [0, 0];
-    this.mouseS   = [0, 0];
-    this.rotS     = [0, 0];
-    this.panS     = [0, 0];
+    this.mouseS = [0, 0];
+    this.rotS = [0, 0];
+    this.panS = [0, 0];
 
     this.mouse = [0, 0];
-    this.rot   = [0, 0];
-    this.pan   = [0, 0];
+    this.rot = [0, 0];
+    this.pan = [0, 0];
 
     this.zoom = 0;
   }

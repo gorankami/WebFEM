@@ -49,7 +49,7 @@
   "use strict";
 
   var glMath = {};
-  (function () {
+  (function() {
     if (typeof(Float32Array) != 'undefined') {
       var y = new Float32Array(1);
       var i = new Int32Array(y.buffer);
@@ -64,9 +64,9 @@
        * @param {Number} number the number
        * @returns {Number} Inverse square root
        */
-      glMath.invsqrt = function (number) {
-        var x2         = number * 0.5;
-        y[0]           = number;
+      glMath.invsqrt = function(number) {
+        var x2 = number * 0.5;
+        y[0] = number;
         var threehalfs = 1.5;
 
         i[0] = 0x5f3759df - (i[0] >> 1);
@@ -76,9 +76,7 @@
         return number2 * (threehalfs - (x2 * number2 * number2));
       };
     } else {
-      glMath.invsqrt = function (number) {
-        return 1.0 / Math.sqrt(number);
-      };
+      glMath.invsqrt = function(number) { return 1.0 / Math.sqrt(number); };
     }
   })();
 
@@ -225,9 +223,7 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.negate = function (vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
     dest[0] = -vec[0];
     dest[1] = -vec[1];
@@ -268,12 +264,10 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.normalize = function (vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
     var x = vec[0], y = vec[1], z = vec[2],
-        len                       = Math.sqrt(x * x + y * y + z * z);
+        len = Math.sqrt(x * x + y * y + z * z);
 
     if (!len) {
       dest[0] = 0;
@@ -287,7 +281,7 @@
       return dest;
     }
 
-    len     = 1 / len;
+    len = 1 / len;
     dest[0] = x * len;
     dest[1] = y * len;
     dest[2] = z * len;
@@ -304,11 +298,9 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.cross = function (vec, vec2, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
-    var x                              = vec[0], y = vec[1], z      = vec[2],
+    var x = vec[0], y = vec[1], z = vec[2],
         x2 = vec2[0], y2 = vec2[1], z2 = vec2[2];
 
     dest[0] = y * z2 - z * y2;
@@ -351,13 +343,11 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.direction = function (vec, vec2, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
-    var x   = vec[0] - vec2[0],
-        y   = vec[1] - vec2[1],
-        z   = vec[2] - vec2[2],
+    var x = vec[0] - vec2[0],
+        y = vec[1] - vec2[1],
+        z = vec[2] - vec2[2],
         len = Math.sqrt(x * x + y * y + z * z);
 
     if (!len) {
@@ -367,7 +357,7 @@
       return dest;
     }
 
-    len     = 1 / len;
+    len = 1 / len;
     dest[0] = x * len;
     dest[1] = y * len;
     dest[2] = z * len;
@@ -385,9 +375,7 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.lerp = function (vec, vec2, lerp, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
     dest[0] = vec[0] + lerp * (vec2[0] - vec[0]);
     dest[1] = vec[1] + lerp * (vec2[1] - vec[1]);
@@ -410,7 +398,7 @@
         y = vec2[1] - vec[1],
         z = vec2[2] - vec[2];
 
-    return Math.sqrt(x * x + y * y + z * z);
+    return Math.sqrt(x*x + y*y + z*z);
   };
 
   // Pre-allocated to prevent unecessary garbage collection
@@ -429,11 +417,9 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   vec3.unproject = function (vec, view, proj, viewport, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
-    if (!unprojectMat) {
+    if(!unprojectMat) {
       unprojectMat = mat4.create();
     }
 
@@ -446,14 +432,10 @@
     v[3] = 1.0;
 
     mat4.multiply(proj, view, m);
-    if (!mat4.inverse(m)) {
-      return null;
-    }
+    if(!mat4.inverse(m)) { return null; }
 
     mat4.multiplyVec4(m, v);
-    if (v[3] === 0.0) {
-      return null;
-    }
+    if(v[3] === 0.0) { return null; }
 
     dest[0] = v[0] / v[3];
     dest[1] = v[1] / v[3];
@@ -462,9 +444,9 @@
     return dest;
   };
 
-  var xUnitVec3 = vec3.create([1, 0, 0]);
-  var yUnitVec3 = vec3.create([0, 1, 0]);
-  var zUnitVec3 = vec3.create([0, 0, 1]);
+  var xUnitVec3 = vec3.create([1,0,0]);
+  var yUnitVec3 = vec3.create([0,1,0]);
+  var zUnitVec3 = vec3.create([0,0,1]);
 
   /**
    * Generates a quaternion of rotation between two given normalized vectors
@@ -476,11 +458,9 @@
    * @returns {quat4} dest if specified, a new quat4 otherwise
    */
   vec3.rotationTo = function (a, b, dest) {
-    if (!dest) {
-      dest = quat4.create();
-    }
+    if (!dest) { dest = quat4.create(); }
 
-    var d    = vec3.dot(a, b);
+    var d = vec3.dot(a, b);
     var axis = vec3.create();
     if (d >= 1.0) {
       quat4.set(identityQuat4, dest);
@@ -491,9 +471,9 @@
       if (axis.length < 0.000001)
         vec3.cross(zUnitVec3, a, axis);
       vec3.normalize(axis);
-      quat4.fromAxisAngle(axis, Math.PI, dest);
+      quat4.fromAngleAxis(axis, Math.PI, dest);
     } else {
-      var s    = Math.sqrt((1.0 + d) * 2.0);
+      var s = Math.sqrt((1.0 + d) * 2.0);
       var sInv = 1.0 / s;
       vec3.cross(a, b, axis);
       dest[0] = axis[0] * sInv;
@@ -564,8 +544,8 @@
    * @returns {Number} determinant of mat
    */
   mat3.determinant = function (mat) {
-    var a00                             = mat[0], a01 = mat[1], a02 = mat[2],
-        a10                             = mat[3], a11 = mat[4], a12 = mat[5],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2],
+        a10 = mat[3], a11 = mat[4], a12 = mat[5],
         a20 = mat[6], a21 = mat[7], a22 = mat[8];
 
     return a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
@@ -580,25 +560,21 @@
    * @param {mat3} dest is specified, mat otherwise, null if matrix cannot be inverted
    */
   mat3.inverse = function (mat, dest) {
-    var a00                             = mat[0], a01               = mat[1], a02 = mat[2],
-        a10                             = mat[3], a11 = mat[4], a12 = mat[5],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2],
+        a10 = mat[3], a11 = mat[4], a12 = mat[5],
         a20 = mat[6], a21 = mat[7], a22 = mat[8],
 
-        b01                             = a22 * a11 - a12 * a21,
-        b11                             = -a22 * a10 + a12 * a20,
-        b21                             = a21 * a10 - a11 * a20,
+        b01 = a22 * a11 - a12 * a21,
+        b11 = -a22 * a10 + a12 * a20,
+        b21 = a21 * a10 - a11 * a20,
 
-        d                               = a00 * b01 + a01 * b11 + a02 * b21,
+        d = a00 * b01 + a01 * b11 + a02 * b21,
         id;
 
-    if (!d) {
-      return null;
-    }
+    if (!d) { return null; }
     id = 1 / d;
 
-    if (!dest) {
-      dest = mat3.create();
-    }
+    if (!dest) { dest = mat3.create(); }
 
     dest[0] = b01 * id;
     dest[1] = (-a22 * a01 + a02 * a21) * id;
@@ -622,19 +598,17 @@
    * @returns {mat3} dest if specified, mat otherwise
    */
   mat3.multiply = function (mat, mat2, dest) {
-    if (!dest) {
-      dest = mat;
-    }
+    if (!dest) { dest = mat; }
 
 
     // Cache the matrix values (makes for huge speed increases!)
-    var a00                               = mat[0], a01 = mat[1], a02 = mat[2],
-        a10                               = mat[3], a11                 = mat[4], a12 = mat[5],
-        a20                               = mat[6], a21 = mat[7], a22 = mat[8],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2],
+        a10 = mat[3], a11 = mat[4], a12 = mat[5],
+        a20 = mat[6], a21 = mat[7], a22 = mat[8],
 
-        b00                               = mat2[0], b01 = mat2[1], b02 = mat2[2],
+        b00 = mat2[0], b01 = mat2[1], b02 = mat2[2],
         b10 = mat2[3], b11 = mat2[4], b12 = mat2[5],
-        b20                               = mat2[6], b21                = mat2[7], b22 = mat2[8];
+        b20 = mat2[6], b21 = mat2[7], b22 = mat2[8];
 
     dest[0] = b00 * a00 + b01 * a10 + b02 * a20;
     dest[1] = b00 * a01 + b01 * a11 + b02 * a21;
@@ -660,9 +634,9 @@
    *
    * @returns {vec2} The multiplication result
    **/
-  mat3.multiplyVec2 = function (matrix, vec, dest) {
+  mat3.multiplyVec2 = function(matrix, vec, dest) {
     if (!dest) dest = vec;
-    var x   = vec[0], y = vec[1];
+    var x = vec[0], y = vec[1];
     dest[0] = x * matrix[0] + y * matrix[3] + matrix[6];
     dest[1] = x * matrix[1] + y * matrix[4] + matrix[7];
     return dest;
@@ -677,9 +651,9 @@
    *
    * @returns {vec3} The multiplication result
    **/
-  mat3.multiplyVec3 = function (matrix, vec, dest) {
+  mat3.multiplyVec3 = function(matrix, vec, dest) {
     if (!dest) dest = vec;
-    var x   = vec[0], y = vec[1], z = vec[2];
+    var x = vec[0], y = vec[1], z = vec[2];
     dest[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
     dest[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
     dest[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
@@ -716,9 +690,7 @@
    * @returns dest if specified, otherwise a new mat3
    */
   mat3.identity = function (dest) {
-    if (!dest) {
-      dest = mat3.create();
-    }
+    if (!dest) { dest = mat3.create(); }
     dest[0] = 1;
     dest[1] = 0;
     dest[2] = 0;
@@ -744,7 +716,7 @@
     // If we are transposing ourselves we can skip a few steps but have to cache some values
     if (!dest || mat === dest) {
       var a01 = mat[1], a02 = mat[2],
-          a12               = mat[5];
+          a12 = mat[5];
 
       mat[1] = mat[3];
       mat[2] = mat[6];
@@ -776,9 +748,7 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat3.toMat4 = function (mat, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
+    if (!dest) { dest = mat4.create(); }
 
     dest[15] = 1;
     dest[14] = 0;
@@ -787,8 +757,8 @@
 
     dest[11] = 0;
     dest[10] = mat[8];
-    dest[9]  = mat[7];
-    dest[8]  = mat[6];
+    dest[9] = mat[7];
+    dest[8] = mat[6];
 
     dest[7] = 0;
     dest[6] = mat[5];
@@ -834,16 +804,16 @@
     var dest = new MatrixArray(16);
 
     if (mat) {
-      dest[0]  = mat[0];
-      dest[1]  = mat[1];
-      dest[2]  = mat[2];
-      dest[3]  = mat[3];
-      dest[4]  = mat[4];
-      dest[5]  = mat[5];
-      dest[6]  = mat[6];
-      dest[7]  = mat[7];
-      dest[8]  = mat[8];
-      dest[9]  = mat[9];
+      dest[0] = mat[0];
+      dest[1] = mat[1];
+      dest[2] = mat[2];
+      dest[3] = mat[3];
+      dest[4] = mat[4];
+      dest[5] = mat[5];
+      dest[6] = mat[6];
+      dest[7] = mat[7];
+      dest[8] = mat[8];
+      dest[9] = mat[9];
       dest[10] = mat[10];
       dest[11] = mat[11];
       dest[12] = mat[12];
@@ -864,16 +834,16 @@
    * @returns {mat4} dest
    */
   mat4.set = function (mat, dest) {
-    dest[0]  = mat[0];
-    dest[1]  = mat[1];
-    dest[2]  = mat[2];
-    dest[3]  = mat[3];
-    dest[4]  = mat[4];
-    dest[5]  = mat[5];
-    dest[6]  = mat[6];
-    dest[7]  = mat[7];
-    dest[8]  = mat[8];
-    dest[9]  = mat[9];
+    dest[0] = mat[0];
+    dest[1] = mat[1];
+    dest[2] = mat[2];
+    dest[3] = mat[3];
+    dest[4] = mat[4];
+    dest[5] = mat[5];
+    dest[6] = mat[6];
+    dest[7] = mat[7];
+    dest[8] = mat[8];
+    dest[9] = mat[9];
     dest[10] = mat[10];
     dest[11] = mat[11];
     dest[12] = mat[12];
@@ -891,19 +861,17 @@
    * @returns {mat4} dest
    */
   mat4.identity = function (dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
-    dest[0]  = 1;
-    dest[1]  = 0;
-    dest[2]  = 0;
-    dest[3]  = 0;
-    dest[4]  = 0;
-    dest[5]  = 1;
-    dest[6]  = 0;
-    dest[7]  = 0;
-    dest[8]  = 0;
-    dest[9]  = 0;
+    if (!dest) { dest = mat4.create(); }
+    dest[0] = 1;
+    dest[1] = 0;
+    dest[2] = 0;
+    dest[3] = 0;
+    dest[4] = 0;
+    dest[5] = 1;
+    dest[6] = 0;
+    dest[7] = 0;
+    dest[8] = 0;
+    dest[9] = 0;
     dest[10] = 1;
     dest[11] = 0;
     dest[12] = 0;
@@ -925,17 +893,17 @@
     // If we are transposing ourselves we can skip a few steps but have to cache some values
     if (!dest || mat === dest) {
       var a01 = mat[1], a02 = mat[2], a03 = mat[3],
-          a12                             = mat[6], a13 = mat[7],
-          a23                             = mat[11];
+          a12 = mat[6], a13 = mat[7],
+          a23 = mat[11];
 
-      mat[1]  = mat[4];
-      mat[2]  = mat[8];
-      mat[3]  = mat[12];
-      mat[4]  = a01;
-      mat[6]  = mat[9];
-      mat[7]  = mat[13];
-      mat[8]  = a02;
-      mat[9]  = a12;
+      mat[1] = mat[4];
+      mat[2] = mat[8];
+      mat[3] = mat[12];
+      mat[4] = a01;
+      mat[6] = mat[9];
+      mat[7] = mat[13];
+      mat[8] = a02;
+      mat[9] = a12;
       mat[11] = mat[14];
       mat[12] = a03;
       mat[13] = a13;
@@ -943,16 +911,16 @@
       return mat;
     }
 
-    dest[0]  = mat[0];
-    dest[1]  = mat[4];
-    dest[2]  = mat[8];
-    dest[3]  = mat[12];
-    dest[4]  = mat[1];
-    dest[5]  = mat[5];
-    dest[6]  = mat[9];
-    dest[7]  = mat[13];
-    dest[8]  = mat[2];
-    dest[9]  = mat[6];
+    dest[0] = mat[0];
+    dest[1] = mat[4];
+    dest[2] = mat[8];
+    dest[3] = mat[12];
+    dest[4] = mat[1];
+    dest[5] = mat[5];
+    dest[6] = mat[9];
+    dest[7] = mat[13];
+    dest[8] = mat[2];
+    dest[9] = mat[6];
     dest[10] = mat[10];
     dest[11] = mat[14];
     dest[12] = mat[3];
@@ -971,9 +939,9 @@
    */
   mat4.determinant = function (mat) {
     // Cache the matrix values (makes for huge speed increases!)
-    var a00                                              = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3],
-        a10                                              = mat[4], a11                                = mat[5], a12 = mat[6], a13 = mat[7],
-        a20                                              = mat[8], a21                                = mat[9], a22 = mat[10], a23   = mat[11],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3],
+        a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7],
+        a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11],
         a30 = mat[12], a31 = mat[13], a32 = mat[14], a33 = mat[15];
 
     return (a30 * a21 * a12 * a03 - a20 * a31 * a12 * a03 - a30 * a11 * a22 * a03 + a10 * a31 * a22 * a03 +
@@ -993,48 +961,44 @@
    * @param {mat4} dest is specified, mat otherwise, null if matrix cannot be inverted
    */
   mat4.inverse = function (mat, dest) {
-    if (!dest) {
-      dest = mat;
-    }
+    if (!dest) { dest = mat; }
 
     // Cache the matrix values (makes for huge speed increases!)
-    var a00                                              = mat[0], a01 = mat[1], a02                  = mat[2], a03 = mat[3],
-        a10                                              = mat[4], a11                                = mat[5], a12 = mat[6], a13 = mat[7],
-        a20                                              = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3],
+        a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7],
+        a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11],
         a30 = mat[12], a31 = mat[13], a32 = mat[14], a33 = mat[15],
 
-        b00                                              = a00 * a11 - a01 * a10,
-        b01                                              = a00 * a12 - a02 * a10,
-        b02                                              = a00 * a13 - a03 * a10,
-        b03                                              = a01 * a12 - a02 * a11,
-        b04                                              = a01 * a13 - a03 * a11,
-        b05                                              = a02 * a13 - a03 * a12,
-        b06                                              = a20 * a31 - a21 * a30,
-        b07                                              = a20 * a32 - a22 * a30,
-        b08                                              = a20 * a33 - a23 * a30,
-        b09                                              = a21 * a32 - a22 * a31,
-        b10                                              = a21 * a33 - a23 * a31,
-        b11                                              = a22 * a33 - a23 * a32,
+        b00 = a00 * a11 - a01 * a10,
+        b01 = a00 * a12 - a02 * a10,
+        b02 = a00 * a13 - a03 * a10,
+        b03 = a01 * a12 - a02 * a11,
+        b04 = a01 * a13 - a03 * a11,
+        b05 = a02 * a13 - a03 * a12,
+        b06 = a20 * a31 - a21 * a30,
+        b07 = a20 * a32 - a22 * a30,
+        b08 = a20 * a33 - a23 * a30,
+        b09 = a21 * a32 - a22 * a31,
+        b10 = a21 * a33 - a23 * a31,
+        b11 = a22 * a33 - a23 * a32,
 
-        d                                                = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
+        d = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
         invDet;
 
     // Calculate the determinant
-    if (!d) {
-      return null;
-    }
+    if (!d) { return null; }
     invDet = 1 / d;
 
-    dest[0]  = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
-    dest[1]  = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
-    dest[2]  = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
-    dest[3]  = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
-    dest[4]  = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
-    dest[5]  = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
-    dest[6]  = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
-    dest[7]  = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
-    dest[8]  = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
-    dest[9]  = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+    dest[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+    dest[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+    dest[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+    dest[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+    dest[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+    dest[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+    dest[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+    dest[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+    dest[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+    dest[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
     dest[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
     dest[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
     dest[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
@@ -1054,20 +1018,18 @@
    * @returns {mat4} dest is specified, a new mat4 otherwise
    */
   mat4.toRotationMat = function (mat, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
+    if (!dest) { dest = mat4.create(); }
 
-    dest[0]  = mat[0];
-    dest[1]  = mat[1];
-    dest[2]  = mat[2];
-    dest[3]  = mat[3];
-    dest[4]  = mat[4];
-    dest[5]  = mat[5];
-    dest[6]  = mat[6];
-    dest[7]  = mat[7];
-    dest[8]  = mat[8];
-    dest[9]  = mat[9];
+    dest[0] = mat[0];
+    dest[1] = mat[1];
+    dest[2] = mat[2];
+    dest[3] = mat[3];
+    dest[4] = mat[4];
+    dest[5] = mat[5];
+    dest[6] = mat[6];
+    dest[7] = mat[7];
+    dest[8] = mat[8];
+    dest[9] = mat[9];
     dest[10] = mat[10];
     dest[11] = mat[11];
     dest[12] = 0;
@@ -1087,9 +1049,7 @@
    * @returns {mat3} dest is specified, a new mat3 otherwise
    */
   mat4.toMat3 = function (mat, dest) {
-    if (!dest) {
-      dest = mat3.create();
-    }
+    if (!dest) { dest = mat3.create(); }
 
     dest[0] = mat[0];
     dest[1] = mat[1];
@@ -1116,25 +1076,21 @@
    */
   mat4.toInverseMat3 = function (mat, dest) {
     // Cache the matrix values (makes for huge speed increases!)
-    var a00                             = mat[0], a01 = mat[1], a02 = mat[2],
-        a10                             = mat[4], a11               = mat[5], a12 = mat[6],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2],
+        a10 = mat[4], a11 = mat[5], a12 = mat[6],
         a20 = mat[8], a21 = mat[9], a22 = mat[10],
 
-        b01                             = a22 * a11 - a12 * a21,
-        b11                             = -a22 * a10 + a12 * a20,
-        b21                             = a21 * a10 - a11 * a20,
+        b01 = a22 * a11 - a12 * a21,
+        b11 = -a22 * a10 + a12 * a20,
+        b21 = a21 * a10 - a11 * a20,
 
-        d                               = a00 * b01 + a01 * b11 + a02 * b21,
+        d = a00 * b01 + a01 * b11 + a02 * b21,
         id;
 
-    if (!d) {
-      return null;
-    }
+    if (!d) { return null; }
     id = 1 / d;
 
-    if (!dest) {
-      dest = mat3.create();
-    }
+    if (!dest) { dest = mat3.create(); }
 
     dest[0] = b01 * id;
     dest[1] = (-a22 * a01 + a02 * a21) * id;
@@ -1159,31 +1115,29 @@
    * @returns {mat4} dest if specified, mat otherwise
    */
   mat4.multiply = function (mat, mat2, dest) {
-    if (!dest) {
-      dest = mat;
-    }
+    if (!dest) { dest = mat; }
 
     // Cache the matrix values (makes for huge speed increases!)
-    var a00                                                 = mat[0], a01                                   = mat[1], a02 = mat[2], a03 = mat[3],
-        a10                                                 = mat[4], a11                                   = mat[5], a12 = mat[6], a13 = mat[7],
-        a20                                                 = mat[8], a21                                   = mat[9], a22 = mat[10], a23 = mat[11],
-        a30                                                 = mat[12], a31 = mat[13], a32                   = mat[14], a33    = mat[15],
+    var a00 = mat[0], a01 = mat[1], a02 = mat[2], a03 = mat[3],
+        a10 = mat[4], a11 = mat[5], a12 = mat[6], a13 = mat[7],
+        a20 = mat[8], a21 = mat[9], a22 = mat[10], a23 = mat[11],
+        a30 = mat[12], a31 = mat[13], a32 = mat[14], a33 = mat[15],
 
-        b00                                                 = mat2[0], b01                                  = mat2[1], b02 = mat2[2], b03 = mat2[3],
-        b10                                                 = mat2[4], b11 = mat2[5], b12                   = mat2[6], b13 = mat2[7],
-        b20                                                 = mat2[8], b21                                  = mat2[9], b22 = mat2[10], b23 = mat2[11],
+        b00 = mat2[0], b01 = mat2[1], b02 = mat2[2], b03 = mat2[3],
+        b10 = mat2[4], b11 = mat2[5], b12 = mat2[6], b13 = mat2[7],
+        b20 = mat2[8], b21 = mat2[9], b22 = mat2[10], b23 = mat2[11],
         b30 = mat2[12], b31 = mat2[13], b32 = mat2[14], b33 = mat2[15];
 
-    dest[0]  = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
-    dest[1]  = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
-    dest[2]  = b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32;
-    dest[3]  = b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33;
-    dest[4]  = b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30;
-    dest[5]  = b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31;
-    dest[6]  = b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32;
-    dest[7]  = b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33;
-    dest[8]  = b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30;
-    dest[9]  = b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31;
+    dest[0] = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
+    dest[1] = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
+    dest[2] = b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32;
+    dest[3] = b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33;
+    dest[4] = b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30;
+    dest[5] = b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31;
+    dest[6] = b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32;
+    dest[7] = b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33;
+    dest[8] = b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30;
+    dest[9] = b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31;
     dest[10] = b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32;
     dest[11] = b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33;
     dest[12] = b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30;
@@ -1205,9 +1159,7 @@
    * @returns {vec3} dest if specified, vec otherwise
    */
   mat4.multiplyVec3 = function (mat, vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
     var x = vec[0], y = vec[1], z = vec[2];
 
@@ -1228,9 +1180,7 @@
    * @returns {vec4} dest if specified, vec otherwise
    */
   mat4.multiplyVec4 = function (mat, vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
     var x = vec[0], y = vec[1], z = vec[2], w = vec[3];
 
@@ -1265,31 +1215,13 @@
       return mat;
     }
 
-    a00 = mat[0];
-    a01 = mat[1];
-    a02 = mat[2];
-    a03 = mat[3];
-    a10 = mat[4];
-    a11 = mat[5];
-    a12 = mat[6];
-    a13 = mat[7];
-    a20 = mat[8];
-    a21 = mat[9];
-    a22 = mat[10];
-    a23 = mat[11];
+    a00 = mat[0]; a01 = mat[1]; a02 = mat[2]; a03 = mat[3];
+    a10 = mat[4]; a11 = mat[5]; a12 = mat[6]; a13 = mat[7];
+    a20 = mat[8]; a21 = mat[9]; a22 = mat[10]; a23 = mat[11];
 
-    dest[0]  = a00;
-    dest[1]  = a01;
-    dest[2]  = a02;
-    dest[3]  = a03;
-    dest[4]  = a10;
-    dest[5]  = a11;
-    dest[6]  = a12;
-    dest[7]  = a13;
-    dest[8]  = a20;
-    dest[9]  = a21;
-    dest[10] = a22;
-    dest[11] = a23;
+    dest[0] = a00; dest[1] = a01; dest[2] = a02; dest[3] = a03;
+    dest[4] = a10; dest[5] = a11; dest[6] = a12; dest[7] = a13;
+    dest[8] = a20; dest[9] = a21; dest[10] = a22; dest[11] = a23;
 
     dest[12] = a00 * x + a10 * y + a20 * z + mat[12];
     dest[13] = a01 * x + a11 * y + a21 * z + mat[13];
@@ -1326,16 +1258,16 @@
       return mat;
     }
 
-    dest[0]  = mat[0] * x;
-    dest[1]  = mat[1] * x;
-    dest[2]  = mat[2] * x;
-    dest[3]  = mat[3] * x;
-    dest[4]  = mat[4] * y;
-    dest[5]  = mat[5] * y;
-    dest[6]  = mat[6] * y;
-    dest[7]  = mat[7] * y;
-    dest[8]  = mat[8] * z;
-    dest[9]  = mat[9] * z;
+    dest[0] = mat[0] * x;
+    dest[1] = mat[1] * x;
+    dest[2] = mat[2] * x;
+    dest[3] = mat[3] * x;
+    dest[4] = mat[4] * y;
+    dest[5] = mat[5] * y;
+    dest[6] = mat[6] * y;
+    dest[7] = mat[7] * y;
+    dest[8] = mat[8] * z;
+    dest[9] = mat[9] * z;
     dest[10] = mat[10] * z;
     dest[11] = mat[11] * z;
     dest[12] = mat[12];
@@ -1358,7 +1290,7 @@
    */
   mat4.rotate = function (mat, angle, axis, dest) {
     var x = axis[0], y = axis[1], z = axis[2],
-        len                         = Math.sqrt(x * x + y * y + z * z),
+        len = Math.sqrt(x * x + y * y + z * z),
         s, c, t,
         a00, a01, a02, a03,
         a10, a11, a12, a13,
@@ -1367,9 +1299,7 @@
         b10, b11, b12,
         b20, b21, b22;
 
-    if (!len) {
-      return null;
-    }
+    if (!len) { return null; }
     if (len !== 1) {
       len = 1 / len;
       x *= len;
@@ -1381,29 +1311,14 @@
     c = Math.cos(angle);
     t = 1 - c;
 
-    a00 = mat[0];
-    a01 = mat[1];
-    a02 = mat[2];
-    a03 = mat[3];
-    a10 = mat[4];
-    a11 = mat[5];
-    a12 = mat[6];
-    a13 = mat[7];
-    a20 = mat[8];
-    a21 = mat[9];
-    a22 = mat[10];
-    a23 = mat[11];
+    a00 = mat[0]; a01 = mat[1]; a02 = mat[2]; a03 = mat[3];
+    a10 = mat[4]; a11 = mat[5]; a12 = mat[6]; a13 = mat[7];
+    a20 = mat[8]; a21 = mat[9]; a22 = mat[10]; a23 = mat[11];
 
     // Construct the elements of the rotation matrix
-    b00 = x * x * t + c;
-    b01 = y * x * t + z * s;
-    b02 = z * x * t - y * s;
-    b10 = x * y * t - z * s;
-    b11 = y * y * t + c;
-    b12 = z * y * t + x * s;
-    b20 = x * z * t + y * s;
-    b21 = y * z * t - x * s;
-    b22 = z * z * t + c;
+    b00 = x * x * t + c; b01 = y * x * t + z * s; b02 = z * x * t - y * s;
+    b10 = x * y * t - z * s; b11 = y * y * t + c; b12 = z * y * t + x * s;
+    b20 = x * z * t + y * s; b21 = y * z * t - x * s; b22 = z * z * t + c;
 
     if (!dest) {
       dest = mat;
@@ -1425,8 +1340,8 @@
     dest[6] = a02 * b10 + a12 * b11 + a22 * b12;
     dest[7] = a03 * b10 + a13 * b11 + a23 * b12;
 
-    dest[8]  = a00 * b20 + a10 * b21 + a20 * b22;
-    dest[9]  = a01 * b20 + a11 * b21 + a21 * b22;
+    dest[8] = a00 * b20 + a10 * b21 + a20 * b22;
+    dest[9] = a01 * b20 + a11 * b21 + a21 * b22;
     dest[10] = a02 * b20 + a12 * b21 + a22 * b22;
     dest[11] = a03 * b20 + a13 * b21 + a23 * b22;
     return dest;
@@ -1442,8 +1357,8 @@
    * @returns {mat4} dest if specified, mat otherwise
    */
   mat4.rotateX = function (mat, angle, dest) {
-    var s   = Math.sin(angle),
-        c   = Math.cos(angle),
+    var s = Math.sin(angle),
+        c = Math.cos(angle),
         a10 = mat[4],
         a11 = mat[5],
         a12 = mat[6],
@@ -1473,8 +1388,8 @@
     dest[6] = a12 * c + a22 * s;
     dest[7] = a13 * c + a23 * s;
 
-    dest[8]  = a10 * -s + a20 * c;
-    dest[9]  = a11 * -s + a21 * c;
+    dest[8] = a10 * -s + a20 * c;
+    dest[9] = a11 * -s + a21 * c;
     dest[10] = a12 * -s + a22 * c;
     dest[11] = a13 * -s + a23 * c;
     return dest;
@@ -1490,8 +1405,8 @@
    * @returns {mat4} dest if specified, mat otherwise
    */
   mat4.rotateY = function (mat, angle, dest) {
-    var s   = Math.sin(angle),
-        c   = Math.cos(angle),
+    var s = Math.sin(angle),
+        c = Math.cos(angle),
         a00 = mat[0],
         a01 = mat[1],
         a02 = mat[2],
@@ -1521,8 +1436,8 @@
     dest[2] = a02 * c + a22 * -s;
     dest[3] = a03 * c + a23 * -s;
 
-    dest[8]  = a00 * s + a20 * c;
-    dest[9]  = a01 * s + a21 * c;
+    dest[8] = a00 * s + a20 * c;
+    dest[9] = a01 * s + a21 * c;
     dest[10] = a02 * s + a22 * c;
     dest[11] = a03 * s + a23 * c;
     return dest;
@@ -1538,8 +1453,8 @@
    * @returns {mat4} dest if specified, mat otherwise
    */
   mat4.rotateZ = function (mat, angle, dest) {
-    var s   = Math.sin(angle),
-        c   = Math.cos(angle),
+    var s = Math.sin(angle),
+        c = Math.cos(angle),
         a00 = mat[0],
         a01 = mat[1],
         a02 = mat[2],
@@ -1552,8 +1467,8 @@
     if (!dest) {
       dest = mat;
     } else if (mat !== dest) { // If the source and destination differ, copy the unchanged last row
-      dest[8]  = mat[8];
-      dest[9]  = mat[9];
+      dest[8] = mat[8];
+      dest[9] = mat[9];
       dest[10] = mat[10];
       dest[11] = mat[11];
 
@@ -1591,22 +1506,20 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat4.frustum = function (left, right, bottom, top, near, far, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
-    var rl   = (right - left),
-        tb   = (top - bottom),
-        fn   = (far - near);
-    dest[0]  = (near * 2) / rl;
-    dest[1]  = 0;
-    dest[2]  = 0;
-    dest[3]  = 0;
-    dest[4]  = 0;
-    dest[5]  = (near * 2) / tb;
-    dest[6]  = 0;
-    dest[7]  = 0;
-    dest[8]  = (right + left) / rl;
-    dest[9]  = (top + bottom) / tb;
+    if (!dest) { dest = mat4.create(); }
+    var rl = (right - left),
+        tb = (top - bottom),
+        fn = (far - near);
+    dest[0] = (near * 2) / rl;
+    dest[1] = 0;
+    dest[2] = 0;
+    dest[3] = 0;
+    dest[4] = 0;
+    dest[5] = (near * 2) / tb;
+    dest[6] = 0;
+    dest[7] = 0;
+    dest[8] = (right + left) / rl;
+    dest[9] = (top + bottom) / tb;
     dest[10] = -(far + near) / fn;
     dest[11] = -1;
     dest[12] = 0;
@@ -1628,7 +1541,7 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat4.perspective = function (fovy, aspect, near, far, dest) {
-    var top   = near * Math.tan(fovy * Math.PI / 360.0),
+    var top = near * Math.tan(fovy * Math.PI / 360.0),
         right = top * aspect;
     return mat4.frustum(-right, right, -top, top, near, far, dest);
   };
@@ -1647,22 +1560,20 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat4.ortho = function (left, right, bottom, top, near, far, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
-    var rl   = (right - left),
-        tb   = (top - bottom),
-        fn   = (far - near);
-    dest[0]  = 2 / rl;
-    dest[1]  = 0;
-    dest[2]  = 0;
-    dest[3]  = 0;
-    dest[4]  = 0;
-    dest[5]  = 2 / tb;
-    dest[6]  = 0;
-    dest[7]  = 0;
-    dest[8]  = 0;
-    dest[9]  = 0;
+    if (!dest) { dest = mat4.create(); }
+    var rl = (right - left),
+        tb = (top - bottom),
+        fn = (far - near);
+    dest[0] = 2 / rl;
+    dest[1] = 0;
+    dest[2] = 0;
+    dest[3] = 0;
+    dest[4] = 0;
+    dest[5] = 2 / tb;
+    dest[6] = 0;
+    dest[7] = 0;
+    dest[8] = 0;
+    dest[9] = 0;
     dest[10] = -2 / fn;
     dest[11] = 0;
     dest[12] = -(left + right) / rl;
@@ -1683,17 +1594,15 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat4.lookAt = function (eye, center, up, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
+    if (!dest) { dest = mat4.create(); }
 
     var x0, x1, x2, y0, y1, y2, z0, z1, z2, len,
-        eyex    = eye[0],
-        eyey    = eye[1],
-        eyez    = eye[2],
-        upx     = up[0],
-        upy     = up[1],
-        upz     = up[2],
+        eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2],
         centerx = center[0],
         centery = center[1],
         centerz = center[2];
@@ -1714,9 +1623,9 @@
     z2 *= len;
 
     //vec3.normalize(vec3.cross(up, z, x));
-    x0  = upy * z2 - upz * z1;
-    x1  = upz * z0 - upx * z2;
-    x2  = upx * z1 - upy * z0;
+    x0 = upy * z2 - upz * z1;
+    x1 = upz * z0 - upx * z2;
+    x2 = upx * z1 - upy * z0;
     len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
     if (!len) {
       x0 = 0;
@@ -1746,16 +1655,16 @@
       y2 *= len;
     }
 
-    dest[0]  = x0;
-    dest[1]  = y0;
-    dest[2]  = z0;
-    dest[3]  = 0;
-    dest[4]  = x1;
-    dest[5]  = y1;
-    dest[6]  = z1;
-    dest[7]  = 0;
-    dest[8]  = x2;
-    dest[9]  = y2;
+    dest[0] = x0;
+    dest[1] = y0;
+    dest[2] = z0;
+    dest[3] = 0;
+    dest[4] = x1;
+    dest[5] = y1;
+    dest[6] = z1;
+    dest[7] = 0;
+    dest[8] = x2;
+    dest[9] = y2;
     dest[10] = z2;
     dest[11] = 0;
     dest[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
@@ -1783,36 +1692,34 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   mat4.fromRotationTranslation = function (quat, vec, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
+    if (!dest) { dest = mat4.create(); }
 
     // Quaternion math
     var x = quat[0], y = quat[1], z = quat[2], w = quat[3],
-        x2                                       = x + x,
-        y2                                       = y + y,
-        z2                                       = z + z,
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
 
-        xx                                       = x * x2,
-        xy                                       = x * y2,
-        xz                                       = x * z2,
-        yy                                       = y * y2,
-        yz                                       = y * z2,
-        zz                                       = z * z2,
-        wx                                       = w * x2,
-        wy                                       = w * y2,
-        wz                                       = w * z2;
+        xx = x * x2,
+        xy = x * y2,
+        xz = x * z2,
+        yy = y * y2,
+        yz = y * z2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
 
-    dest[0]  = 1 - (yy + zz);
-    dest[1]  = xy + wz;
-    dest[2]  = xz - wy;
-    dest[3]  = 0;
-    dest[4]  = xy - wz;
-    dest[5]  = 1 - (xx + zz);
-    dest[6]  = yz + wx;
-    dest[7]  = 0;
-    dest[8]  = xz + wy;
-    dest[9]  = yz - wx;
+    dest[0] = 1 - (yy + zz);
+    dest[1] = xy + wz;
+    dest[2] = xz - wy;
+    dest[3] = 0;
+    dest[4] = xy - wz;
+    dest[5] = 1 - (xx + zz);
+    dest[6] = yz + wx;
+    dest[7] = 0;
+    dest[8] = xz + wy;
+    dest[9] = yz - wx;
     dest[10] = 1 - (xx + yy);
     dest[11] = 0;
     dest[12] = vec[0];
@@ -1889,9 +1796,7 @@
    * @returns {quat4} dest is specified, new quat4 otherwise
    */
   quat4.identity = function (dest) {
-    if (!dest) {
-      dest = quat4.create();
-    }
+    if (!dest) { dest = quat4.create(); }
     dest[0] = 0;
     dest[1] = 0;
     dest[2] = 0;
@@ -1933,8 +1838,8 @@
    *
    * @return {number} Dot product of quat and quat2
    */
-  quat4.dot = function (quat, quat2) {
-    return quat[0] * quat2[0] + quat[1] * quat2[1] + quat[2] * quat2[2] + quat[3] * quat2[3];
+  quat4.dot = function(quat, quat2){
+    return quat[0]*quat2[0] + quat[1]*quat2[1] + quat[2]*quat2[2] + quat[3]*quat2[3];
   };
 
   /**
@@ -1945,24 +1850,24 @@
    *
    * @returns {quat4} dest if specified, quat otherwise
    */
-  quat4.inverse = function (quat, dest) {
+  quat4.inverse = function(quat, dest) {
     var q0 = quat[0], q1 = quat[1], q2 = quat[2], q3 = quat[3],
-        dot                                          = q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3,
-        invDot                                       = dot ? 1.0 / dot : 0;
+        dot = q0*q0 + q1*q1 + q2*q2 + q3*q3,
+        invDot = dot ? 1.0/dot : 0;
 
     // TODO: Would be faster to return [0,0,0,0] immediately if dot == 0
 
-    if (!dest || quat === dest) {
+    if(!dest || quat === dest) {
       quat[0] *= -invDot;
       quat[1] *= -invDot;
       quat[2] *= -invDot;
       quat[3] *= invDot;
       return quat;
     }
-    dest[0] = -quat[0] * invDot;
-    dest[1] = -quat[1] * invDot;
-    dest[2] = -quat[2] * invDot;
-    dest[3] = quat[3] * invDot;
+    dest[0] = -quat[0]*invDot;
+    dest[1] = -quat[1]*invDot;
+    dest[2] = -quat[2]*invDot;
+    dest[3] = quat[3]*invDot;
     return dest;
   };
 
@@ -2013,12 +1918,10 @@
    * @returns {quat4} dest if specified, quat otherwise
    */
   quat4.normalize = function (quat, dest) {
-    if (!dest) {
-      dest = quat;
-    }
+    if (!dest) { dest = quat; }
 
     var x = quat[0], y = quat[1], z = quat[2], w = quat[3],
-        len                                      = Math.sqrt(x * x + y * y + z * z + w * w);
+        len = Math.sqrt(x * x + y * y + z * z + w * w);
     if (len === 0) {
       dest[0] = 0;
       dest[1] = 0;
@@ -2026,7 +1929,7 @@
       dest[3] = 0;
       return dest;
     }
-    len     = 1 / len;
+    len = 1 / len;
     dest[0] = x * len;
     dest[1] = y * len;
     dest[2] = z * len;
@@ -2045,17 +1948,17 @@
    * @returns {quat4} dest if specified, quat otherwise
    */
   quat4.add = function (quat, quat2, dest) {
-    if (!dest || quat === dest) {
+    if(!dest || quat === dest) {
       quat[0] += quat2[0];
       quat[1] += quat2[1];
       quat[2] += quat2[2];
       quat[3] += quat2[3];
       return quat;
     }
-    dest[0] = quat[0] + quat2[0];
-    dest[1] = quat[1] + quat2[1];
-    dest[2] = quat[2] + quat2[2];
-    dest[3] = quat[3] + quat2[3];
+    dest[0] = quat[0]+quat2[0];
+    dest[1] = quat[1]+quat2[1];
+    dest[2] = quat[2]+quat2[2];
+    dest[3] = quat[3]+quat2[3];
     return dest;
   };
 
@@ -2069,11 +1972,9 @@
    * @returns {quat4} dest if specified, quat otherwise
    */
   quat4.multiply = function (quat, quat2, dest) {
-    if (!dest) {
-      dest = quat;
-    }
+    if (!dest) { dest = quat; }
 
-    var qax                                                 = quat[0], qay = quat[1], qaz = quat[2], qaw = quat[3],
+    var qax = quat[0], qay = quat[1], qaz = quat[2], qaw = quat[3],
         qbx = quat2[0], qby = quat2[1], qbz = quat2[2], qbw = quat2[3];
 
     dest[0] = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
@@ -2094,18 +1995,16 @@
    * @returns dest if specified, vec otherwise
    */
   quat4.multiplyVec3 = function (quat, vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
 
-    var x                                            = vec[0], y                                = vec[1], z = vec[2],
+    var x = vec[0], y = vec[1], z = vec[2],
         qx = quat[0], qy = quat[1], qz = quat[2], qw = quat[3],
 
         // calculate quat * vec
-        ix                                           = qw * x + qy * z - qz * y,
-        iy                                           = qw * y + qz * x - qx * z,
-        iz                                           = qw * z + qx * y - qy * x,
-        iw                                           = -qx * x - qy * y - qz * z;
+        ix = qw * x + qy * z - qz * y,
+        iy = qw * y + qz * x - qx * z,
+        iz = qw * z + qx * y - qy * x,
+        iw = -qx * x - qy * y - qz * z;
 
     // calculate result * inverse quat
     dest[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
@@ -2125,17 +2024,17 @@
    * @returns {quat4} dest if specified, quat otherwise
    */
   quat4.scale = function (quat, val, dest) {
-    if (!dest || quat === dest) {
+    if(!dest || quat === dest) {
       quat[0] *= val;
       quat[1] *= val;
       quat[2] *= val;
       quat[3] *= val;
       return quat;
     }
-    dest[0] = quat[0] * val;
-    dest[1] = quat[1] * val;
-    dest[2] = quat[2] * val;
-    dest[3] = quat[3] * val;
+    dest[0] = quat[0]*val;
+    dest[1] = quat[1]*val;
+    dest[2] = quat[2]*val;
+    dest[3] = quat[3]*val;
     return dest;
   };
 
@@ -2148,24 +2047,22 @@
    * @returns {mat3} dest if specified, a new mat3 otherwise
    */
   quat4.toMat3 = function (quat, dest) {
-    if (!dest) {
-      dest = mat3.create();
-    }
+    if (!dest) { dest = mat3.create(); }
 
     var x = quat[0], y = quat[1], z = quat[2], w = quat[3],
-        x2                                       = x + x,
-        y2                                       = y + y,
-        z2                                       = z + z,
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
 
-        xx                                       = x * x2,
-        xy                                       = x * y2,
-        xz                                       = x * z2,
-        yy                                       = y * y2,
-        yz                                       = y * z2,
-        zz                                       = z * z2,
-        wx                                       = w * x2,
-        wy                                       = w * y2,
-        wz                                       = w * z2;
+        xx = x * x2,
+        xy = x * y2,
+        xz = x * z2,
+        yy = y * y2,
+        yz = y * z2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
 
     dest[0] = 1 - (yy + zz);
     dest[1] = xy + wz;
@@ -2191,24 +2088,22 @@
    * @returns {mat4} dest if specified, a new mat4 otherwise
    */
   quat4.toMat4 = function (quat, dest) {
-    if (!dest) {
-      dest = mat4.create();
-    }
+    if (!dest) { dest = mat4.create(); }
 
     var x = quat[0], y = quat[1], z = quat[2], w = quat[3],
-        x2                                       = x + x,
-        y2                                       = y + y,
-        z2                                       = z + z,
+        x2 = x + x,
+        y2 = y + y,
+        z2 = z + z,
 
-        xx                                       = x * x2,
-        xy                                       = x * y2,
-        xz                                       = x * z2,
-        yy                                       = y * y2,
-        yz                                       = y * z2,
-        zz                                       = z * z2,
-        wx                                       = w * x2,
-        wy                                       = w * y2,
-        wz                                       = w * z2;
+        xx = x * x2,
+        xy = x * y2,
+        xz = x * z2,
+        yy = y * y2,
+        yz = y * z2,
+        zz = z * z2,
+        wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
 
     dest[0] = 1 - (yy + zz);
     dest[1] = xy + wz;
@@ -2220,8 +2115,8 @@
     dest[6] = yz + wx;
     dest[7] = 0;
 
-    dest[8]  = xz + wy;
-    dest[9]  = yz - wx;
+    dest[8] = xz + wy;
+    dest[9] = yz - wx;
     dest[10] = 1 - (xx + yy);
     dest[11] = 0;
 
@@ -2244,9 +2139,7 @@
    * @returns {quat4} dest if specified, quat otherwise
    */
   quat4.slerp = function (quat, quat2, slerp, dest) {
-    if (!dest) {
-      dest = quat;
-    }
+    if (!dest) { dest = quat; }
 
     var cosHalfTheta = quat[0] * quat2[0] + quat[1] * quat2[1] + quat[2] * quat2[2] + quat[3] * quat2[3],
         halfTheta,
@@ -2264,7 +2157,7 @@
       return dest;
     }
 
-    halfTheta    = Math.acos(cosHalfTheta);
+    halfTheta = Math.acos(cosHalfTheta);
     sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 
     if (Math.abs(sinHalfTheta) < 0.001) {
@@ -2296,7 +2189,7 @@
    * @returns {quat4} the quaternion constructed from the rotation matrix
    *
    */
-  quat4.fromRotationMatrix = function (mat, dest) {
+  quat4.fromRotationMatrix = function(mat, dest) {
     if (!dest) dest = quat4.create();
 
     // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
@@ -2305,31 +2198,31 @@
     var fTrace = mat[0] + mat[4] + mat[8];
     var fRoot;
 
-    if (fTrace > 0.0) {
+    if ( fTrace > 0.0 ) {
       // |w| > 1/2, may as well choose w > 1/2
-      fRoot   = Math.sqrt(fTrace + 1.0);  // 2w
+      fRoot = Math.sqrt(fTrace + 1.0);  // 2w
       dest[3] = 0.5 * fRoot;
-      fRoot   = 0.5 / fRoot;  // 1/(4w)
-      dest[0] = (mat[7] - mat[5]) * fRoot;
-      dest[1] = (mat[2] - mat[6]) * fRoot;
-      dest[2] = (mat[3] - mat[1]) * fRoot;
+      fRoot = 0.5/fRoot;  // 1/(4w)
+      dest[0] = (mat[7]-mat[5])*fRoot;
+      dest[1] = (mat[2]-mat[6])*fRoot;
+      dest[2] = (mat[3]-mat[1])*fRoot;
     } else {
       // |w| <= 1/2
-      var s_iNext = quat4.fromRotationMatrix.s_iNext = quat4.fromRotationMatrix.s_iNext || [1, 2, 0];
+      var s_iNext = quat4.fromRotationMatrix.s_iNext = quat4.fromRotationMatrix.s_iNext || [1,2,0];
       var i = 0;
-      if (mat[4] > mat[0])
+      if ( mat[4] > mat[0] )
         i = 1;
-      if (mat[8] > mat[i * 3 + i])
+      if ( mat[8] > mat[i*3+i] )
         i = 2;
       var j = s_iNext[i];
       var k = s_iNext[j];
 
-      fRoot   = Math.sqrt(mat[i * 3 + i] - mat[j * 3 + j] - mat[k * 3 + k] + 1.0);
+      fRoot = Math.sqrt(mat[i*3+i]-mat[j*3+j]-mat[k*3+k] + 1.0);
       dest[i] = 0.5 * fRoot;
-      fRoot   = 0.5 / fRoot;
-      dest[3] = (mat[k * 3 + j] - mat[j * 3 + k]) * fRoot;
-      dest[j] = (mat[j * 3 + i] + mat[i * 3 + j]) * fRoot;
-      dest[k] = (mat[k * 3 + i] + mat[i * 3 + k]) * fRoot;
+      fRoot = 0.5 / fRoot;
+      dest[3] = (mat[k*3+j] - mat[j*3+k]) * fRoot;
+      dest[j] = (mat[j*3+i] + mat[i*3+j]) * fRoot;
+      dest[k] = (mat[k*3+i] + mat[i*3+k]) * fRoot;
     }
 
     return dest;
@@ -2340,7 +2233,7 @@
    */
   mat3.toQuat4 = quat4.fromRotationMatrix;
 
-  (function () {
+  (function() {
     var mat = mat3.create();
 
     /**
@@ -2362,7 +2255,7 @@
      *
      * @returns {quat4} dest
      **/
-    quat4.fromAxes = function (view, right, up, dest) {
+    quat4.fromAxes = function(view, right, up, dest) {
       mat[0] = right[0];
       mat[3] = right[1];
       mat[6] = right[2];
@@ -2387,7 +2280,7 @@
    *
    * @returns {quat4} dest
    */
-  quat4.identity = function (dest) {
+  quat4.identity = function(dest) {
     if (!dest) dest = quat4.create();
     dest[0] = 0;
     dest[1] = 0;
@@ -2406,17 +2299,17 @@
    *
    * @returns {quat4} dest
    **/
-  quat4.fromAngleAxis = function (angle, axis, dest) {
+  quat4.fromAngleAxis = function(angle, axis, dest) {
     // The quaternion representing the rotation is
     //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
     if (!dest) dest = quat4.create();
 
     var half = angle * 0.5;
-    var s    = Math.sin(half);
-    dest[3]  = Math.cos(half);
-    dest[0]  = s * axis[0];
-    dest[1]  = s * axis[1];
-    dest[2]  = s * axis[2];
+    var s = Math.sin(half);
+    dest[3] = Math.cos(half);
+    dest[0] = s * axis[0];
+    dest[1] = s * axis[1];
+    dest[2] = s * axis[2];
 
     return dest;
   };
@@ -2433,18 +2326,19 @@
    *
    * @returns {vec4} dest
    */
-  quat4.toAngleAxis = function (src, dest) {
+  quat4.toAngleAxis = function(src, dest) {
     if (!dest) dest = src;
     // The quaternion representing the rotation is
     //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-    var sqrlen = src[0] * src[0] + src[1] * src[1] + src[2] * src[2];
-    if (sqrlen > 0) {
-      dest[3]    = 2 * Math.acos(src[3]);
+    var sqrlen = src[0]*src[0]+src[1]*src[1]+src[2]*src[2];
+    if (sqrlen > 0)
+    {
+      dest[3] = 2 * Math.acos(src[3]);
       var invlen = glMath.invsqrt(sqrlen);
-      dest[0]    = src[0] * invlen;
-      dest[1]    = src[1] * invlen;
-      dest[2]    = src[2] * invlen;
+      dest[0] = src[0]*invlen;
+      dest[1] = src[1]*invlen;
+      dest[2] = src[2]*invlen;
     } else {
       // angle is 0 (mod 2*pi), so any axis will do
       dest[3] = 0;
@@ -2480,7 +2374,7 @@
    * @param {vec2} [vec] the vector's initial contents
    * @returns {vec2} a new 2D vector
    */
-  vec2.create = function (vec) {
+  vec2.create = function(vec) {
     var dest = new MatrixArray(2);
     if (vec) {
       dest[0] = vec[0];
@@ -2501,7 +2395,7 @@
    * @param {vec2} [dest] the optional receiving vector
    * @returns {vec2} dest
    */
-  vec2.add = function (vecA, vecB, dest) {
+  vec2.add = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] + vecB[0];
     dest[1] = vecA[1] + vecB[1];
@@ -2517,7 +2411,7 @@
    * @param {vec2} [dest] the optional receiving vector
    * @returns {vec2} dest
    */
-  vec2.subtract = function (vecA, vecB, dest) {
+  vec2.subtract = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] - vecB[0];
     dest[1] = vecA[1] - vecB[1];
@@ -2533,7 +2427,7 @@
    * @param {vec2} [dest] the optional receiving vector
    * @returns {vec2} dest
    */
-  vec2.multiply = function (vecA, vecB, dest) {
+  vec2.multiply = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] * vecB[0];
     dest[1] = vecA[1] * vecB[1];
@@ -2549,7 +2443,7 @@
    * @param {vec2} [dest] the optional receiving vector
    * @returns {vec2} dest
    */
-  vec2.divide = function (vecA, vecB, dest) {
+  vec2.divide = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] / vecB[0];
     dest[1] = vecA[1] / vecB[1];
@@ -2568,7 +2462,7 @@
    * @param {vec2}   [dest] the optional receiving vector
    * @returns {vec2} dest
    */
-  vec2.scale = function (vecA, scalar, dest) {
+  vec2.scale = function(vecA, scalar, dest) {
     if (!dest) dest = vecA;
     dest[0] = vecA[0] * scalar;
     dest[1] = vecA[1] * scalar;
@@ -2587,7 +2481,7 @@
   vec2.dist = function (vecA, vecB) {
     var x = vecB[0] - vecA[0],
         y = vecB[1] - vecA[1];
-    return Math.sqrt(x * x + y * y);
+    return Math.sqrt(x*x + y*y);
   };
 
   /**
@@ -2613,9 +2507,7 @@
    * @returns {vec2} dest if specified, vec otherwise
    */
   vec2.negate = function (vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
     dest[0] = -vec[0];
     dest[1] = -vec[1];
     return dest;
@@ -2630,12 +2522,10 @@
    * @returns {vec2} dest if specified, vec otherwise
    */
   vec2.normalize = function (vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
     var mag = vec[0] * vec[0] + vec[1] * vec[1];
     if (mag > 0) {
-      mag     = Math.sqrt(mag);
+      mag = Math.sqrt(mag);
       dest[0] = vec[0] / mag;
       dest[1] = vec[1] / mag;
     } else {
@@ -2708,12 +2598,10 @@
    * @returns {vec2} dest if specified, vecA otherwise
    */
   vec2.direction = function (vecA, vecB, dest) {
-    if (!dest) {
-      dest = vecA;
-    }
+    if (!dest) { dest = vecA; }
 
-    var x   = vecA[0] - vecB[0],
-        y   = vecA[1] - vecB[1],
+    var x = vecA[0] - vecB[0],
+        y = vecA[1] - vecB[1],
         len = x * x + y * y;
 
     if (!len) {
@@ -2723,7 +2611,7 @@
       return dest;
     }
 
-    len     = 1 / Math.sqrt(len);
+    len = 1 / Math.sqrt(len);
     dest[0] = x * len;
     dest[1] = y * len;
     return dest;
@@ -2740,9 +2628,7 @@
    * @returns {vec2} dest if specified, vecA otherwise
    */
   vec2.lerp = function (vecA, vecB, lerp, dest) {
-    if (!dest) {
-      dest = vecA;
-    }
+    if (!dest) { dest = vecA; }
     dest[0] = vecA[0] + lerp * (vecB[0] - vecA[0]);
     dest[1] = vecA[1] + lerp * (vecB[1] - vecA[1]);
     return dest;
@@ -2772,7 +2658,7 @@
    * @param {mat2} [src] the seed values for the new matrix, if any
    * @returns {mat2} a new matrix
    */
-  mat2.create = function (src) {
+  mat2.create = function(src) {
     var dest = new MatrixArray(4);
     if (src) {
       dest[0] = src[0];
@@ -2809,9 +2695,7 @@
    * @returns {mat2} dest
    */
   mat2.identity = function (dest) {
-    if (!dest) {
-      dest = mat2.create();
-    }
+    if (!dest) { dest = mat2.create(); }
     dest[0] = 1;
     dest[1] = 0;
     dest[2] = 0;
@@ -2831,8 +2715,8 @@
     // If we are transposing ourselves we can skip a few steps but have to cache some values
     if (!dest || mat === dest) {
       var a00 = mat[1];
-      mat[1]  = mat[2];
-      mat[2]  = a00;
+      mat[1] = mat[2];
+      mat[2] = a00;
       return mat;
     }
 
@@ -2863,18 +2747,16 @@
    * @param {mat2} dest is specified, mat otherwise, null if matrix cannot be inverted
    */
   mat2.inverse = function (mat, dest) {
-    if (!dest) {
-      dest = mat;
-    }
-    var a0  = mat[0], a1 = mat[1], a2 = mat[2], a3 = mat[3];
+    if (!dest) { dest = mat; }
+    var a0 = mat[0], a1 = mat[1], a2 = mat[2], a3 = mat[3];
     var det = a0 * a3 - a2 * a1;
     if (!det) return null;
 
-    det     = 1.0 / det;
-    dest[0] = a3 * det;
+    det = 1.0 / det;
+    dest[0] =  a3 * det;
     dest[1] = -a1 * det;
     dest[2] = -a2 * det;
-    dest[3] = a0 * det;
+    dest[3] =  a0 * det;
     return dest;
   };
 
@@ -2888,9 +2770,7 @@
    * @returns {mat2} dest if specified, matA otherwise
    */
   mat2.multiply = function (matA, matB, dest) {
-    if (!dest) {
-      dest = matA;
-    }
+    if (!dest) { dest = matA; }
     var a11 = matA[0],
         a12 = matA[1],
         a21 = matA[2],
@@ -2912,18 +2792,16 @@
    * @returns {mat2} dest if specified, mat otherwise
    */
   mat2.rotate = function (mat, angle, dest) {
-    if (!dest) {
-      dest = mat;
-    }
+    if (!dest) { dest = mat; }
     var a11 = mat[0],
         a12 = mat[1],
         a21 = mat[2],
         a22 = mat[3],
-        s   = Math.sin(angle),
-        c   = Math.cos(angle);
-    dest[0] = a11 * c + a12 * s;
+        s = Math.sin(angle),
+        c = Math.cos(angle);
+    dest[0] = a11 *  c + a12 * s;
     dest[1] = a11 * -s + a12 * c;
-    dest[2] = a21 * c + a22 * s;
+    dest[2] = a21 *  c + a22 * s;
     dest[3] = a21 * -s + a22 * c;
     return dest;
   };
@@ -2937,9 +2815,9 @@
    *
    * @returns {vec2} The multiplication result
    **/
-  mat2.multiplyVec2 = function (matrix, vec, dest) {
+  mat2.multiplyVec2 = function(matrix, vec, dest) {
     if (!dest) dest = vec;
-    var x   = vec[0], y = vec[1];
+    var x = vec[0], y = vec[1];
     dest[0] = x * matrix[0] + y * matrix[1];
     dest[1] = x * matrix[2] + y * matrix[3];
     return dest;
@@ -2954,10 +2832,8 @@
    *
    * @returns {mat2} dest if specified, matrix otherwise
    **/
-  mat2.scale = function (matrix, vec, dest) {
-    if (!dest) {
-      dest = matrix;
-    }
+  mat2.scale = function(matrix, vec, dest) {
+    if (!dest) { dest = matrix; }
     var a11 = matrix[0],
         a12 = matrix[1],
         a21 = matrix[2],
@@ -2995,7 +2871,7 @@
    * @param {vec4} [vec] the vector's initial contents
    * @returns {vec4} a new 2D vector
    */
-  vec4.create = function (vec) {
+  vec4.create = function(vec) {
     var dest = new MatrixArray(4);
     if (vec) {
       dest[0] = vec[0];
@@ -3020,7 +2896,7 @@
    * @param {vec4} [dest] the optional receiving vector
    * @returns {vec4} dest
    */
-  vec4.add = function (vecA, vecB, dest) {
+  vec4.add = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] + vecB[0];
     dest[1] = vecA[1] + vecB[1];
@@ -3038,7 +2914,7 @@
    * @param {vec4} [dest] the optional receiving vector
    * @returns {vec4} dest
    */
-  vec4.subtract = function (vecA, vecB, dest) {
+  vec4.subtract = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] - vecB[0];
     dest[1] = vecA[1] - vecB[1];
@@ -3056,7 +2932,7 @@
    * @param {vec4} [dest] the optional receiving vector
    * @returns {vec4} dest
    */
-  vec4.multiply = function (vecA, vecB, dest) {
+  vec4.multiply = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] * vecB[0];
     dest[1] = vecA[1] * vecB[1];
@@ -3074,7 +2950,7 @@
    * @param {vec4} [dest] the optional receiving vector
    * @returns {vec4} dest
    */
-  vec4.divide = function (vecA, vecB, dest) {
+  vec4.divide = function(vecA, vecB, dest) {
     if (!dest) dest = vecB;
     dest[0] = vecA[0] / vecB[0];
     dest[1] = vecA[1] / vecB[1];
@@ -3095,7 +2971,7 @@
    * @param {vec4}   [dest] the optional receiving vector
    * @returns {vec4} dest
    */
-  vec4.scale = function (vecA, scalar, dest) {
+  vec4.scale = function(vecA, scalar, dest) {
     if (!dest) dest = vecA;
     dest[0] = vecA[0] * scalar;
     dest[1] = vecA[1] * scalar;
@@ -3129,9 +3005,7 @@
    * @returns {vec4} dest if specified, vec otherwise
    */
   vec4.negate = function (vec, dest) {
-    if (!dest) {
-      dest = vec;
-    }
+    if (!dest) { dest = vec; }
     dest[0] = -vec[0];
     dest[1] = -vec[1];
     dest[2] = -vec[2];
@@ -3150,9 +3024,7 @@
    * @returns {vec4} dest if specified, vecA otherwise
    */
   vec4.lerp = function (vecA, vecB, lerp, dest) {
-    if (!dest) {
-      dest = vecA;
-    }
+    if (!dest) { dest = vecA; }
     dest[0] = vecA[0] + lerp * (vecB[0] - vecA[0]);
     dest[1] = vecA[1] + lerp * (vecB[1] - vecA[1]);
     dest[2] = vecA[2] + lerp * (vecB[2] - vecA[2]);
@@ -3175,33 +3047,33 @@
    * Exports
    */
 
-  if (root) {
-    root.glMatrixArrayType        = MatrixArray;
-    root.MatrixArray              = MatrixArray;
-    root.setMatrixArrayType       = setMatrixArrayType;
+  if(root) {
+    root.glMatrixArrayType = MatrixArray;
+    root.MatrixArray = MatrixArray;
+    root.setMatrixArrayType = setMatrixArrayType;
     root.determineMatrixArrayType = determineMatrixArrayType;
-    root.glMath                   = glMath;
-    root.vec2                     = vec2;
-    root.vec3                     = vec3;
-    root.vec4                     = vec4;
-    root.mat2                     = mat2;
-    root.mat3                     = mat3;
-    root.mat4                     = mat4;
-    root.quat4                    = quat4;
+    root.glMath = glMath;
+    root.vec2 = vec2;
+    root.vec3 = vec3;
+    root.vec4 = vec4;
+    root.mat2 = mat2;
+    root.mat3 = mat3;
+    root.mat4 = mat4;
+    root.quat4 = quat4;
   }
 
   return {
-    glMatrixArrayType       : MatrixArray,
-    MatrixArray             : MatrixArray,
-    setMatrixArrayType      : setMatrixArrayType,
+    glMatrixArrayType: MatrixArray,
+    MatrixArray: MatrixArray,
+    setMatrixArrayType: setMatrixArrayType,
     determineMatrixArrayType: determineMatrixArrayType,
-    glMath                  : glMath,
-    vec2                    : vec2,
-    vec3                    : vec3,
-    vec4                    : vec4,
-    mat2                    : mat2,
-    mat3                    : mat3,
-    mat4                    : mat4,
-    quat4                   : quat4
+    glMath: glMath,
+    vec2: vec2,
+    vec3: vec3,
+    vec4: vec4,
+    mat2: mat2,
+    mat3: mat3,
+    mat4: mat4,
+    quat4: quat4
   };
 }));

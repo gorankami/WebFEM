@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     Copyright 2014 Goran Antic
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,65 +14,105 @@
     limitations under the License.
 -->
 <!DOCTYPE html>
+
 <html>
-<head>
-  <title>Web FEM</title>
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+  <head>
+    <title>Web FEM</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <!--<link href="~/Styles/bootstrap.min.css" rel='stylesheet' type='text/css' />-->
+    <link href="assets/style.css" rel="stylesheet" type='text/css'/>
+    <script type="application/javascript">
+      var MESH_ID = 1;
+      var THREE = {};
+    </script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/gl-matrix-min.js"></script>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/Color.js"></script>
+    <script>
+//      var Color = THREE.Color;
+    </script>
+  </head>
+  <body ng-app="WebFEMView" ng-controller="WebFEMController">
+    <div ng-show="toggleCurtain" class="curtain"><p>Downloading model, please wait...</p></div>
+    <!-- absolute content with palettes -->
+    <div id="sidebar" class="tool-panel absolute">
+      <div class="left">
 
-  <link rel="stylesheet" href="css/style.css"/>
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <ul class="left">
+          <li>
+            <b>Variable:</b><br/>
+            <select ng-model="selectedVariable">
+              <option ng-repeat="variable in variables" value="{{variable.value}}">{{variable.name}}</option>
+            </select>
+          </li>
+          <li>
+            <b>Component:</b><br/>
+            <select ng-model="selectedComponent">
+              <option ng-repeat="component in components" value="{{component.value}}">{{component.name}}</option>
+            </select>
+          </li>
+          <li>
+            <b>Step:</b><br/>
+            <input ng-model="selectedStep" type="number"/>
+          </li>
+          <li>
+            <b>&nbsp;</b><br/>
+            <button class="btn left" ng-click="downloadMesh()">Load</button>
+          </li>
+          <li>
+            <input type="checkbox" ng-model="clipPlane.active" ng-change="reDraw()"/>Clip plane<br/>
+            <div ng-show="clipPlane.active">
+              <button class="btn" ng-click="centerPlaneForClipping();reDraw();">Reset</button>
+              Position xyz:
+              <input type="number" ng-model="clipPlane.base[0]" ng-change="reDraw()"/>
+              <input type="number" ng-model="clipPlane.base[1]" ng-change="reDraw()"/>
+              <input type="number" ng-model="clipPlane.base[2]" ng-change="reDraw()"/>
+              Normal xyz:
+              <input type="number" ng-model="clipPlane.normal[0]" ng-change="reDraw()"/>
+              <input type="number" ng-model="clipPlane.normal[1]" ng-change="reDraw()"/>
+              <input type="number" ng-model="clipPlane.normal[2]" ng-change="reDraw()"/>
 
-  <script src="js/lib/jquery-1.11.1.min.js"></script>
-  <script src="js/lib/gl-matrix.js"></script>
-  <script src="js/lib/Color.js"></script>
-</head>
-<body>
+              <button class="btn" ng-click="downloadMesh(true)">Apply</button>
+            </div>
 
-<!-- absolute content with color map -->
-<div id="sidebar" class="sidebar-absolute">
-  <div>
-    <img src="img/logo.png"/>
-    <div class="arrow-up" onclick="" id="toggleSidebar">
+          </li>
+        </ul>
+        <div class="clear"></div>
+      </div>
     </div>
-  </div>
-  <ul>
-    <li>
-      <b>Model:</b> <br/>
-      <select id="cbModels"></select>
-    </li>
-    <li>
-      <b>Contour values:</b><br/>
-      <select id="cbProperties"></select>
-    </li>
-    <li>
-      <button class="btn right" id="btnLoad">Load</button>
-      <button class="btn right" id="btnReset">Reset</button>
-      <div class="clear"></div>
-    </li>
+    <div class="tool-panel right">
+      <b>Palettes:</b><br/>
+      <select ng-model="palettes.selectedPalette"
+              ng-options="palette.name for palette in palettes track by palette.id"
+              ng-selected="drawLegend();reDraw();"></select><br/>
+      Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="numSteps"/><br/>
+      <input ng-model="inverted" type="checkbox" ng-change="drawLegend();reDraw();"/>Inverted<br/>
+      <button class="btn" ng-click="applyColorMap();reDraw();">Apply</button>
+      <canvas id="cvsLegend" width="150" height="500"></canvas>
+    </div>
+    <!-- model view -->
+    <canvas id="cvsFEM"></canvas>
 
-    <li>
-      <b>Color map:</b> <br/>
-      <select id="cbColorMaps"></select><br/>
-    </li>
-    <li>
-      <canvas id="canvas2d" width="150" height="500"></canvas>
-    </li>
-  </ul>
+    <!-- orientation axes -->
+    <!--<canvas id="cvsOrientation"></canvas>-->
 
-</div>
+    <!-- scripts -->
+    <script src="js/webgl/3DObjects/MeshColoured.js"></script>
+    <script src="js/webgl/3DObjects/MeshWireframe.js"></script>
+    <script src="js/webgl/3DObjects/MeshClipColoured.js"></script>
+    <script src="js/webgl/3DObjects/MeshClipWireframe.js"></script>
+    <script src="js/webgl/3DObjects/ClipPlane.js"></script>
+    <script src="js/webgl/3DObjects/OrientationHelper.js"></script>
 
-<!-- model view -->
-<canvas id="canvas3d"></canvas>
+    <script src="js/webgl/Camera.js"></script>
+    <script src="js/webgl/ShaderProgram.js"></script>
+    <script src="js/webgl/Renderer.js"></script>
 
-<script src="js/Services.js"></script>
-<script src="js/Camera.js"></script>
-<script src="js/ColorMapUtility.js"></script>
-<script src="js/GControls.js"></script>
-<script src="js/Legend.js"></script>
-<script src="js/Renderer.js"></script>
-<script src="js/ShaderProgram.js"></script>
+    <script src="js/TransformationController.js"></script>
+    <script src="js/FEMView.js"></script>
+    <script src="js/LegendView.js"></script>
 
-<script src="js/main.js"></script>
-</body>
+    <script src="js/ngModule.js"></script>
+  </body>
 </html>
-
