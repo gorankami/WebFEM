@@ -1,10 +1,29 @@
 var gulp        = require('gulp'),
     clean       = require('gulp-clean'),
     runSequence = require('run-sequence'),
+    browserify  = require('browserify'),
     connect     = require('gulp-connect');
 
 gulp.task('clean', function () {
   return gulp.src('www').pipe(clean());
+});
+
+gulp.task('browserify', function () {
+  var b = browserify({
+    entries     : './src/index.js',
+    cache       : {},
+    packageCache: {}
+  });
+
+  var bundle = function () {
+    return b.bundle()
+      .pipe(source('app.js'))
+      .pipe(buffer())
+      .pipe(gulp.dest('/www/js'));
+  }.bind(this);
+
+  b.on('update', bundle);
+  return bundle;
 });
 
 gulp.task('move-lib', function () {
@@ -34,7 +53,7 @@ gulp.task('start-server', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['src/**/*'], ['move-src']);
+  gulp.watch(['src/**/*', 'data/**/*'], ['move-src', 'move-data']);
 });
 
 gulp.task('serve', ['watch'], function (callback) {
