@@ -54,16 +54,16 @@ ClipPlane.prototype = {
     vec3.rotationTo(normal1, normal2, quat);
     this.tMatrix = [];
     this.tMatrix2 = [];
-    mat4.fromRotationTranslation(quat, base, this.tMatrix);
+    mat4.fromRotationTranslation(this.tMatrix, quat, base);
     var t3 = [];
-    mat4.fromRotationTranslation(quat, base, t3);
-    mat4.inverse(t3, this.tMatrix2);
+    mat4.fromRotationTranslation(t3, quat, base);
+    mat4.inverse(this.tMatrix2, t3);
   },
 
   render: function (pMatrix, mvMatrix) {
 
     var tMatrix = [];
-    mat4.multiply(mvMatrix, this.tMatrix, tMatrix);
+    mat4.multiply(tMatrix, mvMatrix, this.tMatrix);
     //CLIP PLANE
     GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
     GL.disable(GL.CULL_FACE);

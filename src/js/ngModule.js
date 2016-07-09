@@ -54,7 +54,7 @@ angular
       //turn to Color objects
       $scope.palettes.forEach(function (palette) {
         palette.steps.forEach(function (step) {
-          step.color = new Color(step.color);
+          step.color = new THREE.Color(step.color[0], step.color[1], step.color[2]);
         });
       });
       $scope.palettes.selectedPalette = $scope.palettes[0];
@@ -174,7 +174,7 @@ function prepareVector(mesh, min, max, palette, numSteps, inverted, colorArray) 
 }
 
 function initColorArray(numColors, palette, minValue, maxValue, inverted) {
-  if (maxValue - minValue == 0) return [new Color(0x000000)];
+  if (maxValue - minValue == 0) return [new THREE.Color(0x000000)];
   var n = !!numColors ? numColors : 1024;
   var colorArray = [];
   var step = (maxValue - minValue) / n;
@@ -184,8 +184,8 @@ function initColorArray(numColors, palette, minValue, maxValue, inverted) {
         var min = palette.steps[i].scaledVal;
         var max = palette.steps[i + 1].scaledVal;
 
-        var minColor = new Color(0xffffff).setHex("0x" + palette.steps[i].color.getHexString());
-        var maxColor = new Color(0xffffff).setHex("0x" + palette.steps[i + 1].color.getHexString());
+        var minColor = new THREE.Color(0xffffff).setHex("0x" + palette.steps[i].color.getHexString());
+        var maxColor = new THREE.Color(0xffffff).setHex("0x" + palette.steps[i + 1].color.getHexString());
 
         var color = minColor.lerp(maxColor, (stepVal - min) / (max - min));
 

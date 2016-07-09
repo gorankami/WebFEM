@@ -58,7 +58,7 @@ Camera.prototype = {
    */
   changePerspective: function (width, height) {
     this.aspect = width / height;
-    mat4.perspective(this.verFoV, this.aspect, this.nearPlane, this.farPlane, this.pMatrix);
+    mat4.perspective(this.pMatrix, this.verFoV, this.aspect, this.nearPlane, this.farPlane);
     this.horFoV = this.verFoV * this.aspect;
   },
 
@@ -74,7 +74,7 @@ Camera.prototype = {
     this.nearPlane = nearPlane;
     this.farPlane = farPlane;
 
-    mat4.perspective(this.verFoV, this.aspect, nearPlane, farPlane, this.pMatrix);
+    mat4.perspective( this.pMatrix, this.verFoV, this.aspect, nearPlane, farPlane);
 
     //mat4.translate(this.mvMatrix, position);
   },

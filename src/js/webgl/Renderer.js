@@ -69,15 +69,15 @@ Renderer.prototype = {
       GL.viewport(0, 0, cvsWidth, cvsHeight);
 
       var transformationMatrixModel = mat4.create(camera.mvMatrix);
-      mat4.translate(transformationMatrixModel, camera.position);
-      mat4.translate(transformationMatrixModel, [position[0] / 10, position[1] / 10, position[2]], transformationMatrixModel);
+      mat4.translate(transformationMatrixModel, transformationMatrixModel, camera.position);
+      mat4.translate(transformationMatrixModel, transformationMatrixModel, [position[0] / 10, position[1] / 10, position[2]], transformationMatrixModel);
 
       //moves mesh with center to the origin so it can be rotated
-      mat4.translate(transformationMatrixModel, camera.pivot);
-      mat4.rotateX(transformationMatrixModel, rotation[0]);
-      mat4.rotateY(transformationMatrixModel, rotation[1]);
+      mat4.translate(transformationMatrixModel, transformationMatrixModel, camera.pivot);
+      mat4.rotateX(transformationMatrixModel, transformationMatrixModel, rotation[0]);
+      mat4.rotateY(transformationMatrixModel, transformationMatrixModel, rotation[1]);
       //move back to the viewing position
-      mat4.translate(transformationMatrixModel, [-camera.pivot[0] , -camera.pivot[1] , -camera.pivot[2]]);
+      mat4.translate(transformationMatrixModel, transformationMatrixModel, [-camera.pivot[0] , -camera.pivot[1] , -camera.pivot[2]]);
 
       this.meshColoured.render(camera.pMatrix, transformationMatrixModel);
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
@@ -92,9 +92,9 @@ Renderer.prototype = {
 
       //ORIENTATION HELPER
       var transformationMatrixOrient = mat4.create();
-      mat4.translate(camera.mvMatrix, [-2, -1, 6], transformationMatrixOrient);
-      mat4.rotate(transformationMatrixOrient, rotation[0], [1.0, 0.0, 0.0]);
-      mat4.rotate(transformationMatrixOrient, rotation[1], [0.0, 1.0, 0.0]);
+      mat4.translate(transformationMatrixOrient, camera.mvMatrix, [-2, -1, 6]);
+      mat4.rotate(transformationMatrixOrient, transformationMatrixOrient, rotation[0], [1.0, 0.0, 0.0]);
+      mat4.rotate(transformationMatrixOrient, transformationMatrixOrient, rotation[1], [0.0, 1.0, 0.0]);
 
       this.orientationHelper.render(camera.pMatrix, transformationMatrixOrient)
     }

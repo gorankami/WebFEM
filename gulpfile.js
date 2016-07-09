@@ -12,12 +12,10 @@ gulp.task('move-lib', function () {
     'node_modules/angular/angular.min.js',
     'node_modules/bootstrap/dist/css/bootstrap.min.css',
     'node_modules/bootstrap/dist/css/bootstrap.min.css.map',
-    // 'node_modules/gl-matrix/dist/gl-matrix-min.js',
-    'src/gl-matrix-min.js',
+    'node_modules/gl-matrix/dist/gl-matrix.js',
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/jquery/dist/jquery.min.map',
-    // 'node_modules/three/src/math/Color.js'
-    'src/Color.js'
+    'node_modules/three/src/math/Color.js'
   ]).pipe(gulp.dest('www/lib'));
 });
 
