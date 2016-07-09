@@ -25,7 +25,7 @@
  * @param {String} type - type of shader. For now "Color" and "FEMWireframe" are implemented for the use of a FEM application
  * @type {object} - returns a GL shader program object
  */
-ShaderProgram = function ShaderProgram(type) {
+var ShaderProgram = function ShaderProgram(type) {
   var vertexShader = null;
   var fragmentShader = null;
   var program = GL.createProgram();
@@ -206,3 +206,5 @@ ShaderProgram.prototype = {
   }
 
 }
+
+module.exports = ShaderProgram;

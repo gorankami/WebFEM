@@ -2,6 +2,8 @@ var gulp        = require('gulp'),
     clean       = require('gulp-clean'),
     runSequence = require('run-sequence'),
     browserify  = require('browserify'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
     connect     = require('gulp-connect');
 
 gulp.task('clean', function () {
@@ -15,15 +17,10 @@ gulp.task('browserify', function () {
     packageCache: {}
   });
 
-  var bundle = function () {
-    return b.bundle()
-      .pipe(source('app.js'))
+  return b.bundle()
+      .pipe(source('index.js'))
       .pipe(buffer())
-      .pipe(gulp.dest('/www/js'));
-  }.bind(this);
-
-  b.on('update', bundle);
-  return bundle;
+      .pipe(gulp.dest('www'));
 });
 
 gulp.task('move-lib', function () {
@@ -44,7 +41,7 @@ gulp.task('move-data', function () {
 });
 
 gulp.task('move-src', function () {
-  return gulp.src('src/**/*')
+  return gulp.src(['src/**/*.html', 'src/assets/style.css'])
     .pipe(gulp.dest('www'));
 });
 
@@ -53,9 +50,9 @@ gulp.task('start-server', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['src/**/*', 'data/**/*'], ['move-src', 'move-data']);
+  gulp.watch(['src/**/*', 'data/**/*'], ['browserify', 'move-data']);
 });
 
 gulp.task('serve', ['watch'], function (callback) {
-  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'start-server', callback);
+  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'browserify', 'start-server', callback);
 });

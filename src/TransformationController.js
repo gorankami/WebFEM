@@ -168,3 +168,5 @@ TransformationController.prototype = {
     this.zoom = 0;
   }
 }
+
+module.exports = TransformationController

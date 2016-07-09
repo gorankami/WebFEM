@@ -13,8 +13,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+var $        = require('jquery'),
+    vec3     = require('gl-matrix-vec3'),
+    Camera   = require('./webgl/Camera'),
+    Renderer = require('./webgl/Renderer');
 
-FEMView = function () {
+var FEMView = function () {
   this.cvsFEM = $("#cvsFEM")[0];
   try {
     GL = this.cvsFEM.getContext("webgl") || this.cvsFEM.getContext("experimental-webgl");
@@ -26,34 +30,36 @@ FEMView = function () {
     alert("Your browser does not support Webgl, the application will not work.");
     return;
   }
-  this.camera = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
+  this.camera                   = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
   this.transformationController = new TransformationController(this.cvsFEM, this.camera);
 }
 
 FEMView.prototype = {
   constructor: FEMView,
 
-  init: function () {
+  init      : function () {
     this.renderer = new Renderer();
     this.resize(window.innerWidth, window.innerHeight);
     this.initEvents();
     this.animate();
   },
-  initEvents: function(){
+  initEvents: function () {
     //events
     $(window).resize(function () {
       this.resize($(document).width(), $(document).height());
     }.bind(this));
 
     //disable context menu
-    this.cvsFEM.addEventListener('contextmenu', function (event) { event.preventDefault(); });
+    this.cvsFEM.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    });
 
     //closure
-    var scope = this;
+    var scope     = this;
     //mouse events
     var mouseMove = function (event) {
       event.preventDefault();
-      var rect = scope.cvsFEM.getBoundingClientRect();
+      var rect   = scope.cvsFEM.getBoundingClientRect();
       var coords = [event.clientX - rect.left, event.clientY - rect.top];
 
       if (event.buttons === 1) {
@@ -66,7 +72,7 @@ FEMView.prototype = {
 
     var mouseDown = function (event) {
       event.preventDefault();
-      var rect = scope.cvsFEM.getBoundingClientRect();
+      var rect   = scope.cvsFEM.getBoundingClientRect();
       var coords = [event.clientX - rect.left, event.clientY - rect.top];
 
       if (event.buttons === 1) {
@@ -88,7 +94,7 @@ FEMView.prototype = {
       scope.cvsFEM.removeEventListener('mouseout', mouseOut, false);
     };
 
-    var mouseWheel = function(event) {
+    var mouseWheel = function (event) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -143,7 +149,7 @@ FEMView.prototype = {
   },
 
   resize: function (width, height) {
-    this.cvsFEM.width = width;
+    this.cvsFEM.width  = width;
     this.cvsFEM.height = height;
     this.transformationController.camera.changePerspective(width, height);
   },
@@ -152,34 +158,35 @@ FEMView.prototype = {
     this.renderer.prepare(geometry, vector, clipPlane, appliedClipPlane);
   },
 
-  unload: function()
-  {
+  unload: function () {
     this.renderer.modelLoaded = false;
   },
 
   animate: function () {
-    requestAnimationFrame(this.animate.bind(this),this.cvsFEM);
+    requestAnimationFrame(this.animate.bind(this), this.cvsFEM);
     this.transformationController.update();
-    this.renderer.render(this.transformationController.camera , this.cvsFEM.width, this.cvsFEM.height, this.transformationController.position, this.transformationController.rotation);
+    this.renderer.render(this.transformationController.camera, this.cvsFEM.width, this.cvsFEM.height, this.transformationController.position, this.transformationController.rotation);
     //  this.transformationController.position = [0, 0, 0]; this.transformationController.rotation = [0, 0];
   },
 
   recalibrateCamera: function (mesh) {
     var maxFrontSize = Math.max(mesh.maxX - mesh.minX, mesh.maxY - mesh.minY);
-    var position = [
+    var position     = [
       -mesh.maxX + (mesh.maxX - mesh.minX) / 2,
       -mesh.maxY + (mesh.maxY - mesh.minY) / 2,
       mesh.minZ - maxFrontSize * 2
     ];
-    var pivot = [
+    var pivot        = [
       mesh.maxX - (mesh.maxX - mesh.minX) / 2,
       mesh.maxY - (mesh.maxY - mesh.minY) / 2,
       mesh.maxZ - (mesh.maxZ - mesh.minZ) / 2
     ];
-    var nearPlane = maxFrontSize / 100.0;
-    var farPlane = maxFrontSize * 10;
+    var nearPlane    = maxFrontSize / 100.0;
+    var farPlane     = maxFrontSize * 10;
     this.camera.recalibrate(nearPlane, farPlane, position, pivot);
 
     this.zoomSpeed = maxFrontSize / 10;
   }
 }
+
+module.exports = FEMView;

@@ -13,12 +13,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-//requires jQuery
+var $ = require('jquery');
 
 LegendView = function () {
   this.cvsLegend = $("#cvsLegend");
   this.context = this.cvsLegend[0].getContext("2d");
-}
+};
 
 LegendView.prototype = {
   constructor: LegendView,
@@ -72,4 +72,6 @@ LegendView.prototype = {
     }
     this.context.stroke();
   }
-}
+};
+
+module.exports = LegendView;

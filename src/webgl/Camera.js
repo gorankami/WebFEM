@@ -28,7 +28,10 @@
  * @param {Number} farPlane - far plane of view frustum
  * @param {Number[3]} position - camera position in 3D space
  */
-Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
+
+var mat4 = require('gl-matrix-mat4');
+
+var Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
   this.verFoV = verFoV;
   this.horFoV = verFoV * aspect;
   this.aspect = aspect;
@@ -103,3 +106,5 @@ Camera.prototype = {
     ];
   }
 }
+
+module.exports = Camera;

@@ -21,12 +21,16 @@
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-connect": "^4.1.0",
-    "run-sequence": "^1.2.2"
+    "run-sequence": "^1.2.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
     "angular": "^1.5.7",
     "bootstrap": "^3.3.6",
     "gl-matrix": "^2.3.2",
+    "gl-matrix-mat4": "^2.2.1-npm",
+    "gl-matrix-vec3": "^2.2.1-npm",
     "jquery": "^3.1.0",
     "three": "^0.78.0"
   }

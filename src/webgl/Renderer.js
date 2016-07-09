@@ -14,16 +14,24 @@
  limitations under the License.
  */
 
-Renderer = function () {
-  this.meshColoured = new MeshColoured();
-  this.meshWireframe = new MeshWireframe();
-  this.meshClipColoured = new MeshClipColoured();
-  this.meshClipColoured.enabled = false;
-  this.meshClipWireframe = new MeshClipWireframe();
+var mat4              = require('gl-matrix-mat4'),
+    MeshClipColoured  = require('./3DObjects/MeshClipColoured'),
+    MeshClipWireframe = require('./3DObjects/MeshClipWireframe'),
+    MeshColoured      = require('./3DObjects/MeshColoured'),
+    MeshWireframe     = require('./3DObjects/MeshWireframe'),
+    ClipPlane         = require('./3DObjects/ClipPlane'),
+    OrientationHelper = require('./3DObjects/OrientationHelper');
+
+var Renderer = function () {
+  this.meshColoured              = new MeshColoured();
+  this.meshWireframe             = new MeshWireframe();
+  this.meshClipColoured          = new MeshClipColoured();
+  this.meshClipColoured.enabled  = false;
+  this.meshClipWireframe         = new MeshClipWireframe();
   this.meshClipWireframe.enabled = false;
-  this.clipPlane = new ClipPlane();
-  this.clipPlane.enabled = false;
-  this.orientationHelper = new OrientationHelper();
+  this.clipPlane                 = new ClipPlane();
+  this.clipPlane.enabled         = false;
+  this.orientationHelper         = new OrientationHelper();
 }
 
 Renderer.prototype = {
@@ -33,8 +41,8 @@ Renderer.prototype = {
   constructor: Renderer,
 
   prepare: function (mesh, clipPlane, appliedClipPlane) {
-    this.modelLoaded = false;
-    this.clipPlane.enabled = clipPlane.active;
+    this.modelLoaded              = false;
+    this.clipPlane.enabled        = clipPlane.active;
     this.meshClipColoured.enabled = this.meshClipWireframe.enabled = !!mesh.clipArea;
 
 
@@ -77,7 +85,7 @@ Renderer.prototype = {
       mat4.rotateX(transformationMatrixModel, transformationMatrixModel, rotation[0]);
       mat4.rotateY(transformationMatrixModel, transformationMatrixModel, rotation[1]);
       //move back to the viewing position
-      mat4.translate(transformationMatrixModel, transformationMatrixModel, [-camera.pivot[0] , -camera.pivot[1] , -camera.pivot[2]]);
+      mat4.translate(transformationMatrixModel, transformationMatrixModel, [-camera.pivot[0], -camera.pivot[1], -camera.pivot[2]]);
 
       this.meshColoured.render(camera.pMatrix, transformationMatrixModel);
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
@@ -100,3 +108,5 @@ Renderer.prototype = {
     }
   }
 }
+
+module.exports = Renderer;

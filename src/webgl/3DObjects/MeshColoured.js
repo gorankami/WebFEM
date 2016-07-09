@@ -1,3 +1,5 @@
+var ShaderProgram = require('../ShaderProgram');
+
 var MeshColoured = function () {
   var vertexShaderSource = [
     "attribute vec3 aVertexPosition;",
@@ -73,12 +75,8 @@ MeshColoured.prototype = {
 
     GL.bindBuffer(GL.ARRAY_BUFFER, this.colorBuffer);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.colorData), GL.DYNAMIC_DRAW);
-    if (clipPlane) {
-      GL.uniform1f(this.uClipPlaneEnabled, 1.0);
-      GL.uniformMatrix4fv(this.uClipPlaneTransformation, false, cpTransformation);
-    } else {
-      GL.uniform1f(this.uClipPlaneEnabled, 0.0);
-    }
+
+    GL.uniform1f(this.uClipPlaneEnabled, 0.0);
   },
 
   render: function (pMatrix, mvMatrix) {
@@ -101,4 +99,6 @@ MeshColoured.prototype = {
     GL.disable(GL.POLYGON_OFFSET_FILL);
     GL.flush();
   }
-}
+};
+
+module.exports = MeshColoured;

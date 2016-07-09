@@ -1,3 +1,5 @@
+var ShaderProgram = require('../ShaderProgram');
+
 var MeshWireframe = function () {
   var vertexShaderSource = [
     "attribute vec3 aVertexPosition;",
@@ -63,12 +65,7 @@ MeshWireframe.prototype = {
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.edgeData), GL.DYNAMIC_DRAW);
     this.indexBuffer.arrayLength = mesh.edgeData.length;
-    if (clipPlane) {
-      GL.uniform1f(this.uClipPlaneEnabled, 1.0);
-      GL.uniformMatrix4fv(this.uClipPlaneTransformation, false, cpTransformation);
-    } else {
-      GL.uniform1f(this.uClipPlaneEnabled, 0.0);
-    }
+    GL.uniform1f(this.uClipPlaneEnabled, 0.0);
   },
 
   render: function (pMatrix, mvMatrix) {
@@ -85,3 +82,5 @@ MeshWireframe.prototype = {
     GL.flush();
   }
 }
+
+module.exports = MeshWireframe;

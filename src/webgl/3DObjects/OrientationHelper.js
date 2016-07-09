@@ -1,4 +1,6 @@
-var MeshClipWireframe = function () {
+var ShaderProgram = require('../ShaderProgram');
+
+var OrientationHelper = function(){
   var vertexShaderSource = [
     "attribute vec3 aVertexPosition;",
     "uniform mat4 uMVMatrix;",
@@ -26,9 +28,9 @@ var MeshClipWireframe = function () {
   this.indexBuffer = GL.createBuffer();
 }
 
-MeshClipWireframe.prototype = {
+OrientationHelper.prototype = {
   program: null,
-  constructor: MeshClipWireframe,
+  constructor: OrientationHelper,
 
   aVertexPosition: null,
   uMVMatrix: null,
@@ -38,14 +40,16 @@ MeshClipWireframe.prototype = {
 
   enabled: true,
 
-  prepareProgram: function (mesh) {
+  prepareProgram: function () {
+    var vertices = [0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4];
+    var indices = [0, 1, 0, 2, 0, 3];
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
-    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.vertexData), GL.DYNAMIC_DRAW);
+    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(vertices), GL.DYNAMIC_DRAW);
 
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.edgeData), GL.DYNAMIC_DRAW);
-    this.indexBuffer.arrayLength = mesh.edgeData.length;
+    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), GL.DYNAMIC_DRAW);
+    this.indexBuffer.arrayLength = indices.length;
   },
 
   render: function (pMatrix, mvMatrix) {
@@ -62,3 +66,5 @@ MeshClipWireframe.prototype = {
     GL.flush();
   }
 }
+
+module.exports = OrientationHelper;
