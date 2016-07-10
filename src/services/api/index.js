@@ -9,7 +9,15 @@ angular.module('WebFEMView').provider("ApiService", function () {
        * @returns {HttpPromise}
        */
       this.getPalettes = function () {
-        return $http.get("/data/palettes.json");
+        return $http.get("/data/palettes.json").then(function(response){
+          //turn to Color objects
+          response.data.forEach(function (palette) {
+            palette.steps.forEach(function (step) {
+              step.color = new THREE.Color(step.color[0], step.color[1], step.color[2]);
+            });
+          });
+          return response;
+        });
       };
 
       /**

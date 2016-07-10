@@ -1,20 +1,12 @@
-var angular = require("angular"),
-    FEMView = require('../../FEMView');
+var angular = require("angular");
 
 angular.module('WebFEMView').controller('WebFEMController', ['$scope', 'ApiService', 'UtilitiesService',
   function ($scope, ApiService, UtilitiesService) {
-    var femView    = new FEMView();
-    femView.init();
-    $scope.numSteps          = 512;
+    var mesh = null;
+    $scope.numSteps = 512;
 
     ApiService.getPalettes().then(function (response) {
       $scope.palettes = response.data;
-      //turn to Color objects
-      $scope.palettes.forEach(function (palette) {
-        palette.steps.forEach(function (step) {
-          step.color = new THREE.Color(step.color[0], step.color[1], step.color[2]);
-        });
-      });
       $scope.palettes.selectedPalette = $scope.palettes[0];
       $scope.drawLegend();
     });
@@ -28,24 +20,20 @@ angular.module('WebFEMView').controller('WebFEMController', ['$scope', 'ApiServi
     $scope.downloadMesh = function () {
       $scope.toggleCurtain = true;
       //free memory
-      delete $scope.mesh;
-      femView.unload();
+      delete mesh;
+      $scope.$broadcast('fem:unload');
+
       ApiService.getMesh('example1').then(function (response) {
         try {
-          var data = response.data;
-          if (data.vertexData && data.vertexData.length
-            && data.indexData && data.indexData.length
-            && data.vectorData && data.vectorData.length) {
+          if (response.data.vertexData.length && response.data.indexData.length && response.data.vectorData.length) {
+            mesh = response.data;
+            UtilitiesService.scalePaletteColorValues(mesh.minValue, mesh.maxValue, $scope.palettes.selectedPalette.steps);
 
-            $scope.mesh             = data;
-            UtilitiesService.scalePaletteColorValues(data.minValue, data.maxValue, $scope.palettes.selectedPalette.steps);
+            var colorArray        = UtilitiesService.initColorArray($scope.numSteps, $scope.palettes.selectedPalette, mesh.minValue, mesh.maxValue, $scope.inverted);
+            mesh.colorData = UtilitiesService.prepareVector(mesh, mesh.minValue, mesh.maxValue, $scope.palettes.selectedPalette, $scope.numSteps, $scope.inverted, colorArray);
 
-            var colorArray        = UtilitiesService.initColorArray($scope.numSteps, $scope.palettes.selectedPalette, $scope.mesh.minValue, $scope.mesh.maxValue, $scope.inverted);
-            $scope.mesh.colorData = UtilitiesService.prepareVector($scope.mesh, $scope.mesh.minValue, $scope.mesh.maxValue, $scope.palettes.selectedPalette, $scope.numSteps, $scope.inverted, colorArray);
+            $scope.$broadcast('fem:loadmesh',mesh);
 
-            femView.recalibrateCamera($scope.mesh);
-            femView.transformationController.zoomSpeed = Math.max($scope.mesh.maxX - $scope.mesh.minX, $scope.mesh.maxY - $scope.mesh.minY) / 10;
-            femView.draw($scope.mesh, null, null);
             $scope.drawLegend();
           }
           else {
@@ -59,14 +47,9 @@ angular.module('WebFEMView').controller('WebFEMController', ['$scope', 'ApiServi
     };
 
     $scope.reDraw = function () {
-      if ($scope.mesh) {
-        femView.draw($scope.mesh, null, null);
+      if (mesh) {
+        $scope.$broadcast('fem:draw',mesh);
+        // femView.draw(mesh);
       }
-    };
-
-    $scope.applyColorMap = function () {
-      UtilitiesService.scalePaletteColorValues($scope.mesh.minValue, $scope.mesh.maxValue, $scope.palettes.selectedPalette.steps);
-      var colorArray                 = UtilitiesService.initColorArray($scope.numSteps, $scope.palettes.selectedPalette, $scope.mesh.minValue, $scope.mesh.maxValue, $scope.inverted);
-      $scope.mesh.colorData          = UtilitiesService.prepareVector($scope.mesh, $scope.mesh.minValue, $scope.mesh.maxValue, $scope.palettes.selectedPalette, $scope.numSteps, $scope.inverted, colorArray);
     };
   }]);

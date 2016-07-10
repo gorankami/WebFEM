@@ -18,26 +18,15 @@ var $        = require('jquery'),
     Camera   = require('./webgl/Camera'),
     Renderer = require('./webgl/Renderer');
 
-var FEMView = function () {
-  this.cvsFEM = $("#cvsFEM")[0];
-  try {
-    GL = this.cvsFEM.getContext("webgl") || this.cvsFEM.getContext("experimental-webgl");
-  } catch (e) {
-    alert("Error in retreiving WebGL, your browser might not support Webgl.");
-    return;
-  }
-  if (!GL) {
-    alert("Your browser does not support Webgl, the application will not work.");
-    return;
-  }
-  this.camera                   = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
-  this.transformationController = new TransformationController(this.cvsFEM, this.camera);
-}
+var FEMView = function () {};
 
 FEMView.prototype = {
   constructor: FEMView,
 
-  init      : function () {
+  init      : function (canvas) {
+    this.cvsFEM   = canvas;
+    this.camera                   = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
+    this.transformationController = new TransformationController(this.cvsFEM, this.camera);
     this.renderer = new Renderer();
     this.resize(window.innerWidth, window.innerHeight);
     this.initEvents();

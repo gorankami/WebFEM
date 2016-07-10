@@ -17,11 +17,11 @@
               ng-selected="drawLegend();reDraw();"></select><br/>
       Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="numSteps"/><br/>
       <input ng-model="inverted" type="checkbox" ng-change="drawLegend();reDraw();"/>Inverted<br/>
-      <span legend-view min="mesh.minValue" max="mesh.maxValue" inverted="inverted"></span>
+      <span legend-view inverted="inverted"></span>
       <!--<canvas id="cvsLegend" width="150" height="500"></canvas><br/>-->
       <button class="btn" ng-click="downloadMesh(true)">Apply</button>
     </div>
     <!-- model view -->
-    <canvas id="cvsFEM"></canvas>
+    <span fem-view></span>
   </body>
 </html>

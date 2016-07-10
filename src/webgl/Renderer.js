@@ -14,15 +14,13 @@
  limitations under the License.
  */
 
-var mat4              = require('gl-matrix-mat4'),
-    MeshColoured      = require('./3DObjects/MeshColoured'),
-    MeshWireframe     = require('./3DObjects/MeshWireframe'),
-    OrientationHelper = require('./3DObjects/OrientationHelper');
+var mat4          = require('gl-matrix-mat4'),
+    MeshColoured  = require('./3DObjects/MeshColoured'),
+    MeshWireframe = require('./3DObjects/MeshWireframe');
 
 var Renderer = function () {
-  this.meshColoured              = new MeshColoured();
-  this.meshWireframe             = new MeshWireframe();
-  this.orientationHelper         = new OrientationHelper();
+  this.meshColoured  = new MeshColoured();
+  this.meshWireframe = new MeshWireframe();
 }
 
 Renderer.prototype = {
@@ -32,14 +30,12 @@ Renderer.prototype = {
   constructor: Renderer,
 
   prepare: function (mesh) {
-    this.modelLoaded              = false;
+    this.modelLoaded = false;
 
-    //orientation
-    this.orientationHelper.prepareProgram();
     var tMCP = [];
 
     this.meshColoured.prepareProgram(mesh, null, tMCP);
-    this.meshWireframe.prepareProgram(mesh,  null, tMCP);
+    this.meshWireframe.prepareProgram(mesh, null, tMCP);
     this.modelLoaded = true;
   },
 
@@ -68,14 +64,6 @@ Renderer.prototype = {
 
       this.meshColoured.render(camera.pMatrix, transformationMatrixModel);
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
-
-      //ORIENTATION HELPER
-      var transformationMatrixOrient = mat4.create();
-      mat4.translate(transformationMatrixOrient, camera.mvMatrix, [-2, -1, 6]);
-      mat4.rotate(transformationMatrixOrient, transformationMatrixOrient, rotation[0], [1.0, 0.0, 0.0]);
-      mat4.rotate(transformationMatrixOrient, transformationMatrixOrient, rotation[1], [0.0, 1.0, 0.0]);
-
-      this.orientationHelper.render(camera.pMatrix, transformationMatrixOrient)
     }
   }
 }

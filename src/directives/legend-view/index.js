@@ -5,8 +5,6 @@ var angular = require("angular"),
 angular.module("WebFEMView").directive("legendView", function () {
   return {
     scope: {
-      min: "=",
-      max: "=",
       inverted: "="
     },
     restrict: "A",
