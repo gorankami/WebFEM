@@ -9,7 +9,6 @@
   </head>
   <body ng-app="WebFEMView" ng-controller="WebFEMController">
     <div ng-show="toggleCurtain" class="curtain"><p>Downloading model, please wait...</p></div>
-
     <div class="tool-panel right">
 
       <b>Palettes:</b><br/>
@@ -18,8 +17,8 @@
               ng-selected="drawLegend();reDraw();"></select><br/>
       Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="numSteps"/><br/>
       <input ng-model="inverted" type="checkbox" ng-change="drawLegend();reDraw();"/>Inverted<br/>
-
-      <canvas id="cvsLegend" width="150" height="500"></canvas><br/>
+      <span legend-view min="mesh.minValue" max="mesh.maxValue" inverted="inverted"></span>
+      <!--<canvas id="cvsLegend" width="150" height="500"></canvas><br/>-->
       <button class="btn" ng-click="downloadMesh(true)">Apply</button>
     </div>
     <!-- model view -->

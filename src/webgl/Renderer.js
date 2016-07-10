@@ -15,22 +15,13 @@
  */
 
 var mat4              = require('gl-matrix-mat4'),
-    MeshClipColoured  = require('./3DObjects/MeshClipColoured'),
-    MeshClipWireframe = require('./3DObjects/MeshClipWireframe'),
     MeshColoured      = require('./3DObjects/MeshColoured'),
     MeshWireframe     = require('./3DObjects/MeshWireframe'),
-    ClipPlane         = require('./3DObjects/ClipPlane'),
     OrientationHelper = require('./3DObjects/OrientationHelper');
 
 var Renderer = function () {
   this.meshColoured              = new MeshColoured();
   this.meshWireframe             = new MeshWireframe();
-  this.meshClipColoured          = new MeshClipColoured();
-  this.meshClipColoured.enabled  = false;
-  this.meshClipWireframe         = new MeshClipWireframe();
-  this.meshClipWireframe.enabled = false;
-  this.clipPlane                 = new ClipPlane();
-  this.clipPlane.enabled         = false;
   this.orientationHelper         = new OrientationHelper();
 }
 
@@ -40,27 +31,15 @@ Renderer.prototype = {
 
   constructor: Renderer,
 
-  prepare: function (mesh, clipPlane, appliedClipPlane) {
+  prepare: function (mesh) {
     this.modelLoaded              = false;
-    this.clipPlane.enabled        = clipPlane.active;
-    this.meshClipColoured.enabled = this.meshClipWireframe.enabled = !!mesh.clipArea;
-
 
     //orientation
     this.orientationHelper.prepareProgram();
     var tMCP = [];
-    if (this.clipPlane.enabled) {
-      //clip plane
-      this.clipPlane.prepareProgram(clipPlane.mesh, clipPlane.base, clipPlane.normal);
-      tMCP = this.clipPlane.tMatrix2;
-    }
-    this.meshColoured.prepareProgram(mesh, this.clipPlane.enabled || appliedClipPlane ? clipPlane : null, tMCP);
-    this.meshWireframe.prepareProgram(mesh, this.clipPlane.enabled || appliedClipPlane ? clipPlane : null, tMCP);
 
-    if (this.meshClipColoured.enabled && this.meshClipWireframe.enabled) {
-      this.meshClipColoured.prepareProgram(mesh.clipArea);
-      this.meshClipWireframe.prepareProgram(mesh.clipArea);
-    }
+    this.meshColoured.prepareProgram(mesh, null, tMCP);
+    this.meshWireframe.prepareProgram(mesh,  null, tMCP);
     this.modelLoaded = true;
   },
 
@@ -89,14 +68,6 @@ Renderer.prototype = {
 
       this.meshColoured.render(camera.pMatrix, transformationMatrixModel);
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
-      if (this.clipPlane.enabled) {
-        this.clipPlane.render(camera.pMatrix, transformationMatrixModel);
-      }
-
-      if (this.meshClipColoured.enabled && this.meshClipWireframe.enabled) {
-        this.meshClipColoured.render(camera.pMatrix, transformationMatrixModel);
-        this.meshClipWireframe.render(camera.pMatrix, transformationMatrixModel);
-      }
 
       //ORIENTATION HELPER
       var transformationMatrixOrient = mat4.create();

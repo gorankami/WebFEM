@@ -66,8 +66,6 @@ var ShaderProgram = function ShaderProgram(type) {
 
   if (type == "Colors"){
     program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
-    program.uniforms.clipPlaneBase = GL.getUniformLocation(program, "uClipPlaneBase");
-    program.uniforms.clipPlaneNormal = GL.getUniformLocation(program, "uClipPlaneNormal");
   }
 
   program.buffers = {

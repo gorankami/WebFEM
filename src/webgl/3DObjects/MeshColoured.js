@@ -6,14 +6,10 @@ var MeshColoured = function () {
     "attribute vec3 aVertexColor;",
     "uniform mat4 uMVMatrix;",
     "uniform mat4 uPMatrix;",
-    "uniform float uClipPlaneEnabled;",
-    "uniform mat4 uClipPlaneTransformation;",
-    "varying lowp float vCPEnabled;",
     "varying lowp vec4 vColor;",
     "varying highp float vPosX;",
     "void main(void) {",
-    "  vCPEnabled = uClipPlaneEnabled;",
-    "  vPosX = (uClipPlaneTransformation * vec4(aVertexPosition , 1.0))[0];",
+    "  vPosX = vec4(aVertexPosition , 1.0)[0];",
     "  gl_Position = uPMatrix * (uMVMatrix * vec4(aVertexPosition, 1.0));",
     "  vColor = vec4(aVertexColor, 1.0);",
     "}"
@@ -21,14 +17,9 @@ var MeshColoured = function () {
 
   var fragmentShaderSource = [
     "varying lowp vec4 vColor;",
-    "varying lowp float vCPEnabled;",
     "varying highp float vPosX;",
     "void main(void) {",
-    "   if(vCPEnabled > 0.0 && vPosX < 0.0) {",
-    "       discard;",
-    "   } else {",
-    "       gl_FragColor = vColor;",
-    "   }",
+    "  gl_FragColor = vColor;",
     "}"
   ].join("\n");
 
@@ -40,8 +31,6 @@ var MeshColoured = function () {
   this.aVertexColor = GL.getAttribLocation(this.program, "aVertexColor");
   this.uMVMatrix = GL.getUniformLocation(this.program, "uMVMatrix");
   this.uPMatrix = GL.getUniformLocation(this.program, "uPMatrix");
-  this.uClipPlaneEnabled = GL.getUniformLocation(this.program, "uClipPlaneEnabled");
-  this.uClipPlaneTransformation = GL.getUniformLocation(this.program, "uClipPlaneTransformation");
 
   this.vertexBuffer = GL.createBuffer();
   this.indexBuffer = GL.createBuffer();
@@ -56,15 +45,13 @@ MeshColoured.prototype = {
   aVertexColor: null,
   uMVMatrix: null,
   uPMatrix: null,
-  uClipPlaneEnabled: null,
-  uClipPlaneTransformation: null,
   vertexBuffer: null,
   indexBuffer: null,
   colorBuffer: null,
 
   enabled: true,
 
-  prepareProgram: function (mesh, clipPlane, cpTransformation) {
+  prepareProgram: function (mesh) {
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.vertexData), GL.DYNAMIC_DRAW);
@@ -75,8 +62,6 @@ MeshColoured.prototype = {
 
     GL.bindBuffer(GL.ARRAY_BUFFER, this.colorBuffer);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.colorData), GL.DYNAMIC_DRAW);
-
-    GL.uniform1f(this.uClipPlaneEnabled, 0.0);
   },
 
   render: function (pMatrix, mvMatrix) {

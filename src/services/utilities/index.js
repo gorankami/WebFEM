@@ -4,7 +4,7 @@ angular.module('WebFEMView').provider("UtilitiesService", function () {
   this.$get = function(){
     function UtilitiesService(){
       var self = this;
-      this.prepareVector = function (mesh, min, max, palette, numSteps, inverted, colorArray) {
+      self.prepareVector = function (mesh, min, max, palette, numSteps, inverted, colorArray) {
         var colors = [];
         for (var i = 0; i < mesh.vectorData.length; i++) {
           var color = self.getColorFromArray(mesh.vectorData[i], min, max, colorArray);
@@ -15,7 +15,7 @@ angular.module('WebFEMView').provider("UtilitiesService", function () {
         return colors;
       };
 
-      this.initColorArray= function (numColors, palette, minValue, maxValue, inverted) {
+      self.initColorArray= function (numColors, palette, minValue, maxValue, inverted) {
         if (maxValue - minValue == 0) return [new THREE.Color(0x000000)];
         var n = !!numColors ? numColors : 1024;
         var colorArray = [];
@@ -43,7 +43,7 @@ angular.module('WebFEMView').provider("UtilitiesService", function () {
         return colorArray;
       };
 
-      this.getColorFromArray = function (alpha, min, max, array) {
+      self.getColorFromArray = function (alpha, min, max, array) {
         if (alpha <= min || min == max) {
           alpha = min;
         } else if (alpha >= max) {
@@ -56,7 +56,7 @@ angular.module('WebFEMView').provider("UtilitiesService", function () {
         return array[colorPosition];
       };
 
-      this.scalePaletteColorValues = function (min, max, steps) {
+      self.scalePaletteColorValues = function (min, max, steps) {
         for (var i = 0; i < steps.length; i++) {
           steps[i].scaledVal = min + i * (max - min) / (steps.length - 1);
         }

@@ -108,44 +108,6 @@ FEMView.prototype = {
     this.cvsFEM.addEventListener('mousedown', mouseDown, false);
     this.cvsFEM.addEventListener('mousewheel', mouseWheel, false);
     this.cvsFEM.addEventListener('DOMMouseScroll', mouseWheel, false); // firefox
-
-    //touch events
-    //this.cvsFEM.addEventListener('touchstart', touchStart, false);
-    //this.cvsFEM.addEventListener('touchmove', touchMove, false);
-    //this.cvsFEM.addEventListener('touchend', touchEnd, false);
-
-    //keyboard events
-
-
-    //var keyDown = function (e) {
-    //    if (!scope.renderer.modelLoaded) return;
-
-    //    switch (e.which) {
-    //        case 37: // left
-    //        case 65: // A
-    //            scope.transformationController.startPan([0.0, 0.0]);
-    //            scope.transformationController.doPan([-5, 0]);
-    //            break;
-    //        case 39: // right
-    //        case 68: // D
-    //            scope.transformationController.startPan([0.0, 0.0]);
-    //            scope.transformationController.doPan([5, 0]);
-    //            break;
-    //        case 38: // up
-    //        case 87: // W
-    //            scope.transformationController.startPan([0.0, 0.0]);
-    //            scope.transformationController.doPan([0, -5]);
-    //            break;
-    //        case 40: // down
-    //        case 83: // S
-    //            scope.transformationController.startPan([0.0, 0.0]);
-    //            scope.transformationController.doPan([0, 5]);
-    //            break;
-    //        default: return; // exit this handler for other keys
-    //    }
-    //    e.preventDefault();
-    //};
-    //window.addEventListener('keydown', keyDown, false);
   },
 
   resize: function (width, height) {
@@ -154,8 +116,8 @@ FEMView.prototype = {
     this.transformationController.camera.changePerspective(width, height);
   },
 
-  draw: function (geometry, vector, clipPlane, appliedClipPlane) {
-    this.renderer.prepare(geometry, vector, clipPlane, appliedClipPlane);
+  draw: function (geometry, vector) {
+    this.renderer.prepare(geometry, vector);
   },
 
   unload: function () {
