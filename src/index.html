@@ -6,18 +6,18 @@
   <link href="style.css" rel="stylesheet" type='text/css'/>
   <script type="application/javascript" src="index.js"></script>
 </head>
-<body ng-app="WebFEMView" ng-controller="WebFEMController">
-<div ng-show="toggleCurtain" class="curtain"><p>Downloading model, please wait...</p></div>
+<body ng-app="WebFEMView" ng-controller="WebFEMController as vm">
+<div ng-show="vm.toggleCurtain" class="curtain"><p>Downloading model, please wait...</p></div>
 <div class="tool-panel right">
   <b>Palettes:</b><br/>
-  <select ng-model="palettes.selectedPalette"
-          ng-options="palette.name for palette in palettes track by palette.id"
-          ng-selected="drawLegend();reDraw();"></select><br/>
-  Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="numSteps"/><br/>
-  <input ng-model="inverted" type="checkbox" ng-change="drawLegend();reDraw();"/>Inverted<br/>
+  <select ng-model="vm.palettes.selectedPalette"
+          ng-options="palette.name for palette in vm.palettes track by palette.id"
+          ng-selected="vm.drawLegend();vm.reDraw();"></select><br/>
+  Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="vm.numSteps"/><br/>
+  <input ng-model="inverted" type="checkbox" ng-change="vm.drawLegend();vm.reDraw();"/>Inverted<br/>
   <span legend-view inverted="inverted"></span>
   <!--<canvas id="cvsLegend" width="150" height="500"></canvas><br/>-->
-  <button class="btn" ng-click="downloadMesh(true)">Apply</button>
+  <button class="btn" ng-click="vm.downloadMesh(true)">Apply</button>
 </div>
 <!-- model view -->
 <span fem-view></span>

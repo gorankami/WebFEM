@@ -4,23 +4,28 @@ angular.module('WebFEMView')
   .controller('WebFEMController', ['$scope', 'ApiService', 'UtilitiesService', WebFEMController]);
 
 function WebFEMController($scope, ApiService, UtilitiesService) {
-  var mesh = null;
-  $scope.numSteps = 512;
+  var vm          = this;
+  var mesh        = null;
+  vm.numSteps     = 512;
+
+  vm.drawLegend   = drawLegend;
+  vm.downloadMesh = downloadMesh;
+  vm.reDraw       = reDraw;
 
   ApiService.getPalettes().then(function (response) {
-    $scope.palettes = response.data;
-    $scope.palettes.selectedPalette = $scope.palettes[0];
-    $scope.drawLegend();
+    vm.palettes                 = response.data;
+    vm.palettes.selectedPalette = vm.palettes[0];
+    drawLegend();
   });
 
-  $scope.drawLegend = function () {
-    if ($scope.palettes && $scope.palettes.length) {
-      $scope.$broadcast('legend:draw', $scope.palettes.selectedPalette);
+  function drawLegend() {
+    if (vm.palettes && vm.palettes.length) {
+      $scope.$broadcast('legend:draw', vm.palettes.selectedPalette);
     }
-  };
+  }
 
-  $scope.downloadMesh = function () {
-    $scope.toggleCurtain = true;
+  function downloadMesh() {
+    vm.toggleCurtain = true;
     //free memory
     delete mesh;
     $scope.$broadcast('fem:unload');
@@ -29,14 +34,14 @@ function WebFEMController($scope, ApiService, UtilitiesService) {
       try {
         if (response.data.vertexData.length && response.data.indexData.length && response.data.vectorData.length) {
           mesh = response.data;
-          UtilitiesService.scalePaletteColorValues(mesh.minValue, mesh.maxValue, $scope.palettes.selectedPalette.steps);
+          UtilitiesService.scalePaletteColorValues(mesh.minValue, mesh.maxValue, vm.palettes.selectedPalette.steps);
 
-          var colorArray        = UtilitiesService.initColorArray($scope.numSteps, $scope.palettes.selectedPalette, mesh.minValue, mesh.maxValue, $scope.inverted);
-          mesh.colorData = UtilitiesService.prepareVector(mesh, mesh.minValue, mesh.maxValue, $scope.palettes.selectedPalette, $scope.numSteps, $scope.inverted, colorArray);
+          var colorArray = UtilitiesService.initColorArray(vm.numSteps, vm.palettes.selectedPalette, mesh.minValue, mesh.maxValue, vm.inverted);
+          mesh.colorData = UtilitiesService.prepareVector(mesh, mesh.minValue, mesh.maxValue, vm.palettes.selectedPalette, vm.numSteps, vm.inverted, colorArray);
 
-          $scope.$broadcast('fem:loadmesh',mesh);
+          $scope.$broadcast('fem:loadmesh', mesh);
 
-          $scope.drawLegend();
+          drawLegend();
         }
         else {
           alert("Cannot load model.");
@@ -44,14 +49,13 @@ function WebFEMController($scope, ApiService, UtilitiesService) {
       } catch (ex) {
         alert("Error: " + ex.message);
       }
-      $scope.toggleCurtain = false;
+      vm.toggleCurtain = false;
     });
-  };
+  }
 
-  $scope.reDraw = function () {
+  function reDraw() {
     if (mesh) {
-      $scope.$broadcast('fem:draw',mesh);
-      // femView.draw(mesh);
+      $scope.$broadcast('fem:draw', mesh);
     }
-  };
+  }
 }
