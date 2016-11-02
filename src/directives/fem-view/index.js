@@ -33,8 +33,7 @@ function linkFunc($scope, element) {
   $scope.ctrl.femView.init(canvas);
 }
 
-FemViewController.$inject = ['$scope'];
-
+/* @ngInject */
 function FemViewController($scope) {
   var vm = this;
 

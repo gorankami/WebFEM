@@ -5,9 +5,8 @@ angular
   .module('WebFEMView')
   .factory("ApiService", ApiService);
 
-ApiService.$inject = ['$http'];
-
-function ApiService($http) {
+/* @ngInject */
+function ApiService($http, $q) {
   var service = {
     getPalettes: getPalettes,
     getMesh    : getMesh
@@ -21,9 +20,11 @@ function ApiService($http) {
    * @returns {HttpPromise}
    */
   function getPalettes() {
-    return $http.get("/data/palettes.json").then(GetPalletesResponse);
+    return $http.get("/data/palettes.json")
+      .then(GetPalletesResponse)
+      .catch(GetPalletesError);
 
-    function GetPalletesResponse(response){
+    function GetPalletesResponse(response) {
       //turn to Color objects
       response.data.forEach(function (palette) {
         palette.steps.forEach(function (step) {
@@ -31,6 +32,10 @@ function ApiService($http) {
         });
       });
       return response;
+    }
+
+    function GetPalletesError(e) {
+      $q.reject(e)
     }
   }
 

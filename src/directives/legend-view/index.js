@@ -28,8 +28,7 @@ function linkFunc(scope, element) {
   scope.ctrl.context = canvas.getContext("2d");
 }
 
-LegendViewController.$inject = ['$scope'];
-
+/* @ngInject */
 function LegendViewController($scope) {
   var vm = this;
   $scope.$on('legend:draw', drawEvent);

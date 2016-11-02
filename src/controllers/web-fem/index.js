@@ -3,8 +3,7 @@ var angular = require("angular");
 angular.module('WebFEMView')
   .controller('WebFEMController', WebFEMController);
 
-WebFEMController.$inject = ['$scope', 'ApiService', 'UtilitiesService'];
-
+/* @ngInject */
 function WebFEMController($scope, ApiService, UtilitiesService) {
   var vm      = this;
   var mesh    = null;

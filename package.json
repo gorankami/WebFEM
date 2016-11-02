@@ -32,6 +32,7 @@
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
     "jquery": "^3.1.0",
+    "ng-annotate": "^1.2.1",
     "three": "^0.78.0"
   }
 }
