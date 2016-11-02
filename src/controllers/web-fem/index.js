@@ -1,12 +1,14 @@
 var angular = require("angular");
 
 angular.module('WebFEMView')
-  .controller('WebFEMController', ['$scope', 'ApiService', 'UtilitiesService', WebFEMController]);
+  .controller('WebFEMController', WebFEMController);
+
+WebFEMController.$inject = ['$scope', 'ApiService', 'UtilitiesService'];
 
 function WebFEMController($scope, ApiService, UtilitiesService) {
-  var vm          = this;
-  var mesh        = null;
-  vm.numSteps     = 512;
+  var vm      = this;
+  var mesh    = null;
+  vm.numSteps = 512;
 
   vm.drawLegend   = drawLegend;
   vm.downloadMesh = downloadMesh;

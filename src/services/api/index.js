@@ -3,7 +3,9 @@ var angular = require("angular"),
 
 angular
   .module('WebFEMView')
-  .factory("ApiService", ["$http", ApiService]);
+  .factory("ApiService", ApiService);
+
+ApiService.$inject = ['$http'];
 
 function ApiService($http) {
   var service = {
@@ -19,7 +21,9 @@ function ApiService($http) {
    * @returns {HttpPromise}
    */
   function getPalettes() {
-    return $http.get("/data/palettes.json").then(function (response) {
+    return $http.get("/data/palettes.json").then(GetPalletesResponse);
+
+    function GetPalletesResponse(response){
       //turn to Color objects
       response.data.forEach(function (palette) {
         palette.steps.forEach(function (step) {
@@ -27,7 +31,7 @@ function ApiService($http) {
         });
       });
       return response;
-    });
+    }
   }
 
   /**
