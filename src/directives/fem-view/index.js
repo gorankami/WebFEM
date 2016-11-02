@@ -5,31 +5,39 @@ var angular   = require("angular"),
 
 var femView = null;
 
+/**
+ * @desc
+ * @example
+ */
 angular
   .module("WebFEMView")
-  .directive("femView", FemView);
+  .directive("monolitFemView", FemView);
 
 function FemView() {
   return {
     scope       : {},
     restrict    : "A",
     template    : "<canvas id='cvsFEM'></canvas>",
-    link        : function ($scope, element) {
-      var canvas = $('canvas', element);
-      if (canvas.length) canvas = canvas[0];
-
-      GLService.init(canvas);
-      $scope.ctrl.femView = new FEMView();
-      $scope.ctrl.femView.init(canvas);
-    },
-    controller  : ['$scope', FemViewController],
+    link        : linkFunc,
+    controller  : FemViewController,
     controllerAs: 'ctrl'
   };
 }
 
+function linkFunc($scope, element) {
+  var canvas = $('canvas', element);
+  if (canvas.length) canvas = canvas[0];
+
+  GLService.init(canvas);
+  $scope.ctrl.femView = new FEMView();
+  $scope.ctrl.femView.init(canvas);
+}
+
+FemViewController.$inject = ['$scope'];
+
 function FemViewController($scope) {
   var vm = this;
-  
+
   $scope.$on('fem:unload', function () {
     vm.femView.unload();
   });

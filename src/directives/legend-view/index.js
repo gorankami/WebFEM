@@ -1,9 +1,13 @@
 var angular  = require("angular"),
     $        = require("jquery");
 
+/**
+ * @desc
+ * @example
+ */
 angular
   .module("WebFEMView")
-  .directive("legendView", LegendView);
+  .directive("monolitLegendView", LegendView);
 
 function LegendView() {
   return {
@@ -12,15 +16,19 @@ function LegendView() {
     },
     restrict  : "A",
     template  : "<canvas width='150' height='500'></canvas><br/>",
-    link      : function (scope, element) {
-      var canvas = $('canvas', element);
-      if (canvas.length) canvas = canvas[0];
-      scope.ctrl.context = canvas.getContext("2d");
-    },
-    controller: ['$scope', LegendViewController],
+    link      : linkFunc,
+    controller: LegendViewController,
     controllerAs: 'ctrl'
   };
 }
+
+function linkFunc(scope, element) {
+  var canvas = $('canvas', element);
+  if (canvas.length) canvas = canvas[0];
+  scope.ctrl.context = canvas.getContext("2d");
+}
+
+LegendViewController.$inject = ['$scope'];
 
 function LegendViewController($scope) {
   var vm = this;
