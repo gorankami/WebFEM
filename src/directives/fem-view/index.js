@@ -1,11 +1,15 @@
 var angular = require("angular"),
     $       = require("jquery"),
-    FEMView = require('../../webgl/FEMView');
-    GL = require('../../webgl/GL');
+    FEMView = require('../../webgl/FEMView'),
+    GL      = require('../../webgl/GL');
 
 var femView = null;
 
-angular.module("WebFEMView").directive("femView", function () {
+angular
+  .module("WebFEMView")
+  .directive("femView", FemView);
+
+function FemView() {
   return {
     scope   : {},
     restrict: "A",
@@ -33,4 +37,4 @@ angular.module("WebFEMView").directive("femView", function () {
 
     }
   };
-});
+}

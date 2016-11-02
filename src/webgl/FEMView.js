@@ -13,10 +13,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-var $        = require('jquery'),
-    vec3     = require('gl-matrix-vec3'),
-    Camera   = require('./Camera'),
-    Renderer = require('./Renderer');
+var $                        = require('jquery'),
+    vec3                     = require('gl-matrix-vec3'),
+    Camera                   = require('./Camera'),
+    Renderer                 = require('./Renderer'),
+    TransformationController = require('./TransformationController');
 
 function FEMView() {
 }

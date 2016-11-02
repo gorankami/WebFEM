@@ -2,7 +2,11 @@ var angular = require("angular"),
     $ = require("jquery"),
     _context = null;
 
-angular.module("WebFEMView").directive("legendView", function () {
+angular
+  .module("WebFEMView")
+  .directive("legendView", LegendView);
+
+function LegendView() {
   return {
     scope: {
       inverted: "="
@@ -16,7 +20,7 @@ angular.module("WebFEMView").directive("legendView", function () {
     // "Number of steps:<br/>" +
     // "<input id='tbNumSteps' type='number' ng-model='numSteps'/><br/>" +
     // "<input ng-model='inverted' type='checkbox' ng-change='drawLegend();reDraw();'/>Inverted<br/>" +
-    "<canvas width='150' height='500'></canvas><br/>",
+      "<canvas width='150' height='500'></canvas><br/>",
     // "<button class='btn' ng-click='downloadMesh(true)'>Apply</button>",
     link: function(scope, element){
       var canvas = $('canvas',element);
@@ -73,4 +77,4 @@ angular.module("WebFEMView").directive("legendView", function () {
       });
     }
   };
-});
+}
