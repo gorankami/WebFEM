@@ -37,7 +37,7 @@ var Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
   this.aspect = aspect;
   mat4.identity(this.mvMatrix);
   this.recalibrate(nearPlane, farPlane, position, [0,0,0]);
-}
+};
 
 Camera.prototype = {
   verFoV: 0,
@@ -105,6 +105,6 @@ Camera.prototype = {
       yNear * (-this.position[2] - objectZ)
     ];
   }
-}
+};
 
 module.exports = Camera;

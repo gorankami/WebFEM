@@ -2,7 +2,7 @@
 window.THREE   = {};
 require("three/src/math/Color");
 
-require('./TransformationController.js');
+require('./webgl/TransformationController.js');
 
 
 var angular = require("angular");

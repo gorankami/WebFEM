@@ -1,6 +1,8 @@
 var ShaderProgram = require('../ShaderProgram');
+var GLService = require('./../GL');
 
 var OrientationHelper = function(){
+  var GL = GLService.context;
   var vertexShaderSource = [
     "attribute vec3 aVertexPosition;",
     "uniform mat4 uMVMatrix;",
@@ -41,6 +43,7 @@ OrientationHelper.prototype = {
   enabled: true,
 
   prepareProgram: function () {
+    var GL = GLService.context;
     var vertices = [0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4];
     var indices = [0, 1, 0, 2, 0, 3];
     GL.useProgram(this.program);
@@ -53,6 +56,7 @@ OrientationHelper.prototype = {
   },
 
   render: function (pMatrix, mvMatrix) {
+    var GL = GLService.context;
     GL.useProgram(this.program);
     GL.uniformMatrix4fv(this.uPMatrix, false, pMatrix);
     GL.uniformMatrix4fv(this.uMVMatrix, false, mvMatrix);
@@ -65,6 +69,6 @@ OrientationHelper.prototype = {
     GL.drawElements(GL.LINES, this.indexBuffer.arrayLength, GL.UNSIGNED_SHORT, 0);
     GL.flush();
   }
-}
+};
 
 module.exports = OrientationHelper;

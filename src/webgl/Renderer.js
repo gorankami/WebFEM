@@ -16,9 +16,10 @@
 
 var mat4          = require('gl-matrix-mat4'),
     MeshColoured  = require('./3DObjects/MeshColoured'),
-    MeshWireframe = require('./3DObjects/MeshWireframe');
+    MeshWireframe = require('./3DObjects/MeshWireframe'),
+    GLService     = require('./GL');
 
-var Renderer = function () {
+var Renderer      = function () {
   this.meshColoured  = new MeshColoured();
   this.meshWireframe = new MeshWireframe();
 }
@@ -41,12 +42,14 @@ Renderer.prototype = {
 
 
   clearScene: function () {
+    var GL = GLService.context;
     GL.clearColor(0, 0, 0, 1.0);
     GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
     GL.enable(GL.DEPTH_TEST);
   },
 
   render: function (camera, cvsWidth, cvsHeight, position, rotation) {
+    var GL = GLService.context;
     this.clearScene();
     if (this.modelLoaded) {
       GL.viewport(0, 0, cvsWidth, cvsHeight);
@@ -66,6 +69,6 @@ Renderer.prototype = {
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
     }
   }
-}
+};
 
 module.exports = Renderer;

@@ -1,6 +1,8 @@
 var ShaderProgram = require('../ShaderProgram');
+var GLService = require('./../GL');
 
 var MeshWireframe = function () {
+  var GL = GLService.context;
   var vertexShaderSource = [
     "attribute vec3 aVertexPosition;",
     "uniform mat4 uMVMatrix;",
@@ -44,6 +46,7 @@ MeshWireframe.prototype = {
   enabled: true,
 
   prepareProgram: function (mesh) {
+    var GL = GLService.context;
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.vertexData), GL.DYNAMIC_DRAW);
@@ -54,6 +57,7 @@ MeshWireframe.prototype = {
   },
 
   render: function (pMatrix, mvMatrix) {
+    var GL = GLService.context;
     GL.useProgram(this.program);
     GL.uniformMatrix4fv(this.uPMatrix, false, pMatrix);
     GL.uniformMatrix4fv(this.uMVMatrix, false, mvMatrix);
@@ -66,6 +70,6 @@ MeshWireframe.prototype = {
     GL.drawElements(GL.LINES, this.indexBuffer.arrayLength, GL.UNSIGNED_SHORT, 0);
     GL.flush();
   }
-}
+};
 
 module.exports = MeshWireframe;

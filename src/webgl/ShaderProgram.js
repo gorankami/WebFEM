@@ -25,9 +25,13 @@
  * @param {String} type - type of shader. For now "Color" and "FEMWireframe" are implemented for the use of a FEM application
  * @type {object} - returns a GL shader program object
  */
+var GLService = require('./GL');
+
 var ShaderProgram = function ShaderProgram(type) {
+  var GL = GLService.context;
   var vertexShader = null;
   var fragmentShader = null;
+  
   var program = GL.createProgram();
 
   switch (type) {
@@ -77,9 +81,11 @@ var ShaderProgram = function ShaderProgram(type) {
   }
 
   return program;
-}
+};
 
 ShaderProgram.createShader = function (srcVertex, srcFragment) {
+  var GL = GLService.context;
+
   //compile the vertex shader
   var vertexShader = GL.createShader(GL.VERTEX_SHADER);
   GL.shaderSource(vertexShader, srcVertex);
