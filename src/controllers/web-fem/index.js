@@ -14,11 +14,15 @@ function WebFEMController($scope, ApiService, UtilitiesService) {
   vm.downloadMesh = downloadMesh;
   vm.reDraw       = reDraw;
 
-  ApiService.getPalettes().then(function (response) {
-    vm.palettes                 = response.data;
-    vm.palettes.selectedPalette = vm.palettes[0];
-    drawLegend();
-  });
+  activate();
+
+  function activate() {
+    return ApiService.getPalettes().then(function (response) {
+      vm.palettes                 = response.data;
+      vm.palettes.selectedPalette = vm.palettes[0];
+      drawLegend();
+    });
+  }
 
   function drawLegend() {
     if (vm.palettes && vm.palettes.length) {

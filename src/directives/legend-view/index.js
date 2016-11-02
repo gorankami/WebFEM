@@ -1,5 +1,5 @@
-var angular  = require("angular"),
-    $        = require("jquery");
+var angular = require("angular"),
+    $       = require("jquery");
 
 /**
  * @desc
@@ -11,13 +11,13 @@ angular
 
 function LegendView() {
   return {
-    scope     : {
+    scope       : {
       inverted: "="
     },
-    restrict  : "A",
-    template  : "<canvas width='150' height='500'></canvas><br/>",
-    link      : linkFunc,
-    controller: LegendViewController,
+    restrict    : "A",
+    template    : "<canvas width='150' height='500'></canvas><br/>",
+    link        : linkFunc,
+    controller  : LegendViewController,
     controllerAs: 'ctrl'
   };
 }
@@ -32,7 +32,9 @@ LegendViewController.$inject = ['$scope'];
 
 function LegendViewController($scope) {
   var vm = this;
-  $scope.$on('legend:draw', function (event, params) {
+  $scope.$on('legend:draw', drawEvent);
+
+  function drawEvent(event, params) {
     var colorMap = params;
 
     vm.context.fillStyle = "Black";
@@ -69,7 +71,7 @@ function LegendViewController($scope) {
     vm.context.beginPath();
     vm.context.font      = "10px Verdana";
     vm.context.fillStyle = "White";
-    var tickHeight     = (height + 1) / (stepsLength - 1).toFixed(2);
+    var tickHeight       = (height + 1) / (stepsLength - 1).toFixed(2);
     for (i = 0; i < stepsLength; i++) {
       var xpos = startX + width;
       var ypos = Math.round(startY + tickHeight * (stepsLength - 1 - i)) - 0.5;
@@ -78,5 +80,5 @@ function LegendViewController($scope) {
       vm.context.fillText(colorMap.steps[i].scaledVal ? colorMap.steps[i].scaledVal.toFixed(4) : 0, xpos + 10, ypos + 4);
     }
     vm.context.stroke();
-  });
+  }
 }
