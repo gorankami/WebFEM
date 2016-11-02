@@ -3,15 +3,22 @@ var angular = require("angular"),
 
 angular
   .module('WebFEMView')
-  .service("ApiService", ["$http", ApiService]);
+  .factory("ApiService", ["$http", ApiService]);
 
 function ApiService($http) {
+  var service = {
+    getPalettes: getPalettes,
+    getMesh    : getMesh
+  };
+
+  return service;
+
   /**
    * GET /data/palettes.json
    * Gets the palletes array for legend 2D view
    * @returns {HttpPromise}
    */
-  this.getPalettes = function () {
+  function getPalettes() {
     return $http.get("/data/palettes.json").then(function (response) {
       //turn to Color objects
       response.data.forEach(function (palette) {
@@ -21,7 +28,7 @@ function ApiService($http) {
       });
       return response;
     });
-  };
+  }
 
   /**
    * GET /data/{meshName}.json
@@ -29,7 +36,7 @@ function ApiService($http) {
    * @param meshName {String}
    * @returns {HttpPromise}
    */
-  this.getMesh = function (meshName) {
+  function getMesh(meshName) {
     return $http.get("/data/examples/" + meshName + '.json');
-  };
+  }
 }

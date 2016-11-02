@@ -2,22 +2,30 @@ var angular = require("angular"),
     Color   = require('./../../webgl/Color');
 
 angular.module('WebFEMView')
-  .service("UtilitiesService", UtilitiesService);
+  .factory("UtilitiesService", UtilitiesService);
 
 function UtilitiesService() {
-  var self           = this;
-  self.prepareVector = function (mesh, min, max, palette, numSteps, inverted, colorArray) {
+  var service = {
+    prepareVector          : prepareVector,
+    initColorArray         : initColorArray,
+    getColorFromArray      : getColorFromArray,
+    scalePaletteColorValues: scalePaletteColorValues
+  };
+
+  return service;
+
+  function prepareVector(mesh, min, max, palette, numSteps, inverted, colorArray) {
     var colors = [];
     for (var i = 0; i < mesh.vectorData.length; i++) {
-      var color         = self.getColorFromArray(mesh.vectorData[i], min, max, colorArray);
+      var color         = getColorFromArray(mesh.vectorData[i], min, max, colorArray);
       colors[3 * i]     = color ? color.r : 0;
       colors[3 * i + 1] = color ? color.g : 0;
       colors[3 * i + 2] = color ? color.b : 0;
     }
     return colors;
-  };
+  }
 
-  self.initColorArray = function (numColors, palette, minValue, maxValue, inverted) {
+  function initColorArray(numColors, palette, minValue, maxValue, inverted) {
     if (maxValue - minValue == 0) return [new Color(0x000000)];
     var n          = !!numColors ? numColors : 1024;
     var colorArray = [];
@@ -43,9 +51,9 @@ function UtilitiesService() {
       }
     }
     return colorArray;
-  };
+  }
 
-  self.getColorFromArray = function (alpha, min, max, array) {
+  function getColorFromArray(alpha, min, max, array) {
     if (alpha <= min || min == max) {
       alpha = min;
     } else if (alpha >= max) {
@@ -56,11 +64,11 @@ function UtilitiesService() {
     var colorPosition = Math.round(alpha * array.length);
     colorPosition == array.length ? colorPosition -= 1 : colorPosition;
     return array[colorPosition];
-  };
+  }
 
-  self.scalePaletteColorValues = function (min, max, steps) {
+  function scalePaletteColorValues(min, max, steps) {
     for (var i = 0; i < steps.length; i++) {
       steps[i].scaledVal = min + i * (max - min) / (steps.length - 1);
     }
-  };
+  }
 }
