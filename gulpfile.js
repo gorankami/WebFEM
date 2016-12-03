@@ -53,6 +53,11 @@ gulp.task('watch', function () {
   gulp.watch(['src/**/*', 'data/**/*'], ['browserify', 'move-data']);
 });
 
-gulp.task('serve', ['watch'], function (callback) {
-  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'browserify', 'start-server', callback);
+gulp.task('default', function(callback){
+  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'browserify', callback);
 });
+
+gulp.task('serve', ['watch'], function (callback) {
+  runSequence('default', 'start-server', callback);
+});
+
