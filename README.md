@@ -2,6 +2,10 @@
 WebGL engine for FEM models viewing. A part of a master thesis project. It is designed to use NEU models converted to
 custom json format. The conversion app is not included.
 
+*Important note*: This project is not adapted for public use, nor it is easy to use a part of it for your WebGL projects.
+It is created for personal shader study and WebGL library study. I suggest using existing tools that make things a
+TON easier, like [Three.js](https://github.com/mrdoob/three.js/).
+
 ## Build intructions
 Install dependencies by running
 ```npm install```
