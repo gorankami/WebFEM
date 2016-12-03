@@ -14,7 +14,7 @@
           ng-options="palette.name for palette in vm.palettes track by palette.id"
           ng-selected="vm.drawLegend();vm.reDraw();"></select><br/>
   Number of steps:<br/><input id="tbNumSteps" type="number" ng-model="vm.numSteps"/><br/>
-  <input ng-model="inverted" type="checkbox" ng-change="vm.drawLegend();vm.reDraw();"/>Inverted<br/>
+  <input ng-model="vm.inverted" type="checkbox" ng-change="vm.drawLegend();vm.reDraw();"/>Inverted<br/>
   <span monolit-legend-view inverted="inverted"></span>
   <!--<canvas id="cvsLegend" width="150" height="500"></canvas><br/>-->
   <button class="btn" ng-click="vm.downloadMesh(true)">Apply</button>
