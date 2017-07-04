@@ -1,26 +1,17 @@
 var gulp        = require('gulp'),
     clean       = require('gulp-clean'),
     runSequence = require('run-sequence'),
-    browserify  = require('browserify'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
+    webpack     = require("webpack-stream"),
     connect     = require('gulp-connect');
 
 gulp.task('clean', function () {
   return gulp.src('www').pipe(clean());
 });
 
-gulp.task('browserify', function () {
-  var b = browserify({
-    entries     : './src/index.js',
-    cache       : {},
-    packageCache: {}
-  });
-
-  return b.bundle()
-      .pipe(source('index.js'))
-      .pipe(buffer())
-      .pipe(gulp.dest('www'));
+gulp.task('webpack', function () {
+  return gulp.src('src/index.js')
+    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(gulp.dest('www'));
 });
 
 gulp.task('move-lib', function () {
@@ -54,5 +45,5 @@ gulp.task('watch', function () {
 });
 
 gulp.task('serve', ['watch'], function (callback) {
-  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'browserify', 'start-server', callback);
+  runSequence('clean', 'move-src', 'move-data', 'move-lib', 'webpack', 'start-server', callback);
 });
