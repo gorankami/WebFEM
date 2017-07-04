@@ -1,4 +1,5 @@
 .idea
 www
 node_modules
+dist
 data/examples/C.K350.json

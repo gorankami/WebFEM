@@ -4,7 +4,10 @@
   "description": "Web viewer for FEM models",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "move-source": "mkdir dist && cp src/index.html dist/index.html && cp -r data dist",
+    "build": "rm -rf dist && npm run move-source && webpack",
+    "start": "http-server dist -p 1337 & npm run build"
   },
   "repository": {
     "type": "git",
@@ -17,12 +20,12 @@
   },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-connect": "^4.1.0",
+    "css-loader": "^0.28.4",
+    "html-loader": "^0.4.5",
+    "http-server": "^0.10.0",
     "run-sequence": "^1.2.2",
-    "webpack": "^3.0.0",
-    "webpack-stream": "^3.2.0"
+    "style-loader": "^0.18.2",
+    "webpack": "^3.0.0"
   },
   "dependencies": {
     "angular": "^1.5.7",

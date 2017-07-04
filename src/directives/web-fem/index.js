@@ -1,10 +1,23 @@
 var angular = require("angular");
 
 angular.module('WebFEMView')
-  .controller('WebFEMController', WebFEMController);
+  .directive("webFem", LegendView);
+
+function LegendView(){
+  return {
+    scope       : {
+      inverted: "="
+    },
+    restrict    : "E",
+    template    : require("./index.html"),
+    controller  : Controller,
+    controllerAs: 'vm',
+    bindToController:true
+  };
+}
 
 /* @ngInject */
-function WebFEMController($scope, ApiService, UtilitiesService) {
+function Controller($scope, ApiService, UtilitiesService) {
   var vm      = this;
   var mesh    = null;
   vm.numSteps = 512;
