@@ -29,9 +29,9 @@
  * @param {Number[3]} position - camera position in 3D space
  */
 
-var mat4 = require('gl-matrix-mat4');
+const mat4 = require('gl-matrix-mat4');
 
-var Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
+const Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
   this.verFoV = verFoV;
   this.horFoV = verFoV * aspect;
   this.aspect = aspect;
@@ -70,6 +70,7 @@ Camera.prototype = {
    * @param {Number} position - 3 member array that represents x, y and z
    * @param {Number} nearPlane - distance of nearPlane from camera
    * @param {Number} farPlane - distance of farPlane from camera
+   * @param {Array} pivot
    */
   recalibrate: function(nearPlane, farPlane, position, pivot){
     this.position = position;
@@ -78,8 +79,6 @@ Camera.prototype = {
     this.farPlane = farPlane;
 
     mat4.perspective( this.pMatrix, this.verFoV, this.aspect, nearPlane, farPlane);
-
-    //mat4.translate(this.mvMatrix, position);
   },
 
   /**
@@ -87,18 +86,18 @@ Camera.prototype = {
    * @param {Number} xPercentage - percentage of horizontal field of view (half of it) which is clicked
    * @param {Number} yPercentage - percentage of vertical field of view (half of it) which is clicked
    * @param {Number} objectZ - object z coordinate in space
-   * @type {Number[2]} returns array containing x and y clicked coordinates on z plane
+   * @type {Array} returns array containing x and y clicked coordinates on z plane
    */
   getClickVectorHorizontal: function (xPercentage, yPercentage, objectZ) {
     //get angles by percentage of field of view angles. Half is because we need a triangle with z as side
-    var hor = (xPercentage * this.horFoV / 2),
+    let hor = (xPercentage * this.horFoV / 2),
         ver = (yPercentage * this.verFoV / 2);
     //Math.sin uses radians, so we need to convert from degrees
     hor *= (Math.PI / 180);
     ver *= (Math.PI / 180);
     //get coordinates on near plane
-    var xNear = this.nearPlane * Math.sin(hor) / Math.cos(hor);
-    var yNear = -this.nearPlane * Math.sin(ver) / Math.cos(ver);
+    const xNear = this.nearPlane * Math.sin(hor) / Math.cos(hor);
+    const yNear = -this.nearPlane * Math.sin(ver) / Math.cos(ver);
     //return xNear;
     return [
       xNear * (-this.position[2] - objectZ),
@@ -107,4 +106,4 @@ Camera.prototype = {
   }
 };
 
-module.exports = Camera;
+export default Camera;

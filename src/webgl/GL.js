@@ -1,16 +1,17 @@
-function GL() {
-  this.context = null;
-}
+const GLService = {
+  context: null,
+  init: init
+};
 
-GL.prototype.init = function (canvas) {
+function init(canvas) {
   try {
-    this.context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-    if (!this.context) {
+    GLService.context = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    if (!GLService.context) {
       alert("Your browser does not support Webgl, the application will not work.");
     }
   } catch (e) {
-    alert("Error in retreiving WebGL, your browser might not support Webgl.");
+    alert("Error in retrieving WebGL, your browser might not support Webgl.");
   }
-};
+}
 
-module.exports = new GL();
+export default GLService;

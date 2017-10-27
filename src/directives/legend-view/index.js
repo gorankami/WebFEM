@@ -1,5 +1,5 @@
-var angular = require("angular"),
-    $       = require("jquery");
+import angular from "angular";
+import $ from "jquery";
 
 /**
  * @desc
@@ -23,36 +23,34 @@ function LegendView() {
 }
 
 function linkFunc(scope, element) {
-  var canvas = $('canvas', element);
+  let canvas = $('canvas', element);
   if (canvas.length) canvas = canvas[0];
   scope.ctrl.context = canvas.getContext("2d");
 }
 
 /* @ngInject */
 function LegendViewController($scope) {
-  var vm = this;
+  const vm = this;
   $scope.$on('legend:draw', drawEvent);
 
-  function drawEvent(event, params) {
-    var colorMap = params;
+  function drawEvent(event, colorMap) {
+
+    const startX              = 25,
+          startY              = 25,
+          width               = 50,
+          height              = 450,
+          stepsLength         = colorMap.steps.length,
+          gradient            = $scope.inverted ?
+            vm.context.createLinearGradient(0, startY, 0, startY + height) :
+            vm.context.createLinearGradient(0, startY + height, 0, startY),
+          colorStopPercentage = 1 / (stepsLength - 1).toFixed(2),
+          tickHeight          = (height + 1) / (stepsLength - 1).toFixed(2);
 
     vm.context.fillStyle = "Black";
     vm.context.fillRect(0, 0, 150, 500);
     vm.context.strokeStyle = "White";
 
-    var startX      = 25,
-        startY      = 25,
-        width       = 50,
-        height      = 450;
-    var stepsLength = colorMap.steps.length;
-    // var scale = max - min;
-
-    //gradient
-    var gradient            = $scope.inverted ? vm.context.createLinearGradient(0, startY, 0, startY + height) : vm.context.createLinearGradient(0, startY + height, 0, startY);
-    var colorStopPercentage = 1 / (stepsLength - 1).toFixed(2);
-
-    var i;
-    for (i = 0; i < stepsLength; i++) {
+    for (let i = 0; i < stepsLength; i++) {
       gradient.addColorStop(i * colorStopPercentage, colorMap.steps[i].color.getStyle());
     }
     vm.context.fillStyle = gradient;
@@ -70,10 +68,10 @@ function LegendViewController($scope) {
     vm.context.beginPath();
     vm.context.font      = "10px Verdana";
     vm.context.fillStyle = "White";
-    var tickHeight       = (height + 1) / (stepsLength - 1).toFixed(2);
-    for (i = 0; i < stepsLength; i++) {
-      var xpos = startX + width;
-      var ypos = Math.round(startY + tickHeight * (stepsLength - 1 - i)) - 0.5;
+
+    for (let i = 0; i < stepsLength; i++) {
+      let xpos = startX + width;
+      let ypos = Math.round(startY + tickHeight * (stepsLength - 1 - i)) - 0.5;
       vm.context.moveTo(xpos - 5.5, ypos);
       vm.context.lineTo(xpos + 5.5, ypos);
       vm.context.fillText(colorMap.steps[i].scaledVal ? colorMap.steps[i].scaledVal.toFixed(4) : 0, xpos + 10, ypos + 4);

@@ -1,9 +1,7 @@
-var angular   = require("angular"),
-    $         = require("jquery"),
-    FEMView   = require('../../webgl/FEMView'),
-    GLService = require('../../webgl/GL');
-
-var femView = null;
+import angular from "angular";
+import $ from "jquery";
+import FEMView from '../../webgl/FEMView';
+import GLService from '../../webgl/GL';
 
 /**
  * @desc
@@ -25,7 +23,7 @@ function FemView() {
 }
 
 function linkFunc($scope, element) {
-  var canvas = $('canvas', element);
+  let canvas = $('canvas', element);
   if (canvas.length) canvas = canvas[0];
 
   GLService.init(canvas);
@@ -35,7 +33,7 @@ function linkFunc($scope, element) {
 
 /* @ngInject */
 function FemViewController($scope) {
-  var vm = this;
+  const vm = this;
 
   $scope.$on('fem:unload', function () {
     vm.femView.unload();

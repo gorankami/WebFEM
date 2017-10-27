@@ -29,11 +29,11 @@
  * although camera is still needed to unproject clicks on the object plane
  */
 
-TransformationController = function (canvas, camera) {
+const TransformationController = function (canvas, camera) {
   this.canvas = canvas;
   this.camera = camera;
   this.reset();
-}
+};
 
 TransformationController.prototype = {
   //transformations on object
@@ -42,18 +42,18 @@ TransformationController.prototype = {
 
   //initial vectors for mouse position, rotation and pan value
   mouseS: null,
-  rotS: null,
-  panS: null,
+  rotS  : null,
+  panS  : null,
 
   //current vectors for mouse position, rotation, pan value and zoom
   mouse: null,
-  rot: null,
-  pan: null,
-  zoom: 0,
+  rot  : null,
+  pan  : null,
+  zoom : 0,
 
   //settings that change sensitivity of rotation and zoom
   rotationSensitivity: 0.01,
-  zoomSpeed: 1.0,
+  zoomSpeed          : 1.0,
 
   //rotation effect of momentum. 1 = no momentum, <1 added momentum.
   rotationMomentum: 1,
@@ -77,10 +77,10 @@ TransformationController.prototype = {
    * @param {Number[2]} coords
    */
   startPan: function (coords) {
-    var hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
-    var ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
+    const hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
+    const ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
     this.panS = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
-    this.pan = [this.panS[0], this.panS[1]];
+    this.pan  = [this.panS[0], this.panS[1]];
 
     this.panS[0] -= this.position[0];
     this.panS[1] -= this.position[1];
@@ -91,9 +91,9 @@ TransformationController.prototype = {
    * @param {Number[2]} coords
    */
   doPan: function (coords) {
-    var hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
-    var ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
-    this.pan = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
+    const hor = (coords[0] - (this.canvas.width / 2)) / (this.canvas.width / 2);
+    const ver = (coords[1] - (this.canvas.height / 2)) / (this.canvas.height / 2);
+    this.pan  = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
   },
 
   /**
@@ -101,7 +101,7 @@ TransformationController.prototype = {
    * @param {Number[2]} coords
    */
   startRotate: function (coords) {
-    this.mouseS = coords;
+    this.mouseS  = coords;
     this.rotS[0] = this.rot[0];
     this.rotS[1] = this.rot[1];
   },
@@ -132,9 +132,9 @@ TransformationController.prototype = {
   },
 
   //normalize angle within -Pi and +Pi
-  normalizeAngle: function(angle){
-    if (angle >= Math.PI*2) return angle - Math.PI*2;
-    if (angle <= -Math.PI*2) return angle + Math.PI*2;
+  normalizeAngle: function (angle) {
+    if (angle >= Math.PI * 2) return angle - Math.PI * 2;
+    if (angle <= -Math.PI * 2) return angle + Math.PI * 2;
     return angle;
   },
 
@@ -157,16 +157,16 @@ TransformationController.prototype = {
     this.rotation = [0, 0, 0];
     this.position = [0, 0, 0];
     this.startPos = [0, 0];
-    this.mouseS = [0, 0];
-    this.rotS = [0, 0];
-    this.panS = [0, 0];
+    this.mouseS   = [0, 0];
+    this.rotS     = [0, 0];
+    this.panS     = [0, 0];
 
     this.mouse = [0, 0];
-    this.rot = [0, 0];
-    this.pan = [0, 0];
+    this.rot   = [0, 0];
+    this.pan   = [0, 0];
 
     this.zoom = 0;
   }
 };
 
-module.exports = TransformationController;
+export default TransformationController;

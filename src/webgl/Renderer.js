@@ -14,15 +14,15 @@
  limitations under the License.
  */
 
-var mat4          = require('gl-matrix-mat4'),
-    MeshColoured  = require('./3DObjects/MeshColoured'),
-    MeshWireframe = require('./3DObjects/MeshWireframe'),
-    GLService     = require('./GL');
+import mat4          from 'gl-matrix-mat4';
+import MeshColoured  from './3DObjects/MeshColoured';
+import MeshWireframe from './3DObjects/MeshWireframe';
+import GLService     from './GL';
 
-var Renderer      = function () {
+const Renderer      = function () {
   this.meshColoured  = new MeshColoured();
-  this.meshWireframe = new MeshWireframe();
-}
+  this.meshWireframe =  new MeshWireframe();
+};
 
 Renderer.prototype = {
 
@@ -33,7 +33,7 @@ Renderer.prototype = {
   prepare: function (mesh) {
     this.modelLoaded = false;
 
-    var tMCP = [];
+    const tMCP = [];
 
     this.meshColoured.prepareProgram(mesh, null, tMCP);
     this.meshWireframe.prepareProgram(mesh, null, tMCP);
@@ -42,19 +42,19 @@ Renderer.prototype = {
 
 
   clearScene: function () {
-    var GL = GLService.context;
+    const GL = GLService.context;
     GL.clearColor(0, 0, 0, 1.0);
     GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
     GL.enable(GL.DEPTH_TEST);
   },
 
   render: function (camera, cvsWidth, cvsHeight, position, rotation) {
-    var GL = GLService.context;
+    const GL = GLService.context;
     this.clearScene();
     if (this.modelLoaded) {
       GL.viewport(0, 0, cvsWidth, cvsHeight);
 
-      var transformationMatrixModel = mat4.create(camera.mvMatrix);
+      const transformationMatrixModel = mat4.create(camera.mvMatrix);
       mat4.translate(transformationMatrixModel, transformationMatrixModel, camera.position);
       mat4.translate(transformationMatrixModel, transformationMatrixModel, [position[0] / 10, position[1] / 10, position[2]], transformationMatrixModel);
 
@@ -71,4 +71,4 @@ Renderer.prototype = {
   }
 };
 
-module.exports = Renderer;
+export default Renderer;

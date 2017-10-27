@@ -4,6 +4,7 @@
   "description": "Web viewer for FEM models",
   "main": "index.js",
   "scripts": {
+    "jshint": "./node_modules/.bin/jshint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "move-source": "mkdir dist && cp src/index.html dist/index.html && cp -r data dist",
     "build": "rm -rf dist && npm run move-source && webpack",
@@ -18,6 +19,9 @@
   "bugs": {
     "url": "https://github.com/gorankami/WebFEM/issues"
   },
+  "jshintConfig": {
+    "esversion": 6
+  },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "devDependencies": {
     "css-loader": "^0.28.4",
@@ -29,11 +33,15 @@
   },
   "dependencies": {
     "angular": "^1.5.7",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
     "bootstrap": "^3.3.6",
     "gl-matrix": "^2.3.2",
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
     "jquery": "^3.1.0",
+    "jshint": "^2.9.5",
     "ng-annotate": "^1.2.1",
     "three": "^0.78.0"
   }

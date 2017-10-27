@@ -1,25 +1,25 @@
-var angular = require("angular");
+import angular from "angular";
 
 angular.module('WebFEMView')
   .directive("webFem", LegendView);
 
-function LegendView(){
+function LegendView() {
   return {
-    scope       : {
+    scope           : {
       inverted: "="
     },
-    restrict    : "E",
-    template    : require("./index.html"),
-    controller  : Controller,
-    controllerAs: 'vm',
-    bindToController:true
+    restrict        : "E",
+    template        : require("./index.html"),
+    controller      : Controller,
+    controllerAs    : 'vm',
+    bindToController: true
   };
 }
 
 /* @ngInject */
 function Controller($scope, ApiService, UtilitiesService) {
-  var vm      = this;
-  var mesh    = null;
+  const vm    = this;
+  let mesh    = null;
   vm.numSteps = 512;
 
   vm.drawLegend   = drawLegend;
@@ -45,7 +45,7 @@ function Controller($scope, ApiService, UtilitiesService) {
   function downloadMesh() {
     vm.toggleCurtain = true;
     //free memory
-    delete mesh;
+    mesh             = null;
     $scope.$broadcast('fem:unload');
 
     ApiService.getMesh('example1').then(function (response) {
@@ -54,7 +54,7 @@ function Controller($scope, ApiService, UtilitiesService) {
           mesh = response.data;
           UtilitiesService.scalePaletteColorValues(mesh.minValue, mesh.maxValue, vm.palettes.selectedPalette.steps);
 
-          var colorArray = UtilitiesService.initColorArray(vm.numSteps, vm.palettes.selectedPalette, mesh.minValue, mesh.maxValue, vm.inverted);
+          let colorArray = UtilitiesService.initColorArray(vm.numSteps, vm.palettes.selectedPalette, mesh.minValue, mesh.maxValue, vm.inverted);
           mesh.colorData = UtilitiesService.prepareVector(mesh, mesh.minValue, mesh.maxValue, vm.palettes.selectedPalette, vm.numSteps, vm.inverted, colorArray);
 
           $scope.$broadcast('fem:loadmesh', mesh);

@@ -1,5 +1,5 @@
-var angular = require("angular"),
-    Color   = require('./../../webgl/Color');
+import angular from "angular";
+import Color   from "./../../webgl/Color";
 
 angular
   .module('WebFEMView')
@@ -7,7 +7,7 @@ angular
 
 /* @ngInject */
 function ApiService($http, $q) {
-  var service = {
+  const service = {
     getPalettes: getPalettes,
     getMesh    : getMesh
   };
@@ -35,7 +35,7 @@ function ApiService($http, $q) {
     }
 
     function GetPalletesError(e) {
-      $q.reject(e)
+      $q.reject(e);
     }
   }
 
