@@ -14,23 +14,21 @@
  limitations under the License.
  */
 
-import mat4          from 'gl-matrix-mat4';
-import MeshColoured  from './3DObjects/MeshColoured';
+import mat4 from 'gl-matrix-mat4';
+import MeshColoured from './3DObjects/MeshColoured';
 import MeshWireframe from './3DObjects/MeshWireframe';
-import GLService     from './GL';
+import GLService from './GL';
 
-const Renderer      = function () {
-  this.meshColoured  = new MeshColoured();
-  this.meshWireframe =  new MeshWireframe();
-};
+export default class Renderer {
 
-Renderer.prototype = {
+  constructor() {
+    this.modelLoaded   = false;
+    this.meshColoured  = new MeshColoured();
+    this.meshWireframe = new MeshWireframe();
+  }
 
-  modelLoaded: false,
 
-  constructor: Renderer,
-
-  prepare: function (mesh) {
+  prepare(mesh) {
     this.modelLoaded = false;
 
     const tMCP = [];
@@ -38,17 +36,17 @@ Renderer.prototype = {
     this.meshColoured.prepareProgram(mesh, null, tMCP);
     this.meshWireframe.prepareProgram(mesh, null, tMCP);
     this.modelLoaded = true;
-  },
+  }
 
 
-  clearScene: function () {
+  clearScene() {
     const GL = GLService.context;
     GL.clearColor(0, 0, 0, 1.0);
     GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
     GL.enable(GL.DEPTH_TEST);
-  },
+  }
 
-  render: function (camera, cvsWidth, cvsHeight, position, rotation) {
+  render(camera, cvsWidth, cvsHeight, position, rotation) {
     const GL = GLService.context;
     this.clearScene();
     if (this.modelLoaded) {
@@ -69,6 +67,4 @@ Renderer.prototype = {
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
     }
   }
-};
-
-export default Renderer;
+}

@@ -1,5 +1,5 @@
-import "./assets/style.css"
-import "./module.js"
+import "./assets/style.css";
+import "./module.js";
 import './services/api';
 import './services/utilities';
 import './directives/web-fem';

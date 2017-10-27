@@ -1,51 +1,43 @@
-import angular from "angular";
-import Color   from "./../../webgl/Color";
+import Color from "./../../webgl/Color";
+import 'whatwg-fetch';
 
-angular
-  .module('WebFEMView')
-  .factory("ApiService", ApiService);
+export default {
+  getPalettes: getPalettes,
+  getMesh    : getMesh
+};
 
-/* @ngInject */
-function ApiService($http, $q) {
-  const service = {
-    getPalettes: getPalettes,
-    getMesh    : getMesh
-  };
+/**
+ * GET /data/palettes.json
+ * Gets the palletes array for legend 2D view
+ * @returns {Promise}
+ */
+function getPalettes() {
+  return fetch("/data/palettes.json").then(defaultHandler).then(GetPalletesResponse);
+}
 
-  return service;
+function GetPalletesResponse(response) {
+  //turn to Color objects
+  response.forEach(function (palette) {
+    palette.steps.forEach(function (step) {
+      step.color = new Color(step.color[0], step.color[1], step.color[2]);
+    });
+  });
+  return response;
+}
 
-  /**
-   * GET /data/palettes.json
-   * Gets the palletes array for legend 2D view
-   * @returns {HttpPromise}
-   */
-  function getPalettes() {
-    return $http.get("/data/palettes.json")
-      .then(GetPalletesResponse)
-      .catch(GetPalletesError);
+/**
+ * GET /data/{meshName}.json
+ * Gets viewable mesh
+ * @param meshName {String}
+ * @returns {Promise}
+ */
+function getMesh(meshName) {
+  return fetch("/data/examples/" + meshName + '.json').then(defaultHandler);
+}
 
-    function GetPalletesResponse(response) {
-      //turn to Color objects
-      response.data.forEach(function (palette) {
-        palette.steps.forEach(function (step) {
-          step.color = new Color(step.color[0], step.color[1], step.color[2]);
-        });
-      });
-      return response;
-    }
-
-    function GetPalletesError(e) {
-      $q.reject(e);
-    }
+function defaultHandler(response) {
+  if (response.ok) {
+    return response.json();
   }
-
-  /**
-   * GET /data/{meshName}.json
-   * Gets viewable mesh
-   * @param meshName {String}
-   * @returns {HttpPromise}
-   */
-  function getMesh(meshName) {
-    return $http.get("/data/examples/" + meshName + '.json');
-  }
+  throw new Error('Network response was not ok.');
 }

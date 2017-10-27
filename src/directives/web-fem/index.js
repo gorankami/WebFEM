@@ -1,4 +1,6 @@
 import angular from "angular";
+import UtilitiesService from "../../services/utilities";
+import ApiService from "../../services/api";
 
 angular.module('WebFEMView')
   .directive("webFem", LegendView);
@@ -17,7 +19,7 @@ function LegendView() {
 }
 
 /* @ngInject */
-function Controller($scope, ApiService, UtilitiesService) {
+function Controller($scope) {
   const vm    = this;
   let mesh    = null;
   vm.numSteps = 512;
@@ -30,7 +32,7 @@ function Controller($scope, ApiService, UtilitiesService) {
 
   function activate() {
     return ApiService.getPalettes().then(function (response) {
-      vm.palettes                 = response.data;
+      vm.palettes                 = response;
       vm.palettes.selectedPalette = vm.palettes[0];
       drawLegend();
     });
@@ -43,15 +45,15 @@ function Controller($scope, ApiService, UtilitiesService) {
   }
 
   function downloadMesh() {
-    vm.toggleCurtain = true;
+    // vm.toggleCurtain = true;
     //free memory
     mesh             = null;
     $scope.$broadcast('fem:unload');
 
     ApiService.getMesh('example1').then(function (response) {
       try {
-        if (response.data.vertexData.length && response.data.indexData.length && response.data.vectorData.length) {
-          mesh = response.data;
+        if (response.vertexData.length && response.indexData.length && response.vectorData.length) {
+          mesh = response;
           UtilitiesService.scalePaletteColorValues(mesh.minValue, mesh.maxValue, vm.palettes.selectedPalette.steps);
 
           let colorArray = UtilitiesService.initColorArray(vm.numSteps, vm.palettes.selectedPalette, mesh.minValue, mesh.maxValue, vm.inverted);

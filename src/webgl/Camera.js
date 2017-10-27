@@ -19,51 +19,39 @@
  * @author Goran Antic
  */
 
-/**
- * Contructor for Camera. Sets projection properties, calculates horizontal field of view,
- * and inits projection and model-view matrix as well as camera position in scene space.
- * @param {Number} verFoV - vertical field of view
- * @param {Number} aspect - aspect ratio of view
- * @param {Number} nearPlane - near plane of view frustum
- * @param {Number} farPlane - far plane of view frustum
- * @param {Number[3]} position - camera position in 3D space
- */
-
 const mat4 = require('gl-matrix-mat4');
 
-const Camera = function (verFoV, aspect, nearPlane, farPlane, position) {
-  this.verFoV = verFoV;
-  this.horFoV = verFoV * aspect;
-  this.aspect = aspect;
-  mat4.identity(this.mvMatrix);
-  this.recalibrate(nearPlane, farPlane, position, [0,0,0]);
-};
+export default class Camera {
 
-Camera.prototype = {
-  verFoV: 0,
-  horFoV: 0,
-
-  aspect: 0,
-  nearPlane: 0.0,
-  farPlane: 0.0,
-
-  pMatrix: mat4.create(),
-  mvMatrix: mat4.create(),
-
-  position: null,
-
-  constructor: Camera,
+  /**
+   * Contructor for Camera. Sets projection properties, calculates horizontal field of view,
+   * and inits projection and model-view matrix as well as camera position in scene space.
+   * @param {Number} verFoV - vertical field of view
+   * @param {Number} aspect - aspect ratio of view
+   * @param {Number} nearPlane - near plane of view frustum
+   * @param {Number} farPlane - far plane of view frustum
+   * @param {Array} position - camera position in 3D space
+   */
+  constructor(verFoV, aspect, nearPlane, farPlane, position) {
+    this.verFoV   = verFoV;
+    this.horFoV   = verFoV * aspect;
+    this.aspect   = aspect;
+    this.pMatrix  = mat4.create();
+    this.mvMatrix = mat4.create();
+    mat4.identity(this.mvMatrix);
+    this.recalibrate(nearPlane, farPlane, position, [0, 0, 0]);
+  }
 
   /**
    * Changes perspective matrix by given width and height
    * @param {Number} width
    * @param {Number} height
    */
-  changePerspective: function (width, height) {
+  changePerspective(width, height) {
     this.aspect = width / height;
     mat4.perspective(this.pMatrix, this.verFoV, this.aspect, this.nearPlane, this.farPlane);
     this.horFoV = this.verFoV * this.aspect;
-  },
+  }
 
   /**
    * Moves the camera to a new position and sets up near and far plane distances
@@ -72,14 +60,14 @@ Camera.prototype = {
    * @param {Number} farPlane - distance of farPlane from camera
    * @param {Array} pivot
    */
-  recalibrate: function(nearPlane, farPlane, position, pivot){
-    this.position = position;
-    this.pivot = pivot;
+  recalibrate(nearPlane, farPlane, position, pivot) {
+    this.position  = position;
+    this.pivot     = pivot;
     this.nearPlane = nearPlane;
-    this.farPlane = farPlane;
+    this.farPlane  = farPlane;
 
-    mat4.perspective( this.pMatrix, this.verFoV, this.aspect, nearPlane, farPlane);
-  },
+    mat4.perspective(this.pMatrix, this.verFoV, this.aspect, nearPlane, farPlane);
+  }
 
   /**
    * Should unproject a click from a screen (near plane) to paralel plane defined with objects z position.
@@ -88,10 +76,10 @@ Camera.prototype = {
    * @param {Number} objectZ - object z coordinate in space
    * @type {Array} returns array containing x and y clicked coordinates on z plane
    */
-  getClickVectorHorizontal: function (xPercentage, yPercentage, objectZ) {
+  getClickVectorHorizontal(xPercentage, yPercentage, objectZ) {
     //get angles by percentage of field of view angles. Half is because we need a triangle with z as side
-    let hor = (xPercentage * this.horFoV / 2),
-        ver = (yPercentage * this.verFoV / 2);
+    let hor     = (xPercentage * this.horFoV / 2),
+        ver     = (yPercentage * this.verFoV / 2);
     //Math.sin uses radians, so we need to convert from degrees
     hor *= (Math.PI / 180);
     ver *= (Math.PI / 180);
@@ -104,6 +92,4 @@ Camera.prototype = {
       yNear * (-this.position[2] - objectZ)
     ];
   }
-};
-
-export default Camera;
+}
