@@ -1,8 +1,10 @@
-import {createShader} from '../ShaderProgram';
-import GLService from './../GL';
+import {createShader} from '../../ShaderProgram';
+import GLService from '../../GL';
 
-export default class MeshWireframe {
+import vertexShaderSource from "./vertex.glsl";
+import fragmentShaderSource from "./fragment.glsl";
 
+export default class OrientationHelper {
   constructor() {
     this.aVertexPosition = null;
     this.uMVMatrix       = null;
@@ -13,21 +15,6 @@ export default class MeshWireframe {
     this.enabled = true;
 
     const GL                 = GLService.context;
-    const vertexShaderSource = `
-      attribute vec3 aVertexPosition;
-      uniform mat4 uMVMatrix;
-      uniform mat4 uPMatrix;
-      varying highp float vPosX;
-      void main(void) {
-        vPosX = vec4(aVertexPosition , 1.0)[0];
-        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-      }`;
-
-    const fragmentShaderSource = `
-      varying highp float vPosX;
-      void main(void) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }`;
 
     this.program = createShader(vertexShaderSource, fragmentShaderSource);
     GL.useProgram(this.program);
@@ -42,15 +29,17 @@ export default class MeshWireframe {
   }
 
 
-  prepareProgram(mesh) {
-    const GL = GLService.context;
+  prepareProgram() {
+    const GL       = GLService.context;
+    const vertices = [0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4];
+    const indices  = [0, 1, 0, 2, 0, 3];
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
-    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.vertexData), GL.DYNAMIC_DRAW);
+    GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(vertices), GL.DYNAMIC_DRAW);
 
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.edgeData), GL.DYNAMIC_DRAW);
-    this.indexBuffer.arrayLength = mesh.edgeData.length;
+    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), GL.DYNAMIC_DRAW);
+    this.indexBuffer.arrayLength = indices.length;
   }
 
   render(pMatrix, mvMatrix) {

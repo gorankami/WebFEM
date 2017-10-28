@@ -18,9 +18,6 @@
   "bugs": {
     "url": "https://github.com/gorankami/WebFEM/issues"
   },
-  "jshintConfig": {
-    "esversion": 6
-  },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "devDependencies": {
     "css-loader": "^0.28.4",
@@ -41,6 +38,7 @@
     "jquery": "^3.1.0",
     "jshint": "^2.9.5",
     "ng-annotate": "^1.2.1",
+    "raw-loader": "^0.5.1",
     "three": "^0.78.0",
     "webpack-dev-server": "^2.9.3",
     "whatwg-fetch": "^2.0.3"

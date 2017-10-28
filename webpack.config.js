@@ -1,20 +1,28 @@
 const path = require("path");
 
 module.exports = {
-  entry : __dirname + '/src/index.js',
+  resolve: {
+    modules: [
+      path.join(__dirname, "src"),
+      "node_modules"
+    ]
+  },
+  entry  : __dirname + '/src/index.js',
   // watch : true,
-  output: {
+  output : {
     path    : path.resolve(__dirname + '/dist'),
     filename: 'index.js'
   },
-  module: {
-    loaders: [{
-      test  : /\.html$/,
-      loader: "html-loader?attrs=false"
+  module : {
+    rules: [{
+      test: /\.(html|glsl)$/,
+      use : "raw-loader"
     }, {
-      test: /\.css$/, loader: "style-loader!css-loader"
+      test: /\.css$/,
+      use : ["style-loader", "css-loader"]
     }, {
-      test: /\.js$/, loader: "babel-loader"
+      test: /\.js$/,
+      use : "babel-loader"
     }]
   }
 };
