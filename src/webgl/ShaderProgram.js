@@ -27,62 +27,7 @@
  */
 import GLService from './GL';
 
-const ShaderProgram = function ShaderProgram(type) {
-  const GL           = GLService.context;
-  const program      = GL.createProgram();
-  let vertexShader   = null;
-  let fragmentShader = null;
-
-  switch (type) {
-    case "Colors":
-      vertexShader   = this.createShader(this.getVertexShaderColorsSource(), GL.VERTEX_SHADER);
-      fragmentShader = this.createShader(this.getFragmentShaderColorsSource(), GL.FRAGMENT_SHADER);
-      break;
-    case "FEMWireframe":
-      vertexShader   = this.createShader(this.getVertexShaderUniformSource(), GL.VERTEX_SHADER);
-      fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
-      break;
-    case "Transparent":
-      vertexShader   = this.createShader(this.getVertexShaderTransparentSource(), GL.VERTEX_SHADER);
-      fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
-      break;
-    default:
-      return null;
-  }
-
-  GL.attachShader(program, vertexShader);
-  GL.attachShader(program, fragmentShader);
-  GL.linkProgram(program);
-  if (!GL.getProgramParameter(program, GL.LINK_STATUS)) {
-    alert("Unable to initialize the shader program.");
-  }
-  GL.useProgram(program);
-
-  program.attributes = {
-    position: GL.getAttribLocation(program, "aVertexPosition")
-  };
-
-  program.uniforms = {
-    mvMatrix: GL.getUniformLocation(program, "uMVMatrix"),
-    pMatrix : GL.getUniformLocation(program, "uPMatrix")
-  };
-
-  if (type === "Colors") {
-    program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
-  }
-
-  program.buffers = {
-    vertex: GL.createBuffer(),
-    index : GL.createBuffer()
-  };
-  if (type === "Colors" || type === "Transparent") {
-    program.buffers.color = GL.createBuffer();
-  }
-
-  return program;
-};
-
-ShaderProgram.createShader = function (srcVertex, srcFragment) {
+export const createShader = function (srcVertex, srcFragment) {
   const GL = GLService.context;
 
   //compile the vertex shader
@@ -111,9 +56,63 @@ ShaderProgram.createShader = function (srcVertex, srcFragment) {
   return program;
 };
 
-ShaderProgram.prototype = {
-  constructor: ShaderProgram,
-  program    : null,
+export default class ShaderProgram {
+
+  constructor(type) {
+    const GL           = GLService.context;
+    const program      = GL.createProgram();
+    let vertexShader   = null;
+    let fragmentShader = null;
+
+    switch (type) {
+      case "Colors":
+        vertexShader   = this.createShader(this.getVertexShaderColorsSource(), GL.VERTEX_SHADER);
+        fragmentShader = this.createShader(this.getFragmentShaderColorsSource(), GL.FRAGMENT_SHADER);
+        break;
+      case "FEMWireframe":
+        vertexShader   = this.createShader(this.getVertexShaderUniformSource(), GL.VERTEX_SHADER);
+        fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
+        break;
+      case "Transparent":
+        vertexShader   = this.createShader(this.getVertexShaderTransparentSource(), GL.VERTEX_SHADER);
+        fragmentShader = this.createShader(this.getFragmentShaderUniformSource(), GL.FRAGMENT_SHADER);
+        break;
+      default:
+        return null;
+    }
+
+    GL.attachShader(program, vertexShader);
+    GL.attachShader(program, fragmentShader);
+    GL.linkProgram(program);
+    if (!GL.getProgramParameter(program, GL.LINK_STATUS)) {
+      alert("Unable to initialize the shader program.");
+    }
+    GL.useProgram(program);
+
+    program.attributes = {
+      position: GL.getAttribLocation(program, "aVertexPosition")
+    };
+
+    program.uniforms = {
+      mvMatrix: GL.getUniformLocation(program, "uMVMatrix"),
+      pMatrix : GL.getUniformLocation(program, "uPMatrix")
+    };
+
+    if (type === "Colors") {
+      program.attributes.color = GL.getAttribLocation(program, "aVertexColor");
+    }
+
+    program.buffers = {
+      vertex: GL.createBuffer(),
+      index : GL.createBuffer()
+    };
+    if (type === "Colors" || type === "Transparent") {
+      program.buffers.color = GL.createBuffer();
+    }
+
+    return program;
+  }
+
 
   /**
    * Creates a shader from source
@@ -121,7 +120,7 @@ ShaderProgram.prototype = {
    * @param {Number} type - enumerated type of shader, can be gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
    * @type {object}
    */
-  createShader: function (src, type) {
+  createShader(src, type) {
     //compile the vertex shader
     const shader = GL.createShader(type);
     GL.shaderSource(shader, src);
@@ -131,14 +130,14 @@ ShaderProgram.prototype = {
       alert("Error compiling shader: " + GL.getShaderInfoLog(shader));
     }
     return shader;
-  },
+  }
 
   //Color
   /**
    * Retreives a source for vertex shader for colored vertices material
    * @type {String} - source code
    */
-  getVertexShaderColorsSource: function () {
+  getVertexShaderColorsSource() {
     return [
       "attribute vec3 aVertexPosition;",
       "attribute vec3 aVertexColor;",
@@ -158,13 +157,13 @@ ShaderProgram.prototype = {
       "  vColor = vec4(aVertexColor, 1.0);",
       "}"
     ].join("\n");
-  },
+  }
 
   /**
    * Retreives a source for fragment shader for colored vertices material
    * @type {String} - source code
    */
-  getFragmentShaderColorsSource: function () {
+  getFragmentShaderColorsSource() {
     return [
       "varying highp vec4 vColor;",
       "varying highp vec3 vCPBase;",
@@ -178,14 +177,14 @@ ShaderProgram.prototype = {
       "   }",
       "}"
     ].join("\n");
-  },
+  }
 
   //FEMWireframe
   /**
    * Retreives a source for vertex shader for wireframed vertices material
    * @type {String} - source code
    */
-  getVertexShaderUniformSource  : function () {
+  getVertexShaderUniformSource() {
     return [
       "attribute vec3 aVertexPosition;",
       "uniform mat4 uMVMatrix;",
@@ -194,12 +193,13 @@ ShaderProgram.prototype = {
       "  gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);",
       "}"
     ].join("\n");
-  },
+  }
+
   /**
    * Retreives a source for fragment shader for wireframed vertices material
    * @type {String} - source code
    */
-  getFragmentShaderUniformSource: function () {
+  getFragmentShaderUniformSource() {
     return [
       "void main(void) {",
       "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);",
@@ -208,4 +208,3 @@ ShaderProgram.prototype = {
   }
 };
 
-export default ShaderProgram;

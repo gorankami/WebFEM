@@ -1,57 +1,56 @@
-import ShaderProgram from '../ShaderProgram';
+import {createShader} from '../ShaderProgram';
 import GLService from './../GL';
 
-const MeshColoured = function () {
-  const GL                 = GLService.context;
-  const vertexShaderSource = `
-    attribute vec3 aVertexPosition;
-    attribute vec3 aVertexColor;
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-    varying lowp vec4 vColor;
-    varying highp float vPosX;
-    void main(void) {
-      vPosX = vec4(aVertexPosition , 1.0)[0];
-      gl_Position = uPMatrix * (uMVMatrix * vec4(aVertexPosition, 1.0));
-      vColor = vec4(aVertexColor, 1.0);
-    }`;
+export default class MeshColoured {
+  constructor() {
+    this.program         = null;
+    this.aVertexPosition = null;
+    this.aVertexColor    = null;
+    this.uMVMatrix       = null;
+    this.uPMatrix        = null;
+    this.vertexBuffer    = null;
+    this.indexBuffer     = null;
+    this.colorBuffer     = null;
 
-  const fragmentShaderSource = `
-    varying lowp vec4 vColor;
-    varying highp float vPosX;
-    void main(void) {
-      gl_FragColor = vColor;
-    }`;
+    this.enabled = true;
 
-  this.program = ShaderProgram.createShader(vertexShaderSource, fragmentShaderSource);
-  GL.useProgram(this.program);
+    const GL                 = GLService.context;
+    const vertexShaderSource = `
+      attribute vec3 aVertexPosition;
+      attribute vec3 aVertexColor;
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      varying lowp vec4 vColor;
+      varying highp float vPosX;
+      void main(void) {
+        vPosX = vec4(aVertexPosition , 1.0)[0];
+        gl_Position = uPMatrix * (uMVMatrix * vec4(aVertexPosition, 1.0));
+        vColor = vec4(aVertexColor, 1.0);
+      }`;
 
-  //prepare variables and buffers
-  this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
-  this.aVertexColor    = GL.getAttribLocation(this.program, "aVertexColor");
-  this.uMVMatrix       = GL.getUniformLocation(this.program, "uMVMatrix");
-  this.uPMatrix        = GL.getUniformLocation(this.program, "uPMatrix");
+    const fragmentShaderSource = `
+      varying lowp vec4 vColor;
+      varying highp float vPosX;
+      void main(void) {
+        gl_FragColor = vColor;
+      }`;
 
-  this.vertexBuffer = GL.createBuffer();
-  this.indexBuffer  = GL.createBuffer();
-  this.colorBuffer  = GL.createBuffer();
-};
+    this.program = createShader(vertexShaderSource, fragmentShaderSource);
+    GL.useProgram(this.program);
 
-MeshColoured.prototype = {
-  program    : null,
-  constructor: MeshColoured,
+    //prepare variables and buffers
+    this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
+    this.aVertexColor    = GL.getAttribLocation(this.program, "aVertexColor");
+    this.uMVMatrix       = GL.getUniformLocation(this.program, "uMVMatrix");
+    this.uPMatrix        = GL.getUniformLocation(this.program, "uPMatrix");
 
-  aVertexPosition: null,
-  aVertexColor   : null,
-  uMVMatrix      : null,
-  uPMatrix       : null,
-  vertexBuffer   : null,
-  indexBuffer    : null,
-  colorBuffer    : null,
+    this.vertexBuffer = GL.createBuffer();
+    this.indexBuffer  = GL.createBuffer();
+    this.colorBuffer  = GL.createBuffer();
+  }
 
-  enabled: true,
 
-  prepareProgram: function (mesh) {
+  prepareProgram(mesh) {
     const GL = GLService.context;
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
@@ -63,9 +62,9 @@ MeshColoured.prototype = {
 
     GL.bindBuffer(GL.ARRAY_BUFFER, this.colorBuffer);
     GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(mesh.colorData), GL.DYNAMIC_DRAW);
-  },
+  }
 
-  render: function (pMatrix, mvMatrix) {
+  render(pMatrix, mvMatrix) {
     const GL = GLService.context;
     GL.useProgram(this.program);
     GL.uniformMatrix4fv(this.uPMatrix, false, pMatrix);
@@ -86,6 +85,4 @@ MeshColoured.prototype = {
     GL.disable(GL.POLYGON_OFFSET_FILL);
     GL.flush();
   }
-};
-
-export default MeshColoured;
+}

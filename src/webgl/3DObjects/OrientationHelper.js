@@ -1,9 +1,18 @@
-import ShaderProgram from '../ShaderProgram';
+import {createShader} from '../ShaderProgram';
 import GLService from './../GL';
 
-const OrientationHelper = function () {
-  const GL                 = GLService.context;
-  const vertexShaderSource = `
+export default class OrientationHelper {
+  constructor() {
+    this.aVertexPosition = null;
+    this.uMVMatrix       = null;
+    this.uPMatrix        = null;
+    this.vertexBuffer    = null;
+    this.indexBuffer     = null;
+
+    this.enabled = true;
+
+    const GL                 = GLService.context;
+    const vertexShaderSource = `
     attribute vec3 aVertexPosition;
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
@@ -11,36 +20,25 @@ const OrientationHelper = function () {
       gl_Position = uPMatrix * (uMVMatrix * vec4(aVertexPosition, 1.0));
     }`;
 
-  const fragmentShaderSource = `
+    const fragmentShaderSource = `
     void main(void) {
        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     }`;
 
-  this.program = ShaderProgram.createShader(vertexShaderSource, fragmentShaderSource);
-  GL.useProgram(this.program);
+    this.program = createShader(vertexShaderSource, fragmentShaderSource);
+    GL.useProgram(this.program);
 
-  //prepare variables and buffers
-  this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
-  this.uMVMatrix       = GL.getUniformLocation(this.program, "uMVMatrix");
-  this.uPMatrix        = GL.getUniformLocation(this.program, "uPMatrix");
+    //prepare variables and buffers
+    this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
+    this.uMVMatrix       = GL.getUniformLocation(this.program, "uMVMatrix");
+    this.uPMatrix        = GL.getUniformLocation(this.program, "uPMatrix");
 
-  this.vertexBuffer = GL.createBuffer();
-  this.indexBuffer  = GL.createBuffer();
-};
+    this.vertexBuffer = GL.createBuffer();
+    this.indexBuffer  = GL.createBuffer();
+  }
 
-OrientationHelper.prototype = {
-  program    : null,
-  constructor: OrientationHelper,
 
-  aVertexPosition: null,
-  uMVMatrix      : null,
-  uPMatrix       : null,
-  vertexBuffer   : null,
-  indexBuffer    : null,
-
-  enabled: true,
-
-  prepareProgram: function () {
+  prepareProgram() {
     const GL       = GLService.context;
     const vertices = [0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4];
     const indices  = [0, 1, 0, 2, 0, 3];
@@ -51,9 +49,9 @@ OrientationHelper.prototype = {
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), GL.DYNAMIC_DRAW);
     this.indexBuffer.arrayLength = indices.length;
-  },
+  }
 
-  render: function (pMatrix, mvMatrix) {
+  render(pMatrix, mvMatrix) {
     const GL = GLService.context;
     GL.useProgram(this.program);
     GL.uniformMatrix4fv(this.uPMatrix, false, pMatrix);
@@ -68,5 +66,3 @@ OrientationHelper.prototype = {
     GL.flush();
   }
 };
-
-export default OrientationHelper;

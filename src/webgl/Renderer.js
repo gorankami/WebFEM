@@ -27,7 +27,6 @@ export default class Renderer {
     this.meshWireframe = new MeshWireframe();
   }
 
-
   prepare(mesh) {
     this.modelLoaded = false;
 
@@ -38,17 +37,9 @@ export default class Renderer {
     this.modelLoaded = true;
   }
 
-
-  clearScene() {
-    const GL = GLService.context;
-    GL.clearColor(0, 0, 0, 1.0);
-    GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
-    GL.enable(GL.DEPTH_TEST);
-  }
-
   render(camera, cvsWidth, cvsHeight, position, rotation) {
     const GL = GLService.context;
-    this.clearScene();
+    clearScene();
     if (this.modelLoaded) {
       GL.viewport(0, 0, cvsWidth, cvsHeight);
 
@@ -67,4 +58,11 @@ export default class Renderer {
       this.meshWireframe.render(camera.pMatrix, transformationMatrixModel);
     }
   }
+}
+
+function clearScene() {
+  const GL = GLService.context;
+  GL.clearColor(0, 0, 0, 1.0);
+  GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+  GL.enable(GL.DEPTH_TEST);
 }

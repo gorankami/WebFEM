@@ -1,49 +1,48 @@
-import ShaderProgram from '../ShaderProgram';
+import {createShader} from '../ShaderProgram';
 import GLService from './../GL';
 
-const MeshWireframe = function () {
-  const GL = GLService.context;
-  const vertexShaderSource = `
-    attribute vec3 aVertexPosition;
-    uniform mat4 uMVMatrix;
-    uniform mat4 uPMatrix;
-    varying highp float vPosX;
-    void main(void) {
-      vPosX = vec4(aVertexPosition , 1.0)[0];
-      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-    }`;
+export default class MeshWireframe {
 
-  const fragmentShaderSource = `
-    varying highp float vPosX;
-    void main(void) {
-      gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }`;
+  constructor() {
+    this.aVertexPosition = null;
+    this.uMVMatrix       = null;
+    this.uPMatrix        = null;
+    this.vertexBuffer    = null;
+    this.indexBuffer     = null;
 
-  this.program = ShaderProgram.createShader(vertexShaderSource, fragmentShaderSource);
-  GL.useProgram(this.program);
+    this.enabled = true;
 
-  //prepare variables and buffers
-  this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
-  this.uMVMatrix = GL.getUniformLocation(this.program, "uMVMatrix");
-  this.uPMatrix = GL.getUniformLocation(this.program, "uPMatrix");
+    const GL                 = GLService.context;
+    const vertexShaderSource = `
+      attribute vec3 aVertexPosition;
+      uniform mat4 uMVMatrix;
+      uniform mat4 uPMatrix;
+      varying highp float vPosX;
+      void main(void) {
+        vPosX = vec4(aVertexPosition , 1.0)[0];
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+      }`;
 
-  this.vertexBuffer = GL.createBuffer();
-  this.indexBuffer = GL.createBuffer();
-};
+    const fragmentShaderSource = `
+      varying highp float vPosX;
+      void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+      }`;
 
-MeshWireframe.prototype = {
-  program: null,
-  constructor: MeshWireframe,
+    this.program = createShader(vertexShaderSource, fragmentShaderSource);
+    GL.useProgram(this.program);
 
-  aVertexPosition: null,
-  uMVMatrix: null,
-  uPMatrix: null,
-  vertexBuffer: null,
-  indexBuffer: null,
+    //prepare variables and buffers
+    this.aVertexPosition = GL.getAttribLocation(this.program, "aVertexPosition");
+    this.uMVMatrix       = GL.getUniformLocation(this.program, "uMVMatrix");
+    this.uPMatrix        = GL.getUniformLocation(this.program, "uPMatrix");
 
-  enabled: true,
+    this.vertexBuffer = GL.createBuffer();
+    this.indexBuffer  = GL.createBuffer();
+  }
 
-  prepareProgram: function (mesh) {
+
+  prepareProgram(mesh) {
     const GL = GLService.context;
     GL.useProgram(this.program);
     GL.bindBuffer(GL.ARRAY_BUFFER, this.vertexBuffer);
@@ -52,9 +51,9 @@ MeshWireframe.prototype = {
     GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.edgeData), GL.DYNAMIC_DRAW);
     this.indexBuffer.arrayLength = mesh.edgeData.length;
-  },
+  }
 
-  render: function (pMatrix, mvMatrix) {
+  render(pMatrix, mvMatrix) {
     const GL = GLService.context;
     GL.useProgram(this.program);
     GL.uniformMatrix4fv(this.uPMatrix, false, pMatrix);
@@ -68,6 +67,4 @@ MeshWireframe.prototype = {
     GL.drawElements(GL.LINES, this.indexBuffer.arrayLength, GL.UNSIGNED_SHORT, 0);
     GL.flush();
   }
-};
-
-export default MeshWireframe;
+}

@@ -7,8 +7,7 @@
     "jshint": "./node_modules/.bin/jshint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "move-source": "mkdir dist && cp src/index.html dist/index.html && cp -r data dist",
-    "build": "rm -rf dist && npm run move-source && webpack",
-    "start": "http-server dist -p 1337 & npm run build"
+    "start": "yarn jshint && rm -rf dist && npm run move-source && webpack-dev-server --content-base dist/"
   },
   "repository": {
     "type": "git",
@@ -26,7 +25,6 @@
   "devDependencies": {
     "css-loader": "^0.28.4",
     "html-loader": "^0.4.5",
-    "http-server": "^0.10.0",
     "run-sequence": "^1.2.2",
     "style-loader": "^0.18.2",
     "webpack": "^3.0.0"
@@ -44,6 +42,7 @@
     "jshint": "^2.9.5",
     "ng-annotate": "^1.2.1",
     "three": "^0.78.0",
+    "webpack-dev-server": "^2.9.3",
     "whatwg-fetch": "^2.0.3"
   }
 }

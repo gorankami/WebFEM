@@ -19,7 +19,7 @@
  * @author Goran Antic
  */
 
-const mat4 = require('gl-matrix-mat4');
+import mat4 from 'gl-matrix-mat4';
 
 export default class Camera {
 
