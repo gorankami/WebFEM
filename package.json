@@ -1,13 +1,11 @@
 {
   "name": "g-web-fem",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Web viewer for FEM models",
   "main": "index.js",
   "scripts": {
-    "jshint": "./node_modules/.bin/jshint src",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "move-source": "mkdir dist && cp src/index.html dist/index.html && cp -r data dist",
-    "start": "yarn jshint && rm -rf dist && npm run move-source && webpack-dev-server --content-base dist/"
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open"
   },
   "repository": {
     "type": "git",
@@ -20,27 +18,29 @@
   },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "devDependencies": {
-    "css-loader": "^0.28.4",
-    "html-loader": "^0.4.5",
-    "run-sequence": "^1.2.2",
-    "style-loader": "^0.18.2",
-    "webpack": "^3.0.0"
-  },
-  "dependencies": {
-    "angular": "^1.5.7",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
-    "bootstrap": "^3.3.6",
+    "css-loader": "^1.0.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "jshint": "^2.9.5",
+    "raw-loader": "^0.5.1",
+    "run-sequence": "^2.2.1",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "3.1.4"
+  },
+  "dependencies": {
+    "angular": "^1.5.7",
+    "bootstrap": "^4.1.2",
     "gl-matrix": "^2.3.2",
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
     "jquery": "^3.1.0",
-    "jshint": "^2.9.5",
+    "three": "0.78.0",
     "ng-annotate": "^1.2.1",
-    "raw-loader": "^0.5.1",
-    "three": "^0.78.0",
-    "webpack-dev-server": "^2.9.3",
     "whatwg-fetch": "^2.0.3"
   }
 }

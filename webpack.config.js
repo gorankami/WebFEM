@@ -1,28 +1,31 @@
 const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = {
-  resolve: {
-    modules: [
-      path.join(__dirname, "src"),
-      "node_modules"
+module.exports = (a, args)=>{
+  const config = {
+    module : {
+      rules: [{
+        test: /\.(html|glsl)$/,
+        use : "raw-loader"
+      }, {
+        test: /\.css$/,
+        use : ["style-loader", "css-loader"]
+      }, {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use:{
+          loader: "babel-loader"
+        }
+      }]
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+          template: "./src/index.html",
+          filename: "./index.html"
+      }),
+      new webpack.optimize.ModuleConcatenationPlugin()
     ]
-  },
-  entry  : __dirname + '/src/index.js',
-  // watch : true,
-  output : {
-    path    : path.resolve(__dirname + '/dist'),
-    filename: 'index.js'
-  },
-  module : {
-    rules: [{
-      test: /\.(html|glsl)$/,
-      use : "raw-loader"
-    }, {
-      test: /\.css$/,
-      use : ["style-loader", "css-loader"]
-    }, {
-      test: /\.js$/,
-      use : "babel-loader"
-    }]
   }
+  return config;
 };
