@@ -22,10 +22,10 @@ import TransformationController from './TransformationController';
 export default class FEMView {
 
   init(canvas) {
-    this.cvsFEM                   = canvas;
-    this.camera                   = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
+    this.cvsFEM = canvas;
+    this.camera = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
     this.transformationController = new TransformationController(this.cvsFEM, this.camera);
-    this.renderer                 = new Renderer();
+    this.renderer = new Renderer();
     this.resize(window.innerWidth, window.innerHeight);
     this.initEvents();
     this.animate();
@@ -42,11 +42,11 @@ export default class FEMView {
       event.preventDefault();
     });
 
-    const scope     = this;
+    const scope = this;
     //mouse events
     const mouseMove = function (event) {
       event.preventDefault();
-      const rect   = scope.cvsFEM.getBoundingClientRect();
+      const rect = scope.cvsFEM.getBoundingClientRect();
       const coords = [event.clientX - rect.left, event.clientY - rect.top];
 
       if (event.buttons === 1) {
@@ -55,11 +55,13 @@ export default class FEMView {
       else if (event.buttons === 2) {
         scope.transformationController.doPan(coords);
       }
+
+      requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
     const mouseDown = function (event) {
       event.preventDefault();
-      const rect   = scope.cvsFEM.getBoundingClientRect();
+      const rect = scope.cvsFEM.getBoundingClientRect();
       const coords = [event.clientX - rect.left, event.clientY - rect.top];
 
       if (event.buttons === 1) {
@@ -73,12 +75,16 @@ export default class FEMView {
       scope.cvsFEM.addEventListener('mousemove', mouseMove, false);
       scope.cvsFEM.addEventListener('mouseup', mouseOut, false);
       scope.cvsFEM.addEventListener('mouseout', mouseOut, false);
+
+      requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
     const mouseOut = function () {
       scope.cvsFEM.removeEventListener('mousemove', mouseMove, false);
       scope.cvsFEM.removeEventListener('mouseup', mouseOut, false);
       scope.cvsFEM.removeEventListener('mouseout', mouseOut, false);
+
+      requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
     const mouseWheel = function (event) {
@@ -90,6 +96,8 @@ export default class FEMView {
       } else if (event.detail !== undefined) { // Firefox
         scope.transformationController.doZoom(-event.detail);
       }
+
+      requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
     this.cvsFEM.addEventListener('mousedown', mouseDown, false);
@@ -98,13 +106,16 @@ export default class FEMView {
   }
 
   resize(width, height) {
-    this.cvsFEM.width  = width;
+    this.cvsFEM.width = width;
     this.cvsFEM.height = height;
     this.transformationController.camera.changePerspective(width, height);
+
+    requestAnimationFrame(this.animate.bind(this), this.cvsFEM);
   }
 
   draw(geometry, vector) {
     this.renderer.prepare(geometry, vector);
+    requestAnimationFrame(this.animate.bind(this), this.cvsFEM);
   }
 
   unload() {
@@ -112,7 +123,7 @@ export default class FEMView {
   }
 
   animate() {
-    requestAnimationFrame(this.animate.bind(this), this.cvsFEM);
+    console.log("render", this.i++)
     this.transformationController.update();
     this.renderer.render(this.transformationController.camera, this.cvsFEM.width, this.cvsFEM.height, this.transformationController.position, this.transformationController.rotation);
     //  this.transformationController.position = [0, 0, 0]; this.transformationController.rotation = [0, 0];
@@ -120,18 +131,18 @@ export default class FEMView {
 
   recalibrateCamera(mesh) {
     const maxFrontSize = Math.max(mesh.maxX - mesh.minX, mesh.maxY - mesh.minY);
-    const position     = [
+    const position = [
       -mesh.maxX + (mesh.maxX - mesh.minX) / 2,
       -mesh.maxY + (mesh.maxY - mesh.minY) / 2,
       mesh.minZ - maxFrontSize * 2
     ];
-    const pivot        = [
+    const pivot = [
       mesh.maxX - (mesh.maxX - mesh.minX) / 2,
       mesh.maxY - (mesh.maxY - mesh.minY) / 2,
       mesh.maxZ - (mesh.maxZ - mesh.minZ) / 2
     ];
-    const nearPlane    = maxFrontSize / 100.0;
-    const farPlane     = maxFrontSize * 10;
+    const nearPlane = maxFrontSize / 100.0;
+    const farPlane = maxFrontSize * 10;
     this.camera.recalibrate(nearPlane, farPlane, position, pivot);
 
     this.zoomSpeed = maxFrontSize / 10;

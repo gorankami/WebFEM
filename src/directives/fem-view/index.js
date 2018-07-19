@@ -13,19 +13,17 @@ angular
 
 function FemView() {
   return {
-    scope       : {},
-    restrict    : "A",
-    template    : "<canvas id='cvsFEM'></canvas>",
-    link        : linkFunc,
-    controller  : FemViewController,
+    scope: {},
+    restrict: "A",
+    template: "<canvas id='cvsFEM'></canvas>",
+    link: linkFunc,
+    controller: FemViewController,
     controllerAs: 'ctrl'
   };
 }
 
 function linkFunc($scope, element) {
-  let canvas = $('canvas', element);
-  if (canvas.length) canvas = canvas[0];
-
+  const canvas = document.getElementById("cvsFEM")
   GLService.init(canvas);
   $scope.ctrl.femView = new FEMView();
   $scope.ctrl.femView.init(canvas);
