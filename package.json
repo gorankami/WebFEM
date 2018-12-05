@@ -38,9 +38,10 @@
     "gl-matrix": "^2.3.2",
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
+    "gulp": "^3.9.1",
     "jquery": "^3.1.0",
-    "three": "0.78.0",
     "ng-annotate": "^1.2.1",
+    "three": "0.78.0",
     "whatwg-fetch": "^2.0.3"
   }
 }

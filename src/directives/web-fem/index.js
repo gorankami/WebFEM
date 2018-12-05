@@ -7,34 +7,35 @@ angular.module('WebFEMView')
 
 function LegendView() {
   return {
-    scope           : {
+    scope: {
       inverted: "="
     },
-    restrict        : "E",
-    template        : require("./index.html"),
-    controller      : Controller,
-    controllerAs    : 'vm',
+    restrict: "E",
+    template: require("./index.html"),
+    controller: Controller,
+    controllerAs: 'vm',
     bindToController: true
   };
 }
 
 /* @ngInject */
 function Controller($scope) {
-  const vm    = this;
-  let mesh    = null;
+  const vm = this;
+  let mesh = null;
   vm.numSteps = 512;
 
-  vm.drawLegend   = drawLegend;
+  vm.drawLegend = drawLegend;
   vm.downloadMesh = downloadMesh;
-  vm.reDraw       = reDraw;
+  vm.reDraw = reDraw;
 
   activate();
 
   function activate() {
     return ApiService.getPalettes().then(function (response) {
-      vm.palettes                 = response;
+      vm.palettes = response;
       vm.palettes.selectedPalette = vm.palettes[0];
       drawLegend();
+      downloadMesh();
     });
   }
 
@@ -47,7 +48,7 @@ function Controller($scope) {
   function downloadMesh() {
     // vm.toggleCurtain = true;
     //free memory
-    mesh             = null;
+    mesh = null;
     $scope.$broadcast('fem:unload');
 
     ApiService.getMesh('example1').then(function (response) {
@@ -62,8 +63,7 @@ function Controller($scope) {
           $scope.$broadcast('fem:loadmesh', mesh);
 
           drawLegend();
-        }
-        else {
+        } else {
           alert("Cannot load model.");
         }
       } catch (ex) {

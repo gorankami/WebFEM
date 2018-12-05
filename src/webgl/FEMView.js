@@ -51,8 +51,7 @@ export default class FEMView {
 
       if (event.buttons === 1) {
         scope.transformationController.doRotate(coords);
-      }
-      else if (event.buttons === 2) {
+      } else if (event.buttons === 2) {
         scope.transformationController.doPan(coords);
       }
 
@@ -66,8 +65,7 @@ export default class FEMView {
 
       if (event.buttons === 1) {
         scope.transformationController.startRotate(coords);
-      }
-      else if (event.buttons === 2) {
+      } else if (event.buttons === 2) {
         scope.transformationController.startPan(coords);
       }
 
@@ -123,7 +121,6 @@ export default class FEMView {
   }
 
   animate() {
-    console.log("render", this.i++)
     this.transformationController.update();
     this.renderer.render(this.transformationController.camera, this.cvsFEM.width, this.cvsFEM.height, this.transformationController.position, this.transformationController.rotation);
     //  this.transformationController.position = [0, 0, 0]; this.transformationController.rotation = [0, 0];
