@@ -3,7 +3,7 @@ import 'whatwg-fetch';
 
 export default {
   getPalettes: getPalettes,
-  getMesh    : getMesh
+  getMesh: getMesh
 };
 
 /**
@@ -12,7 +12,7 @@ export default {
  * @returns {Promise}
  */
 function getPalettes() {
-  return fetch("/data/palettes.json").then(defaultHandler).then(GetPalletesResponse);
+  return fetch("./data/palettes.json").then(defaultHandler).then(GetPalletesResponse);
 }
 
 function GetPalletesResponse(response) {
@@ -32,7 +32,7 @@ function GetPalletesResponse(response) {
  * @returns {Promise}
  */
 function getMesh(meshName) {
-  return fetch("/data/examples/" + meshName + '.json').then(defaultHandler);
+  return fetch("./data/examples/" + meshName + '.json').then(defaultHandler);
 }
 
 function defaultHandler(response) {
