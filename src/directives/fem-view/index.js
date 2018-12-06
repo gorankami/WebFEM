@@ -17,7 +17,7 @@ function FemView() {
     restrict: "A",
     template: "<canvas id='cvsFEM'></canvas>",
     link: linkFunc,
-    controller: FemViewController,
+    controller: ["$scope", FemViewController],
     controllerAs: 'ctrl'
   };
 }

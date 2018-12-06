@@ -10,14 +10,8 @@ TON easier, like [Three.js](https://github.com/mrdoob/three.js/).
 Install dependencies by running
 ```npm install```
 
-Build the project with 
-```npm run build```
-
 The project is being self-served with webpack by running
-```npm run start```
-
-But if you would like to use it with your own server, you can just build it with `gulp` and the built files will appear
-in folder `www`
+```npm start```
 
 ## Usage
 

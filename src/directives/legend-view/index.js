@@ -11,13 +11,13 @@ angular
 
 function LegendView() {
   return {
-    scope       : {
+    scope: {
       inverted: "="
     },
-    restrict    : "A",
-    template    : "<canvas width='150' height='500'></canvas><br/>",
-    link        : linkFunc,
-    controller  : LegendViewController,
+    restrict: "A",
+    template: "<canvas width='150' height='500'></canvas><br/>",
+    link: linkFunc,
+    controller: ["$scope", LegendViewController],
     controllerAs: 'ctrl'
   };
 }
@@ -35,16 +35,16 @@ function LegendViewController($scope) {
 
   function drawEvent(event, colorMap) {
 
-    const startX              = 25,
-          startY              = 25,
-          width               = 50,
-          height              = 450,
-          stepsLength         = colorMap.steps.length,
-          gradient            = $scope.inverted ?
-            vm.context.createLinearGradient(0, startY, 0, startY + height) :
-            vm.context.createLinearGradient(0, startY + height, 0, startY),
-          colorStopPercentage = 1 / (stepsLength - 1).toFixed(2),
-          tickHeight          = (height + 1) / (stepsLength - 1).toFixed(2);
+    const startX = 25,
+      startY = 25,
+      width = 50,
+      height = 450,
+      stepsLength = colorMap.steps.length,
+      gradient = $scope.inverted ?
+      vm.context.createLinearGradient(0, startY, 0, startY + height) :
+      vm.context.createLinearGradient(0, startY + height, 0, startY),
+      colorStopPercentage = 1 / (stepsLength - 1).toFixed(2),
+      tickHeight = (height + 1) / (stepsLength - 1).toFixed(2);
 
     vm.context.fillStyle = "Black";
     vm.context.fillRect(0, 0, 150, 500);
@@ -66,7 +66,7 @@ function LegendViewController($scope) {
     vm.context.stroke();
     // ...and ticks
     vm.context.beginPath();
-    vm.context.font      = "10px Verdana";
+    vm.context.font = "10px Verdana";
     vm.context.fillStyle = "White";
 
     for (let i = 0; i < stepsLength; i++) {

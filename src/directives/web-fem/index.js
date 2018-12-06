@@ -12,7 +12,7 @@ function LegendView() {
     },
     restrict: "E",
     template: require("./index.html"),
-    controller: Controller,
+    controller: ["$scope", Controller],
     controllerAs: 'vm',
     bindToController: true
   };
