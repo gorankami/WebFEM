@@ -32,7 +32,8 @@ function GetPalletesResponse(response) {
  * @returns {Promise}
  */
 function getMesh(meshName) {
-  return fetch("./data/examples/" + meshName + '.json').then(defaultHandler);
+  //return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example2.json").then(defaultHandler);
+  return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example1.json").then(defaultHandler);
 }
 
 function defaultHandler(response) {
