@@ -1,7 +1,10 @@
 import {createShader} from '../../ShaderProgram';
 import GLService from '../../GL';
-import vertexShaderSource from "./vertex.glsl";
-import fragmentShaderSource from "./fragment.glsl";
+import { vertexShaderSource, fragmentShaderSource } from './shaders';
+// import vertexShaderSource from "./vertex.glsl";
+// import fragmentShaderSource from "./fragment.glsl";
+
+
 
 export default class MeshColoured {
   constructor() {

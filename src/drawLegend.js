@@ -1,10 +1,10 @@
-export default function(context, colorMap) {
+export default function(context, colorMap, isInverted) {
     const startX = 25,
       startY = 25,
       width = 50,
       height = 450,
       stepsLength = colorMap.steps.length,
-      gradient = $scope.inverted ?
+      gradient = isInverted ?
       context.createLinearGradient(0, startY, 0, startY + height) :
       context.createLinearGradient(0, startY + height, 0, startY),
       colorStopPercentage = 1 / (stepsLength - 1).toFixed(2),

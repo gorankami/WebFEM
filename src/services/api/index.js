@@ -11,8 +11,8 @@ export default {
  * Gets the palletes array for legend 2D view
  * @returns {Promise}
  */
-function getPalettes() {
-  return fetch("./data/palettes.json").then(defaultHandler).then(GetPalletesResponse);
+export function getPalettes() {
+  return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/palettes.json").then(defaultHandler).then(GetPalletesResponse);
 }
 
 function GetPalletesResponse(response) {
@@ -31,7 +31,7 @@ function GetPalletesResponse(response) {
  * @param meshName {String}
  * @returns {Promise}
  */
-function getMesh(meshName) {
+export function getMesh(meshName) {
   //return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example2.json").then(defaultHandler);
   return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example1.json").then(defaultHandler);
 }

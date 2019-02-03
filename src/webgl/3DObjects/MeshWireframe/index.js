@@ -1,7 +1,9 @@
 import {createShader} from '../../ShaderProgram';
 import GLService from '../../GL';
-import vertexShaderSource from "./vertex.glsl";
-import fragmentShaderSource from "./fragment.glsl";
+// import vertexShaderSource from "./vertex.glsl";
+// import fragmentShaderSource from "./fragment.glsl";
+
+import { vertexShaderSource, fragmentShaderSource } from './shaders';
 
 export default class MeshWireframe {
 

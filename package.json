@@ -4,8 +4,10 @@
   "description": "Web viewer for FEM models",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server --mode development --open"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "repository": {
     "type": "git",
@@ -17,30 +19,28 @@
     "url": "https://github.com/gorankami/WebFEM/issues"
   },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "css-loader": "^1.0.0",
-    "html-loader": "^0.5.5",
-    "jshint": "^2.9.7",
-    "raw-loader": "^0.5.1",
-    "run-sequence": "^2.2.1",
-    "style-loader": "^0.21.0",
-    "webpack": "^4.16.1",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.14"
-  },
   "dependencies": {
-    "angular": "^1.5.7",
-    "bootstrap": "^4.1.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-scripts": "2.1.3",
     "gl-matrix": "^2.3.2",
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
-    "gulp": "^3.9.1",
-    "jquery": "^3.1.0",
     "ng-annotate": "^1.2.1",
     "three": "0.78.0",
     "whatwg-fetch": "^2.0.3"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "jquery": "^3.3.1",
+    "terser": "^3.14.1"
   }
 }
