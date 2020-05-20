@@ -1,6 +1,6 @@
 # WebFEM
 WebGL engine for FEM models viewing. A part of a master thesis project. It is designed to use NEU models converted to
-custom json format. The conversion app is not included. Preview the app at http://gorankami.github.io/WebFEM/
+custom json format. The conversion app is not included. Preview the app at ~http://gorankami.github.io/WebFEM/~ (not working, not hosting assets anymore :( )
 
 *Note*: This project is not adapted for consuming on other projects. It is created for personal shader study and WebGL library study. I suggest using existing tools that make things easier, like [Three.js](https://github.com/mrdoob/three.js/).
 
