@@ -1,10 +1,12 @@
 import Color from "./../../webgl/Color";
-import 'whatwg-fetch';
+import "whatwg-fetch";
 
-export default {
+const api = {
   getPalettes: getPalettes,
-  getMesh: getMesh
+  getMesh: getMesh,
 };
+
+export default api;
 
 /**
  * GET /data/palettes.json
@@ -12,7 +14,11 @@ export default {
  * @returns {Promise}
  */
 export function getPalettes() {
-  return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/palettes.json").then(defaultHandler).then(GetPalletesResponse);
+  return fetch(
+    "https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/palettes.json"
+  )
+    .then(defaultHandler)
+    .then(GetPalletesResponse);
 }
 
 function GetPalletesResponse(response) {
@@ -33,12 +39,14 @@ function GetPalletesResponse(response) {
  */
 export function getMesh(meshName) {
   //return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example2.json").then(defaultHandler);
-  return fetch("https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example1.json").then(defaultHandler);
+  return fetch(
+    "https://s3-eu-west-1.amazonaws.com/monolit-studio/webfem/example1.json"
+  ).then(defaultHandler);
 }
 
 function defaultHandler(response) {
   if (response.ok) {
     return response.json();
   }
-  throw new Error('Network response was not ok.');
+  throw new Error("Network response was not ok.");
 }

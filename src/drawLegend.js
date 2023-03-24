@@ -1,4 +1,4 @@
-export default function(context, colorMap, isInverted) {
+export default function drawLegend(context, colorMap, isInverted) {
     const startX = 25,
       startY = 25,
       width = 50,

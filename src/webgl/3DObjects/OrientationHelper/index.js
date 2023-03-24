@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import {createShader} from '../../ShaderProgram';
 import GLService from '../../GL';
 

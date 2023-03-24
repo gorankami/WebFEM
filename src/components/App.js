@@ -6,6 +6,8 @@ import MeshView from "./MeshView";
 import {getPalettes} from "../services/api";
 import BtnApplyToMesh from './BtnApplyToMesh';
 
+console.log("TEST");
+
 class App extends Component {
   state = {
     toggleCurtain: false,

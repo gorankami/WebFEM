@@ -1,13 +1,13 @@
 {
-  "main.css": "/gorankami/WebFEM/static/css/main.1104b294.chunk.css",
-  "main.js": "/gorankami/WebFEM/static/js/main.b473e6bb.chunk.js",
-  "main.js.map": "/gorankami/WebFEM/static/js/main.b473e6bb.chunk.js.map",
-  "static/js/1.390fb7a9.chunk.js": "/gorankami/WebFEM/static/js/1.390fb7a9.chunk.js",
-  "static/js/1.390fb7a9.chunk.js.map": "/gorankami/WebFEM/static/js/1.390fb7a9.chunk.js.map",
-  "runtime~main.js": "/gorankami/WebFEM/static/js/runtime~main.08704ee6.js",
-  "runtime~main.js.map": "/gorankami/WebFEM/static/js/runtime~main.08704ee6.js.map",
-  "static/css/main.1104b294.chunk.css.map": "/gorankami/WebFEM/static/css/main.1104b294.chunk.css.map",
-  "index.html": "/gorankami/WebFEM/index.html",
-  "precache-manifest.0a26346f3bd19a6e6d45e8d9f8eb64ef.js": "/gorankami/WebFEM/precache-manifest.0a26346f3bd19a6e6d45e8d9f8eb64ef.js",
-  "service-worker.js": "/gorankami/WebFEM/service-worker.js"
+  "files": {
+    "main.css": "/gorankami/WebFEM/static/css/main.b9bd29f3.css",
+    "main.js": "/gorankami/WebFEM/static/js/main.d3238d40.js",
+    "index.html": "/gorankami/WebFEM/index.html",
+    "main.b9bd29f3.css.map": "/gorankami/WebFEM/static/css/main.b9bd29f3.css.map",
+    "main.d3238d40.js.map": "/gorankami/WebFEM/static/js/main.d3238d40.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b9bd29f3.css",
+    "static/js/main.d3238d40.js"
+  ]
 }

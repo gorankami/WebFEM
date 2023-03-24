@@ -20,13 +20,13 @@
   },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "dependencies": {
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-scripts": "2.1.3",
     "gl-matrix": "^2.3.2",
     "gl-matrix-mat4": "^2.2.1-npm",
     "gl-matrix-vec3": "^2.2.1-npm",
     "ng-annotate": "^1.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
     "three": "0.137.0",
     "whatwg-fetch": "^2.0.3"
   },

@@ -6,7 +6,7 @@ import React from 'react';
 //out:
   //onPaletteChange
 
-export default function (props){
+export default function SelectPalette(props){
   if(props.palettes && props.palettes.length){ 
       const options = props.palettes.map(item=>{
         return  (
