@@ -1,5 +1,4 @@
 import Color from "./../../webgl/Color";
-import "whatwg-fetch";
 
 const api = {
   getPalettes: getPalettes,

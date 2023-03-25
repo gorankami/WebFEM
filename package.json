@@ -20,15 +20,16 @@
   },
   "homepage": "https://github.com/gorankami/WebFEM#readme",
   "dependencies": {
-    "gl-matrix": "^2.3.2",
-    "gl-matrix-mat4": "^2.2.1-npm",
-    "gl-matrix-vec3": "^2.2.1-npm",
-    "ng-annotate": "^1.2.1",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.9",
+    "@types/react": "^18.0.29",
+    "@types/react-dom": "^18.0.11",
+    "gl-matrix": "^3.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
     "three": "0.137.0",
-    "whatwg-fetch": "^2.0.3"
+    "typescript": "^5.0.2"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,9 +39,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "jquery": "^3.3.1",
-    "terser": "^4.8.1"
-  }
+  ]
 }

@@ -19,7 +19,7 @@
  * @author Goran Antic
  */
 
-import mat4 from 'gl-matrix-mat4';
+import * as mat4 from 'gl-matrix/mat4';
 
 export default class Camera {
 

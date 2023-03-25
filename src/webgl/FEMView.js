@@ -13,18 +13,25 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-import $ from 'jquery';
-import vec3 from 'gl-matrix-vec3';
-import Camera from './Camera';
-import Renderer from './Renderer';
-import TransformationController from './TransformationController';
+import { create } from "gl-matrix/vec3";
+import Camera from "./Camera";
+import Renderer from "./Renderer";
+import TransformationController from "./TransformationController";
 
 export default class FEMView {
-
   init(canvas) {
     this.cvsFEM = canvas;
-    this.camera = new Camera(45, this.cvsFEM.width / this.cvsFEM.height, 1, 100.0, vec3.create([0, 0, -10]));
-    this.transformationController = new TransformationController(this.cvsFEM, this.camera);
+    this.camera = new Camera(
+      45,
+      this.cvsFEM.width / this.cvsFEM.height,
+      1,
+      100.0,
+      create([0, 0, -10])
+    );
+    this.transformationController = new TransformationController(
+      this.cvsFEM,
+      this.camera
+    );
     this.renderer = new Renderer();
     this.resize(window.innerWidth, window.innerHeight);
     this.initEvents();
@@ -33,12 +40,10 @@ export default class FEMView {
 
   initEvents() {
     //events
-    $(window).resize(function () {
-      this.resize($(document).width(), $(document).height());
-    }.bind(this));
+    window.onresize = this.resize(document.width, document.height);
 
     //disable context menu
-    this.cvsFEM.addEventListener('contextmenu', function (event) {
+    this.cvsFEM.addEventListener("contextmenu", function (event) {
       event.preventDefault();
     });
 
@@ -70,17 +75,17 @@ export default class FEMView {
       }
 
       //add events to detect while mouse down
-      scope.cvsFEM.addEventListener('mousemove', mouseMove, false);
-      scope.cvsFEM.addEventListener('mouseup', mouseOut, false);
-      scope.cvsFEM.addEventListener('mouseout', mouseOut, false);
+      scope.cvsFEM.addEventListener("mousemove", mouseMove, false);
+      scope.cvsFEM.addEventListener("mouseup", mouseOut, false);
+      scope.cvsFEM.addEventListener("mouseout", mouseOut, false);
 
       requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
     const mouseOut = function () {
-      scope.cvsFEM.removeEventListener('mousemove', mouseMove, false);
-      scope.cvsFEM.removeEventListener('mouseup', mouseOut, false);
-      scope.cvsFEM.removeEventListener('mouseout', mouseOut, false);
+      scope.cvsFEM.removeEventListener("mousemove", mouseMove, false);
+      scope.cvsFEM.removeEventListener("mouseup", mouseOut, false);
+      scope.cvsFEM.removeEventListener("mouseout", mouseOut, false);
 
       requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
@@ -89,18 +94,20 @@ export default class FEMView {
       event.preventDefault();
       event.stopPropagation();
 
-      if (event.wheelDelta !== undefined) { // WebKit / Opera / Explorer 9
+      if (event.wheelDelta !== undefined) {
+        // WebKit / Opera / Explorer 9
         scope.transformationController.doZoom(event.wheelDelta);
-      } else if (event.detail !== undefined) { // Firefox
+      } else if (event.detail !== undefined) {
+        // Firefox
         scope.transformationController.doZoom(-event.detail);
       }
 
       requestAnimationFrame(scope.animate.bind(scope), scope.cvsFEM);
     };
 
-    this.cvsFEM.addEventListener('mousedown', mouseDown, false);
-    this.cvsFEM.addEventListener('mousewheel', mouseWheel, false);
-    this.cvsFEM.addEventListener('DOMMouseScroll', mouseWheel, false); // firefox
+    this.cvsFEM.addEventListener("mousedown", mouseDown, false);
+    this.cvsFEM.addEventListener("mousewheel", mouseWheel, false);
+    this.cvsFEM.addEventListener("DOMMouseScroll", mouseWheel, false); // firefox
   }
 
   resize(width, height) {
@@ -122,7 +129,13 @@ export default class FEMView {
 
   animate() {
     this.transformationController.update();
-    this.renderer.render(this.transformationController.camera, this.cvsFEM.width, this.cvsFEM.height, this.transformationController.position, this.transformationController.rotation);
+    this.renderer.render(
+      this.transformationController.camera,
+      this.cvsFEM.width,
+      this.cvsFEM.height,
+      this.transformationController.position,
+      this.transformationController.rotation
+    );
     //  this.transformationController.position = [0, 0, 0]; this.transformationController.rotation = [0, 0];
   }
 
@@ -131,12 +144,12 @@ export default class FEMView {
     const position = [
       -mesh.maxX + (mesh.maxX - mesh.minX) / 2,
       -mesh.maxY + (mesh.maxY - mesh.minY) / 2,
-      mesh.minZ - maxFrontSize * 2
+      mesh.minZ - maxFrontSize * 2,
     ];
     const pivot = [
       mesh.maxX - (mesh.maxX - mesh.minX) / 2,
       mesh.maxY - (mesh.maxY - mesh.minY) / 2,
-      mesh.maxZ - (mesh.maxZ - mesh.minZ) / 2
+      mesh.maxZ - (mesh.maxZ - mesh.minZ) / 2,
     ];
     const nearPlane = maxFrontSize / 100.0;
     const farPlane = maxFrontSize * 10;

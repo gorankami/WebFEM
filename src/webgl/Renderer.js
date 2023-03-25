@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import mat4 from 'gl-matrix-mat4';
+ import * as mat4 from 'gl-matrix/mat4';
 import MeshColoured from './3DObjects/MeshColoured';
 import MeshWireframe from './3DObjects/MeshWireframe';
 import GLService from './GL';
