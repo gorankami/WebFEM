@@ -41,6 +41,7 @@ export default function drawLegend(context: CanvasRenderingContext2D, colorMap: 
       let ypos = Math.round(startY + tickHeight * (stepsLength - 1 - i)) - 0.5;
       context.moveTo(xpos - 5.5, ypos);
       context.lineTo(xpos + 5.5, ypos);
+      debugger
       context.fillText(colorMap.steps[i].scaledVal ? colorMap.steps[i].scaledVal.toFixed(4) : "0", xpos + 10, ypos + 4);
     }
     context.stroke();

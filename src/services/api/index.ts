@@ -1,16 +1,19 @@
-import { Mesh } from "../../Mesh";
-import { Palette } from "../../Palette";
+import { Mesh, MeshResponse } from "../../Mesh";
+import { Palette, PaletteResponse } from "../../Palette";
 import { Color } from "three";
 
 /**
- * GET /data/{meshName}.json
+ * GET /data/{name}.json
  * Gets viewable mesh
- * @param meshName {String}
+ * @param name {String}
  * @returns {Promise}
  */
-export function getMesh(name: string): Promise<Mesh> {
-  return fetch(`data/examples/example1.json`)
-    .then((res) => res.json());
+export function getMesh(name: string = "example1"): Promise<Mesh> {
+  return fetch(`data/examples/${name}.json`)
+    .then((res) => res.json())
+    .then((mesh: MeshResponse): Mesh => {
+      return { ...mesh, colorData: [] };
+    });
 }
 
 /**
@@ -21,18 +24,18 @@ export function getMesh(name: string): Promise<Mesh> {
 export function getPalettes(): Promise<Palette[]> {
   return fetch(`data/palettes.json`)
     .then((res) => res.json())
-    .then(getPaletesResponse);
+    .then(convertPaletteColors);
 }
 
-export function getPaletesResponse(response: Palette[]): Palette[] {
+function convertPaletteColors(response: PaletteResponse[]): Palette[] {
   //turn to Color objects
-  response.forEach(function (palette: Palette) {
-    palette.steps.forEach((step) => {
-      const color: Array<number> = step.color as Array<number>;
-      step.color = new Color(color[0], color[1], color[2]);
-    });
+  return response.map((palette: PaletteResponse): Palette => {
+    return {
+      ...palette,
+      steps: palette.steps.map((step) => {
+        const color: number[] = step.color as number[];
+        return { ...step, scaledVal: 0, color: new Color(color[0], color[1], color[2]) };
+      }),
+    };
   });
-  return response;
 }
-
-

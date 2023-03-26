@@ -9,8 +9,8 @@ import { Mesh } from "../Mesh";
 import { Palette } from "../Palette";
 
 export default function App() {
-  const [palettes, setPalettes] = useState<Array<any>>([]);
-  const [selectedPalette, setSelectedPalette] = useState<Palette>();
+  const [palettes, setPalettes] = useState<Palette[]>([]);
+  const [selectedPaletteIndex, setSelectedPaletteIndex] = useState<number>(0);
   const [isInverted, setIsInverted] = useState<boolean>(false);
   const [numSteps, setNumSteps] = useState<number>(512);
   const [mesh, setMesh] = useState<Mesh | undefined>(undefined);
@@ -18,13 +18,19 @@ export default function App() {
   useEffect(() => {
     getPalettes().then((palettes) => {
       setPalettes(palettes);
-      setSelectedPalette(palettes[0]);
+      setSelectedPaletteIndex(0);
     });
   }, []);
 
   const onPaletteChange = (id: number) => {
-    setSelectedPalette(palettes.find((item) => item.id === +id));
+    for (let i = 0; i < palettes.length; i++) {
+      if (palettes[i].id === +id) {
+        setSelectedPaletteIndex(i);
+        break;
+      }
+    }
   };
+
   const onStepsChange = (e: React.SyntheticEvent) => {
     let currentTarget = e.currentTarget as HTMLInputElement;
 
@@ -36,7 +42,7 @@ export default function App() {
     setIsInverted(target.value === "true");
   };
 
-  const onApplyToMesh = (mesh: Mesh, palettes: Array<Palette>) => {
+  const onApplyToMesh = (mesh: Mesh, palettes: Palette[]) => {
     setMesh(mesh);
     setPalettes(palettes);
   };
@@ -48,7 +54,7 @@ export default function App() {
         <br />
         <SelectPalette
           palettes={palettes}
-          selectedPalette={selectedPalette}
+          selectedPalette={palettes[selectedPaletteIndex]}
           onPaletteChange={onPaletteChange}
         />
         <br />
@@ -63,10 +69,13 @@ export default function App() {
         />
         Inverted
         <br />
-        <LegendView palette={selectedPalette} isInverted={isInverted} />
+        <LegendView
+          palette={palettes[selectedPaletteIndex]}
+          isInverted={isInverted}
+        />
         <br />
         <BtnApplyToMesh
-          selectedPalette={selectedPalette}
+          selectedPalette={palettes[selectedPaletteIndex]}
           numSteps={numSteps}
           isInverted={isInverted}
           palettes={palettes}

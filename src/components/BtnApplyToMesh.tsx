@@ -3,8 +3,8 @@ import { Palette } from "../Palette";
 import { getMesh } from "../services/api";
 import {
   scalePaletteColorValues,
-  initColorArray,
-  prepareVector,
+  calibrateColorArray,
+  prepareColorsVectorBuffer,
 } from "../services/utilities";
 
 export default function BtnApplyToMesh(props: any) {
@@ -25,7 +25,7 @@ function applyToMesh({
   selectedPalette: Palette;
   numSteps: number;
   isInverted: boolean;
-  palettes: Array<Palette>;
+  palettes: Palette[];
   onApplyToMesh: Function;
 }) {
   getMesh("example1").then((mesh) => {
@@ -34,24 +34,23 @@ function applyToMesh({
       !mesh.indexData.length ||
       !mesh.vectorData.length
     ) {
-      alert("Cannot load model.");
-      return;
+      throw new Error("Model data not available.");
     }
 
-    const steps = scalePaletteColorValues(
+    const scaledSteps = scalePaletteColorValues(
       mesh.minValue,
       mesh.maxValue,
       selectedPalette.steps
     );
 
-    const colorArray = initColorArray(
+    const colorArray = calibrateColorArray(
       numSteps,
-      steps,
+      scaledSteps,
       mesh.minValue,
       mesh.maxValue,
       isInverted
     );
-    mesh.colorData = prepareVector(
+    mesh.colorData = prepareColorsVectorBuffer(
       mesh,
       mesh.minValue,
       mesh.maxValue,
@@ -59,7 +58,7 @@ function applyToMesh({
     );
     const palettesCopy = palettes.map((item) => {
       if (item === selectedPalette) {
-        return { ...item, steps };
+        return { ...item, steps: scaledSteps };
       } else {
         return item;
       }

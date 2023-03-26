@@ -1,4 +1,4 @@
-export type Mesh = {
+export type MeshResponse = {
   clipArea: any;
   id: number;
   maxValue: number;
@@ -10,9 +10,12 @@ export type Mesh = {
   minY: number;
   minZ: number;
   name: string;
-  vectorData: Array<number>;
-  vertexData: Array<number>;
-  indexData: Array<number>;
-  edgeData: Array<number>;
-  colorData: Array<number>;
+  vectorData: number[];
+  vertexData: number[];
+  indexData: number[];
+  edgeData: number[];
+};
+
+export type Mesh = MeshResponse & {
+  colorData: number[];
 };

@@ -5,7 +5,7 @@ const numY = 10;
 const numZ = 1;
 const maxCoordOffset = 10;
 
-const stepVertexData: Array<number> = [
+const stepVertexData: number[] = [
   0, 0, 0, 0, 100, 0, 100, 100, 0, 100, 0, 0, 0, 0, 100, 0, 100, 100, 100, 100,
   100, 100, 0, 100,
 ];

@@ -44,8 +44,8 @@ export default class Renderer {
     camera: Camera,
     cvsWidth: number,
     cvsHeight: number,
-    position: Array<number>,
-    rotation: Array<number>
+    position: number[],
+    rotation: number[]
   ) {
     const renderingContext = getRenderingContext();
     clearScene();

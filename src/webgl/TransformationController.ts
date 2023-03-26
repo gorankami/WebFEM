@@ -33,19 +33,19 @@ import Camera from "./Camera";
 
 export default class TransformationController {
   //transformations on object
-  public rotation: Array<number> = [];
-  public position: Array<number> = [];
+  public rotation: number[] = [];
+  public position: number[] = [];
 
   //initial vectors for mouse position, rotation and pan value
-  private mouseS: Array<number> = [];
-  private rotS: Array<number> = [];
-  private panS: Array<number> = [];
-  private startPos: Array<number> = [];
+  private mouseS: number[] = [];
+  private rotS: number[] = [];
+  private panS: number[] = [];
+  private startPos: number[] = [];
 
   //current vectors for mouse position, rotation, pan value and zoom
-  private mouse: Array<number> = [];
-  private rot: Array<number> = [];
-  private pan: Array<number> = [];
+  private mouse: number[] = [];
+  private rot: number[] = [];
+  private pan: number[] = [];
   private zoom = 0;
 
   //settings that change sensitivity of rotation and zoom
@@ -77,7 +77,7 @@ export default class TransformationController {
    * Afterwards, panS is set to an offset from position
    * @param {Number[2]} coords
    */
-  startPan(coords: Array<number>) {
+  startPan(coords: number[]) {
     const hor = (coords[0] - this.canvas.width / 2) / (this.canvas.width / 2);
     const ver = (coords[1] - this.canvas.height / 2) / (this.canvas.height / 2);
     this.panS = this.camera.getClickVectorHorizontal(
@@ -95,7 +95,7 @@ export default class TransformationController {
    * Sets new current clicked unprojected coordinate on objects plane
    * @param {Number[2]} coords
    */
-  doPan(coords: Array<number>) {
+  doPan(coords: number[]) {
     const hor = (coords[0] - this.canvas.width / 2) / (this.canvas.width / 2);
     const ver = (coords[1] - this.canvas.height / 2) / (this.canvas.height / 2);
     this.pan = this.camera.getClickVectorHorizontal(hor, ver, this.position[2]);
@@ -105,7 +105,7 @@ export default class TransformationController {
    * Starts rotation by putting rotS to previously current value rot. mouseS is kept for later difference calculation
    * @param {Number[2]} coords
    */
-  startRotate(coords: Array<number>) {
+  startRotate(coords: number[]) {
     this.mouseS = coords;
     this.rotS[0] = this.rot[0];
     this.rotS[1] = this.rot[1];
@@ -115,7 +115,7 @@ export default class TransformationController {
    * Rotates by putting rotS to previously current value rot. mouseS is kept for later difference calculation
    * @param {Number[2]} coords
    */
-  doRotate(coords: Array<number>) {
+  doRotate(coords: number[]) {
     this.mouse = coords;
 
     this.rot[1] = this.rot[1] + this.mouse[1] - this.mouseS[1];
